@@ -1,0 +1,17 @@
+<!doctype html>
+<title>CM4 Demo</title>
+<html>
+
+<body>
+    <p><a href="{{ url_for('home') }}">Home</a></p>
+    <p>
+        Actual Brightness: {{ actual_brightness }}
+    </p>
+    <form method="post">
+        <label for="brightness">Set Brightness</label>
+        <input type="text" name="brightness" value="{{ request.form['brightness'] }}"></input>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+
+</html>
