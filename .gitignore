@@ -1,0 +1,7 @@
+__pycache__
+venv
+build
+dist
+waitress_server.spec
+*.log
+log
