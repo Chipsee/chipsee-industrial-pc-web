@@ -12,6 +12,28 @@
         <input type="text" name="brightness" value="{{ request.form['brightness'] }}"></input>
         <button type="submit">Submit</button>
     </form>
+    <div>
+        <input type="range" id="brightness" name="brightness" min="0" max="100" value="90" step="1">
+        <label for="brightness">Brightness</label>
+        <span id="brightness-value">{{ actual_brightness }}</span>
+    </div>
 </body>
 
 </html>
+<script>
+const brightnessElement = document.querySelector('#brightness');
+
+brightnessElement.addEventListener('input', (event) => {
+    const curr_brightness = document.querySelector('#brightness-value');
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", '{{ url_for('api_brightness') }}', true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = () => { // Call a function when the state changes.
+        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+            // Request finished. Do processing here.
+        }
+    }
+    xhr.send(`brightness=${brightnessElement.value}`);
+    curr_brightness.textContent = `${event.target.value}`;
+});
+</script>

@@ -26,3 +26,13 @@ def brightness():
         # actual_brightness = 50
         return render_template('brightness.html', actual_brightness=actual_brightness)
     return render_template('brightness.html')
+
+
+@app.route('/api/brightness', methods=['POST'])
+def api_brightness():
+    new_brightness = request.form["brightness"]
+    brightness = Brightness()
+    brightness.set_brightness(brightness=new_brightness)
+    actual_brightness = brightness.get_actual_brightness()
+    # actual_brightness = new_brightness
+    return {"brightness": actual_brightness}
