@@ -1,0 +1,106 @@
+<!doctype html>
+<title>CM4 Demo</title>
+<html>
+
+<body>
+    <p><a href="{{ url_for('home') }}">Home</a></p>
+    <p>
+        <div>
+            <input type="checkbox" id="out_1" name="out_1">
+            <label for="out_1">OUT1</label>
+        </div>
+        <div>
+            <input type="checkbox" id="out_2" name="out_2">
+            <label for="out_2">OUT2</label>
+        </div>
+        <div>
+            <input type="checkbox" id="out_3" name="out_3">
+            <label for="out_3">OUT3</label>
+        </div>
+        <div>
+            <input type="checkbox" id="out_4" name="out_4">
+            <label for="out_4">OUT4</label>
+        </div>
+        <div>IN1: <span id="in_1">{{in_1}}</span></div>
+        <div>IN2: <span id="in_2">{{in_2}}</span></div>
+        <div>IN3: <span id="in_3">{{in_3}}</span></div>
+        <div>IN4: <span id="in_4">{{in_4}}</span></div>
+    </p>
+</body>
+
+</html>
+<script>
+class SetGPIOOutput {
+    constructor() {
+        this.endPoint = "{{ url_for('home') }}" + "api/gpio/";
+        this.outputs = ['out_1', 'out_2', 'out_3', 'out_4'];
+        for (let outputX of this.outputs) {
+            document.querySelector(`#${outputX}`).onchange = (e) => {
+              let checked = e.target.checked;
+              if (checked) {
+                this.setOutput(outputX, 1);
+              } else {
+                this.setOutput(outputX, 0);
+              }
+            }
+        }
+    }
+
+    setOutput(outputX, value) {
+        fetch(this.endPoint + outputX, {
+          method: 'POST', // or 'PUT'
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({'v_out': value}),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data['status']==='Success') {
+                console.log('Success:', data);
+            } else {
+                throw(data['msg'])
+            }
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+    }
+}
+
+class PollGPIOInput {
+    constructor() {
+        let endPoint = "{{ url_for('home') }}" + "api/gpio/";
+        this.inputs = ['in_1', 'in_2', 'in_3', 'in_4'];
+        this.inputElements = new Map();
+        this.inputUrls = new Map();
+        for (let inputX of this.inputs) {
+            this.inputElements.set(inputX, document.querySelector(`#${inputX}`));
+            this.inputUrls.set(inputX, endPoint + inputX)
+            this.poll(inputX);
+        }
+    }
+
+    check(inputX) {
+        fetch(this.inputUrls.get(inputX))
+        .then((response) => response.json())
+        .then((data) => {
+            let currInput = data[inputX];
+            let inputElem = this.inputElements.get(inputX);
+            inputElem.textContent = currInput;
+            console.log(data)
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+
+    poll(inputX, interval=1000) {
+        setInterval(() => this.check(inputX), interval);
+        // this.check(inputX);
+    }
+}
+
+let longPolling = new PollGPIOInput();
+let setOutputs = new SetGPIOOutput();
+</script>
