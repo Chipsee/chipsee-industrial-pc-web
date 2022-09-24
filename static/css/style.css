@@ -1,0 +1,63 @@
+.dark-bg {
+  background-color: #160129;
+}
+
+.home-card {
+  border-radius: 6px;
+  height: 35vh;
+  width: 100%;
+  padding: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-card-link {
+  text-decoration: none;
+}
+
+.home-card-text {
+  margin-top: 6em;
+  font-size: 1.5em;
+}
+
+.home-card-bg {
+  background-position: center 20%;
+  background-repeat: no-repeat;
+}
+
+.brightness-card {
+  background-color: #c9f9f3b8;
+  background-image: url("../images/svg/brightness.svg");
+  color: #ffffff;
+}
+
+.gpio-card {
+  background-color: #e5a1da;
+  background-image: url("../images/svg/gpio.svg");
+  color: #a8fbf8e8;
+}
+
+.serial-card {
+  background-color: #a1a1e5;
+  background-image: url("../images/svg/serial.svg");
+  color: #ffdd17;
+}
+
+.heat-card {
+  background-color: #cc2c85;
+  background-image: url("../images/svg/heat.svg");
+  color: #f4fefa;
+}
+
+.music-card {
+  background-color: #cc2c85;
+  background-image: url("../images/svg/music.svg"), linear-gradient(39deg, rgba(63,94,251,1) 0%, rgba(252,70,107,1) 100%);
+  color: #ffffff;
+}
+
+.network-card {
+  background-color: #cfd3d5b8;
+  background-image: url("../images/svg/network.svg"), linear-gradient(45deg, rgba(043,250,121,0.4906163148853291) 0%, rgba(230,222,59,1) 100%);
+  color: #ffffff;
+}
