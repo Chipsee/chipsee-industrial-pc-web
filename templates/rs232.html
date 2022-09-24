@@ -1,0 +1,44 @@
+<!doctype html>
+<title>CM4 Demo</title>
+<html>
+
+<body>
+    <p><a href="{{ url_for('home') }}">Home</a></p>
+    <form id="rs232_tx">
+      <label for="text">RS232 TX: </label>
+      <input type="text" id="rs232_tx_text" autofocus>
+    </form>
+    <button class="rs232-tx">Hello</button>
+    <button class="rs232-tx">Bye</button>
+    <button class="rs232-tx">Clicked</button>
+    <div id="log"></div>
+</body>
+
+</html>
+<script>
+  const log = (text, color) => {
+    document.getElementById('log').innerHTML += `<span style="color: ${color}">${text}</span><br>`;
+  };
+
+  const rs232TX = new WebSocket('ws://' + location.host + '/rs232_tx');
+  document.querySelector('#rs232_tx').onsubmit = (event) => {
+    event.preventDefault();
+    const textField = document.querySelector("#rs232_tx_text");
+    log('TX >>> ' + textField.value, 'red');
+    rs232TX.send(textField.value);
+    textField.value = '';
+  }
+
+  const rs232RX = new WebSocket('ws://' + location.host + '/rs232_rx');
+  rs232RX.addEventListener('message', ev => {
+    log('RX <<< ' + ev.data, 'blue');
+  });
+
+  const btns = document.querySelectorAll(".rs232-tx")
+  for(let btn of btns) {
+    btn.addEventListener('click', (event) => {
+    log('TX >>> ' + btn.textContent, 'red');
+      rs232TX.send(btn.textContent);
+    });
+  }
+</script>
