@@ -12,6 +12,7 @@ app = Flask(__name__)
 sock = Sock(app)
 cm4_gpio = GPIO()
 cm4_rs232 = RS232()
+cm4_brightness = Brightness()
 
 @app.route("/")
 def home():
@@ -39,16 +40,12 @@ def rs232_rx(ws):
 def brightness():
     if request.method == 'POST':
         new_brightness = request.form["brightness"]
-        brightness = Brightness()
-        brightness.set_brightness(brightness=new_brightness)
-        actual_brightness = brightness.get_actual_brightness()
+        cm4_brightness.set_brightness(brightness=new_brightness)
+        actual_brightness = cm4_brightness.get_actual_brightness()
         return render_template('brightness.html', actual_brightness=actual_brightness)
     if request.method == 'GET':
-        brightness = Brightness()
-        actual_brightness = brightness.get_actual_brightness()
-        # actual_brightness = 50
+        actual_brightness = cm4_brightness.get_actual_brightness()
         return render_template('brightness.html', actual_brightness=actual_brightness)
-    return render_template('brightness.html')
 
 @app.route("/gpio")
 def gpio():
@@ -65,10 +62,8 @@ def rs232():
 @app.route('/api/brightness', methods=['POST'])
 def api_brightness():
     new_brightness = request.form["brightness"]
-    brightness = Brightness()
-    brightness.set_brightness(brightness=new_brightness)
-    actual_brightness = brightness.get_actual_brightness()
-    # actual_brightness = new_brightness
+    cm4_brightness.set_brightness(brightness=new_brightness)
+    actual_brightness = cm4_brightness.get_actual_brightness()
     return {"brightness": actual_brightness}
 
 @app.route('/api/gpio/<gpioX>', methods=['GET', 'POST'])

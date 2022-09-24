@@ -1,14 +1,14 @@
 <!doctype html>
 
+<html>
 <head>
     <title>CM4 Demo</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 </head>
-<html>
 
-<body class="dark-bg">
+<body class="dark-bg sticky-body">
     <div class="container">
         <div class="row g-5 my-2" style="min-height: 90vh">
             <a class="col-4 home-card-link" href="{{ url_for('brightness') }}">

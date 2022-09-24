@@ -1,21 +1,21 @@
 <!doctype html>
-<title>CM4 Demo</title>
 <html>
+<head>
+    <title>CM4 Demo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
 
-<body>
-    <p><a href="{{ url_for('home') }}">Home</a></p>
-    <p>
-        Actual Brightness: {{ actual_brightness }}
-    </p>
-    <form method="post">
-        <label for="brightness">Set Brightness</label>
-        <input type="text" name="brightness" value="{{ request.form['brightness'] }}"></input>
-        <button type="submit">Submit</button>
-    </form>
-    <div>
-        <input type="range" id="brightness" name="brightness" min="0" max="100" value="90" step="1">
-        <label for="brightness">Brightness</label>
-        <span id="brightness-value">{{ actual_brightness }}</span>
+<body class="dark-bg sticky-body">
+    <div class="container position-relative">
+        <p>
+            <a href="{{ url_for('home') }}">Home</a>
+        </p>
+        <div class="brightness-text d-flex flex-column vh-100 align-items-center justify-content-center">
+            <p class="brightness-desc">Brightness</p>
+            <p class="brightness-value">{{ actual_brightness }}</p>
+        </div>
+        <input type="range" class="brightness-slider brightness-slider-position" id="brightness" name="brightness" min="0" max="100" value="{{ actual_brightness }}" step="1">
     </div>
 </body>
 
@@ -24,7 +24,7 @@
 const brightnessElement = document.querySelector('#brightness');
 
 brightnessElement.addEventListener('input', (event) => {
-    const curr_brightness = document.querySelector('#brightness-value');
+    const curr_brightness = document.querySelectorAll('.brightness-value');
     const xhr = new XMLHttpRequest();
     xhr.open("POST", '{{ url_for('api_brightness') }}', true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -34,6 +34,8 @@ brightnessElement.addEventListener('input', (event) => {
         }
     }
     xhr.send(`brightness=${brightnessElement.value}`);
-    curr_brightness.textContent = `${event.target.value}`;
+    for(let brightnessValue of curr_brightness) {
+        brightnessValue.textContent = `${event.target.value}`;
+    }
 });
 </script>
