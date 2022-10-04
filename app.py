@@ -4,6 +4,7 @@ from flask import request
 from lib.brightness import Brightness
 from lib.gpio import GPIO
 from lib.rs232 import RS232
+from lib.buzzer import Buzzer
 
 from flask_sock import Sock
 import time
@@ -13,6 +14,7 @@ sock = Sock(app)
 cm4_gpio = GPIO()
 cm4_rs232 = RS232()
 cm4_brightness = Brightness()
+cm4_buzzer = Buzzer()
 
 @app.route("/")
 def home():
@@ -59,6 +61,10 @@ def gpio():
 def rs232():
     return render_template('rs232.html')
 
+@app.route("/buzzer")
+def buzzer():
+    return render_template('buzzer.html')
+
 @app.route('/api/brightness', methods=['POST'])
 def api_brightness():
     new_brightness = request.form["brightness"]
@@ -83,3 +89,13 @@ def api_gpio(gpioX):
         if msg == True:
             return { 'status': 'Success', 'msg': gpioX }
         return { 'status': 'Error', 'msg': msg }
+
+@app.route('/api/buzzer', methods=['POST'])
+def api_buzzer():
+    req = request.json
+    new_status = str(req['buzzer'])
+    # return { 'status': 'Success', 'msg': new_status }
+    msg = cm4_buzzer.set_to(new_status)
+    if msg == True:
+        return { 'status': 'Success', 'msg': new_status }
+    return { 'status': 'Error', 'msg': msg }

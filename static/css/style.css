@@ -49,9 +49,9 @@
     color: #ffdd17;
 }
 
-.heat-card {
+.buzzer-card {
     background-color: #cc2c85;
-    background-image: url("../images/svg/heat.svg");
+    background-image: url("../images/svg/buzzer.svg");
     color: #f4fefa;
 }
 

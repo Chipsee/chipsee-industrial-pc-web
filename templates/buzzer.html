@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>CM4 Demo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body class="dark-bg sticky-body">
+    <div class="container">
+        <p>
+            <a href="{{ url_for('home') }}">Home</a>
+        </p>
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="buzzerSwitch" style="transform: scale(3);">
+            <label class="form-check-label text-white mx-5" for="buzzerSwitch">Buzzer</label>
+        </div>
+    </div>
+</body>
+
+</html>
+<script>
+class BuzzerSwitch {
+    constructor() {
+        this.endPoint = "{{ url_for('home') }}" + "api/buzzer";
+        document.querySelector("#buzzerSwitch").onchange = (e) => {
+          let checked = e.target.checked;
+          if (checked) {
+            this.setBuzzer(1);
+          } else {
+            this.setBuzzer(0);
+          }
+        }
+    }
+
+    setBuzzer(value) {
+        fetch(this.endPoint, {
+          method: 'POST', // or 'PUT'
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({'buzzer': value}),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data['status']==='Success') {
+                console.log('Success:', data);
+            } else {
+                throw(data['msg'])
+            }
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+    }
+}
+let buzzer = new BuzzerSwitch()
+</script>
