@@ -1,0 +1,44 @@
+<!doctype html>
+<title>CM4 Demo</title>
+<html>
+
+<body>
+    <p><a href="{{ url_for('home') }}">Home</a></p>
+    <form id="rs485_tx">
+      <label for="text">RS485 TX: </label>
+      <input type="text" id="rs485_tx_text" autofocus>
+    </form>
+    <button class="rs485-tx">Hello</button>
+    <button class="rs485-tx">Bye</button>
+    <button class="rs485-tx">Clicked</button>
+    <div id="log"></div>
+</body>
+
+</html>
+<script>
+  const log = (text, color) => {
+    document.getElementById('log').innerHTML += `<span style="color: ${color}">${text}</span><br>`;
+  };
+
+  const rs485TX = new WebSocket('ws://' + location.host + '/rs485_tx');
+  document.querySelector('#rs485_tx').onsubmit = (event) => {
+    event.preventDefault();
+    const textField = document.querySelector("#rs485_tx_text");
+    log('TX >>> ' + textField.value, 'red');
+    rs485TX.send(textField.value);
+    textField.value = '';
+  }
+
+  const rs485RX = new WebSocket('ws://' + location.host + '/rs485_rx');
+  rs485RX.addEventListener('message', ev => {
+    log('RX <<< ' + ev.data, 'blue');
+  });
+
+  const btns = document.querySelectorAll(".rs485-tx")
+  for(let btn of btns) {
+    btn.addEventListener('click', (event) => {
+    log('TX >>> ' + btn.textContent, 'red');
+      rs485TX.send(btn.textContent);
+    });
+  }
+</script>

@@ -4,6 +4,7 @@ from flask import request
 from lib.brightness import Brightness
 from lib.gpio import GPIO
 from lib.rs232 import RS232
+from lib.rs485 import RS485
 from lib.buzzer import Buzzer
 
 from flask_sock import Sock
@@ -13,6 +14,7 @@ app = Flask(__name__)
 sock = Sock(app)
 cm4_gpio = GPIO()
 cm4_rs232 = RS232()
+cm4_rs485 = RS485()
 cm4_brightness = Brightness()
 cm4_buzzer = Buzzer()
 
@@ -33,6 +35,24 @@ def rs232_rx(ws):
     time.sleep(1)
     while True:
         data = cm4_rs232.rx()
+        if data:
+            ws.send(data)
+        else:
+            continue
+
+@sock.route('/rs485_tx')
+def rs485_tx(ws):
+    time.sleep(1)
+    while True:
+        data = ws.receive()
+        cm4_rs485.tx(data)
+        ws.send(data)
+
+@sock.route('/rs485_rx')
+def rs485_rx(ws):
+    time.sleep(1)
+    while True:
+        data = cm4_rs485.rx()
         if data:
             ws.send(data)
         else:
@@ -60,6 +80,10 @@ def gpio():
 @app.route("/rs232")
 def rs232():
     return render_template('rs232.html')
+
+@app.route("/rs485")
+def rs485():
+    return render_template('rs485.html')
 
 @app.route("/buzzer")
 def buzzer():

@@ -61,9 +61,9 @@
     color: #ffffff;
 }
 
-.network-card {
+.serial-485-card {
     background-color: #cfd3d5b8;
-    background-image: url("../images/svg/network.svg"), linear-gradient(45deg, rgba(043, 250, 121, 0.4906163148853291) 0%, rgba(230, 222, 59, 1) 100%);
+    background-image: url("../images/svg/serial-485.svg"), linear-gradient(45deg, rgba(043, 250, 121, 0.4906163148853291) 0%, rgba(230, 222, 59, 1) 100%);
     color: #ffffff;
 }
 
