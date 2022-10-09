@@ -40,13 +40,13 @@
 .gpio-card {
     background-color: #e5a1da;
     background-image: url("../images/svg/gpio.svg");
-    color: #a8fbf8e8;
+    color: #ffffff;
 }
 
 .serial-card {
     background-color: #a1a1e5;
     background-image: url("../images/svg/serial.svg");
-    color: #ffdd17;
+    color: #ffffff;
 }
 
 .buzzer-card {
