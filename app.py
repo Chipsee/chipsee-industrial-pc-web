@@ -1,11 +1,11 @@
 from flask import Flask, render_template
 from flask import request
 
-from lib.brightness import Brightness
-from lib.gpio import GPIO
-from lib.rs232 import RS232
-from lib.rs485 import RS485
-from lib.buzzer import Buzzer
+from models.brightness import Brightness
+from models.gpio import GPIO
+from models.rs232 import RS232
+from models.rs485 import RS485
+from models.buzzer import Buzzer
 
 from flask_sock import Sock
 import time

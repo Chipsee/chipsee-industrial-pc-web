@@ -1,0 +1,3 @@
+{
+  "brightness": "/sys/class/backlight/backlight"
+}
