@@ -3,8 +3,7 @@ from flask import request
 
 from models.brightness import Brightness
 from models.gpio import GPIO
-from models.rs232 import RS232
-from models.rs485 import RS485
+from models.serial_port import SerialPort
 from models.buzzer import Buzzer
 
 from flask_sock import Sock
@@ -13,8 +12,8 @@ import time
 app = Flask(__name__)
 sock = Sock(app)
 cm4_gpio = GPIO()
-cm4_rs232 = RS232()
-cm4_rs485 = RS485()
+cm4_rs232 = SerialPort(name="rs232")
+cm4_rs485 = SerialPort(name="rs485")
 cm4_brightness = Brightness()
 cm4_buzzer = Buzzer()
 

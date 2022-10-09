@@ -1,3 +1,5 @@
 {
-  "brightness": "/sys/class/backlight/backlight"
+  "brightness": "/sys/class/backlight/backlight",
+  "rs232": "/dev/ttyS3",
+  "rs485": "/dev/ttyS5"
 }

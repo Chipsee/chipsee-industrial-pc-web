@@ -19,6 +19,11 @@ class ChipseeBoard(object):
 
     def detect(self):
         desc = self.read_board_info()
+        if desc is None:
+            self.id = None
+            self.name = None
+            return
+
         if "bcm2711" in desc:
             self.id = "CS10600RA4070"
             self.name = "cm4"
