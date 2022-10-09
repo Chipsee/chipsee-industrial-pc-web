@@ -22,8 +22,8 @@
 }
 
 .home-card-text {
-    margin-top: 6em;
-    font-size: 1.75em;
+    margin-top: calc(20vh + 10%);
+    font-size: 2.25em;
 }
 
 .home-card-bg {

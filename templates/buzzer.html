@@ -12,9 +12,10 @@
         <p>
             <a href="{{ url_for('home') }}">Home</a>
         </p>
-        <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" role="switch" id="buzzerSwitch" style="transform: scale(3);">
-            <label class="form-check-label text-white mx-5" for="buzzerSwitch">Buzzer</label>
+        <div class="d-flex align-items-center justify-content-center vh-100">
+          <div class="form-check form-switch" style="font-size: 4em">
+              <input class="form-check-input" type="checkbox" role="switch" id="buzzerSwitch">
+          </div>
         </div>
     </div>
 </body>
@@ -23,7 +24,7 @@
 <script>
 class BuzzerSwitch {
     constructor() {
-        this.endPoint = "{{ url_for('home') }}" + "api/buzzer";
+        this.endPoint = "/api/buzzer";
         document.querySelector("#buzzerSwitch").onchange = (e) => {
           let checked = e.target.checked;
           if (checked) {

@@ -1,5 +1,6 @@
 {
   "brightness": "/sys/class/backlight/pwm-backlight",
+  "buzzer": "/dev/buzzer",
   "rs232": "/dev/ttyAMA1",
   "rs485": "/dev/ttyAMA3",
   "rs232_2": "/dev/ttyAMA1",

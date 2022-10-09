@@ -9,7 +9,7 @@ class ChipseeBoard(object):
     then check the keyword that MAY exist in that file.
 
     If a board ID is successfully detected and supported, this class will then read
-    the available peripherals (eg: Screen brightness, GPIO, Serials ports)
+    the available peripherals (eg: Screen Brightness, GPIO, Serials Ports, Buzzer)
     Linux file path into a dict from a JSON file in the `config/peripherals` folder.
     """
     def __init__(self):
