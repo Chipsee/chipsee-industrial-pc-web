@@ -9,23 +9,72 @@
 
 <body class="dark-bg sticky-body">
     <div class="container">
-        <p>
+        <div class="my-0">
             <a href="{{ url_for('home') }}">Home</a>
-        </p>
+        </div>
         <div class="d-flex align-items-center justify-content-center vh-100">
-          <div class="form-check form-switch" style="font-size: 4em">
-              <input class="form-check-input" type="checkbox" role="switch" id="buzzerSwitch">
-          </div>
+            <div>
+                <div class="row justify-content-center">
+                    <div class="col-auto buzzer-desc">Buzzer</div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-auto form-check form-switch d-flex justify-content-center" style="font-size: 8em">
+                        <input class="form-check-input my-2" type="checkbox" role="switch" id="buzzer-switch">
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                  <div class="col-auto buzzer-btn" id="buzzer-btn"></div>
+                </div>
+            </div>
         </div>
     </div>
 </body>
 
 </html>
+
 <script>
+document.oncontextmenu = function(event) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    return false;
+};
+class BuzzerButton {
+    constructor() {
+        this.endPoint = "/api/buzzer";
+        let btn = document.querySelector("#buzzer-btn")
+        btn.addEventListener('touchstart', (e) => {
+          this.setBuzzer(1);
+        });
+        btn.addEventListener('touchend', (e) => {
+          this.setBuzzer(0);
+        })
+    }
+
+    setBuzzer(value) {
+        fetch(this.endPoint, {
+          method: 'POST', // or 'PUT'
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({'buzzer': value}),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data['status']==='Success') {
+                console.log('Success:', data);
+            } else {
+                throw(data['msg'])
+            }
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+    }
+}
 class BuzzerSwitch {
     constructor() {
         this.endPoint = "/api/buzzer";
-        document.querySelector("#buzzerSwitch").onchange = (e) => {
+        document.querySelector("#buzzer-switch").onchange = (e) => {
           let checked = e.target.checked;
           if (checked) {
             this.setBuzzer(1);
@@ -56,5 +105,6 @@ class BuzzerSwitch {
           });
     }
 }
-let buzzer = new BuzzerSwitch()
+let buzzerSwitch = new BuzzerSwitch()
+let buzzerBtn = new BuzzerButton()
 </script>
