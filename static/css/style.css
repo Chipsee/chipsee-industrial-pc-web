@@ -120,3 +120,12 @@
     box-shadow: -41vh 0 2em 41vh #fff, inset 0 0 0 0px #fff;
     transition: box-shadow 0.2s ease-in-out;
 }
+
+/* Serial Port */
+.log {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: calc(100vh - 10em);
+    padding: 1em;
+    margin-top: 1em;
+}

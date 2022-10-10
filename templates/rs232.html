@@ -1,44 +1,75 @@
 <!doctype html>
-<title>CM4 Demo</title>
 <html>
 
-<body>
-    <p><a href="{{ url_for('home') }}">Home</a></p>
-    <form id="rs232_tx">
-      <label for="text">RS232 TX: </label>
-      <input type="text" id="rs232_tx_text" autofocus>
-    </form>
-    <button class="rs232-tx">Hello</button>
-    <button class="rs232-tx">Bye</button>
-    <button class="rs232-tx">Clicked</button>
-    <div id="log"></div>
+<head>
+    <title>Serial Port | Chipsee Industrial PC Demo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+</head>
+
+<body class="dark-bg sticky-body">
+    <div class="container">
+        <p><a href="{{ url_for('home') }}">Home</a></p>
+        <form id="rs232_tx">
+          <div class="mb-3">
+            <input type="text" class="form-control" id="rs232_tx_text" autofocus placeholder="Serial Port TX:" autocomplete="off">
+          </div>
+        </form>
+        <div class="d-flex justify-content-between">
+          <div class="btn-group">
+            <button class="rs232-tx btn btn-primary">Click to test Serial TX</button>
+            <button class="rs232-tx btn btn-warning">Click to send a long text that contains many words through RS232/RS485 serial port.</button>
+          </div>
+          <button class="btn btn-danger" id="clear">Clear All</button>
+        </div>
+        <div id="log" class="log">
+        </div>
+    </div>
 </body>
 
 </html>
 <script>
-  const log = (text, color) => {
-    document.getElementById('log').innerHTML += `<span style="color: ${color}">${text}</span><br>`;
+  const log = (text, style, position) => {
+    let logElem = document.getElementById('log');
+    // Append new messages from Serial port TX/RX.
+    logElem.innerHTML += `
+      <div class="row justify-content-${position} px-2 flex-nowrap">
+        <div class="alert alert-${style} ms-2 py-2 my-1 col-auto fs-4">${text}</div><br>
+      </div>
+    `;
+
+    // Scroll to the messages bottom.
+    logElem.scrollTop = logElem.scrollHeight;
   };
 
+  // TX from input field
   const rs232TX = new WebSocket('ws://' + location.host + '/rs232_tx');
   document.querySelector('#rs232_tx').onsubmit = (event) => {
     event.preventDefault();
     const textField = document.querySelector("#rs232_tx_text");
-    log('TX >>> ' + textField.value, 'red');
+    log('TX >>> ' + textField.value, 'primary', 'start');
     rs232TX.send(textField.value);
     textField.value = '';
   }
 
-  const rs232RX = new WebSocket('ws://' + location.host + '/rs232_rx');
-  rs232RX.addEventListener('message', ev => {
-    log('RX <<< ' + ev.data, 'blue');
-  });
-
+  // TX from input button clicks
   const btns = document.querySelectorAll(".rs232-tx")
   for(let btn of btns) {
     btn.addEventListener('click', (event) => {
-    log('TX >>> ' + btn.textContent, 'red');
+    log('TX >>> ' + btn.textContent, 'primary', 'start');
       rs232TX.send(btn.textContent);
     });
   }
+
+  // RX
+  const rs232RX = new WebSocket('ws://' + location.host + '/rs232_rx');
+  rs232RX.addEventListener('message', ev => {
+    log('RX <<< ' + ev.data, 'success', 'end');
+  });
+
+  // Clear messages.
+  document.querySelector("#clear").addEventListener('click', (event) => {
+    let logElem = document.getElementById('log');
+    logElem.innerHTML = "";
+  })
 </script>
