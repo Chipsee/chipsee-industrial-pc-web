@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>CAN Bus | Chipsee Industrial PC Demo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+</head>
+
+<body class="dark-bg sticky-body">
+    <div class="container">
+        <p><a href="{{ url_for('home') }}">Home</a></p>
+        <form id="can_bus" class="">
+            <div class="row mb-3">
+                <label for="can_bus_arbitration_id" class="text-white col-2 col-form-label col-form-label-lg fw-bold">CAN ID</label>
+                <div class="col-10">
+                    <input type="text" class="form-control form-control-lg" id="can_bus_arbitration_id" 
+                    placeholder="CAN Arbitration ID, e.g.: 123" autocomplete="off">
+                </div> 
+            </div>            
+            <div class="row mb-3">
+                <label for="can_bus_text" class="text-white col-2 col-form-label col-form-label-lg fw-bold">CAN DATA</label>
+                <div class="col-10">
+                    <input type="text" class="form-control form-control-lg" id="can_bus_text" placeholder="CAN Data, eg: 3.1415926" autocomplete="off">
+                </div> 
+            </div>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-warning w-50 btn-lg">CAN Send</button>
+            </div>
+        </form>
+        <div class="d-flex justify-content-between">
+            <span class="text-white fw-bold">
+                Click to send CAN Bus testing message:
+                <button class="ms-2 can_bus_send btn btn-success fw-bold btn-lg">3.1415926</button>
+                <button class="ms-2 can_bus_send btn btn-success fw-bold btn-lg">ChipSee</button>
+                <button class="ms-2 can_bus_send btn btn-danger fw-bold btn-lg">TOO.LONG.CANT.SEND</button>
+            </span>
+            <button class="btn btn-secondary fw-bold btn-lg" id="clear">Clear All</button>
+        </div>
+        <div id="log" class="can-log"></div>
+    </div>
+</body>
+
+</html>
+<script>
+  const log = (text, style, position) => {
+    let logElem = document.getElementById('log');
+    // Append new messages from CAN.
+    logElem.innerHTML += `
+      <div class="row justify-content-${position} px-2 flex-nowrap">
+        <div class="alert alert-${style} ms-2 py-2 my-1 col-auto fs-4 w-75 fw-bold">${text}</div><br>
+      </div>
+    `;
+
+    // Scroll to the messages bottom.
+    logElem.scrollTop = logElem.scrollHeight;
+  };
+
+  // CAN send from input field
+  const can_send = new WebSocket('ws://' + location.host + '/can_send');
+  document.querySelector('#can_bus').onsubmit = (event) => {
+    event.preventDefault();
+    const canIdField = document.querySelector("#can_bus_arbitration_id");
+    const canDataField = document.querySelector("#can_bus_text");
+    log(`ID: ${canIdField.value}, DATA: ` + canDataField.value, 'primary', 'start');
+    can_send.send(JSON.stringify({
+            id: canIdField.value,
+            data: canDataField.value
+        })
+    );
+    canDataField.value = '';
+  }
+
+  // CAN send from input button clicks
+  const btns = document.querySelectorAll(".can_bus_send")
+  for(let btn of btns) {
+    btn.addEventListener('click', (event) => {
+        log('ID: 123, DATA: ' + btn.textContent, 'primary', 'start');
+        can_send.send(JSON.stringify({
+            id: "123",
+            data: btn.textContent
+        }));
+    });
+  }
+
+  // CAN Receive
+  const can_recv = new WebSocket('ws://' + location.host + '/can_recv');
+  can_recv.addEventListener('message', ev => {
+    log(ev.data, 'success', 'end');
+  });
+
+  // Clear messages.
+  document.querySelector("#clear").addEventListener('click', (event) => {
+    let logElem = document.getElementById('log');
+    logElem.innerHTML = "";
+  })
+</script>

@@ -5,9 +5,10 @@ from models.brightness import Brightness
 from models.gpio import GPIO
 from models.serial_port import SerialPort
 from models.buzzer import Buzzer
+from models.can_bus import CanBus
 
 from flask_sock import Sock
-import time
+import time, json
 
 app = Flask(__name__)
 sock = Sock(app)
@@ -16,6 +17,7 @@ dev_rs232 = SerialPort(name="rs232")
 dev_rs485 = SerialPort(name="rs485")
 dev_brightness = Brightness()
 dev_buzzer = Buzzer()
+dev_can_bus = CanBus()
 
 @app.route("/")
 def home():
@@ -124,3 +126,22 @@ def rs485_rx(ws):
         else:
             continue
 
+# CAN Bus
+@app.route("/can_bus")
+def can_bus():
+    return render_template('can_bus.html')
+
+@sock.route('/can_send')
+def can_send(ws):
+    time.sleep(1)
+    while True:
+        data = ws.receive()
+        _d = json.loads(data)
+        msg = dev_can_bus.send(id=_d.get("id"), data=_d.get("data"))
+
+
+@sock.route('/can_recv')
+def can_recv(ws):
+    time.sleep(1)
+    for msg in dev_can_bus.bus:
+        ws.send(msg)

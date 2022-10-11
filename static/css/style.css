@@ -55,9 +55,9 @@
     color: #f4fefa;
 }
 
-.music-card {
+.can-bus-card {
     background-color: #cc2c85;
-    background-image: url("../images/svg/music.svg"), linear-gradient(39deg, rgba(63, 94, 251, 1) 0%, rgba(252, 70, 107, 1) 100%);
+    background-image: url("../images/svg/can_bus.svg"), linear-gradient(39deg, rgba(63, 94, 251, 1) 0%, rgba(252, 70, 107, 1) 100%);
     color: #ffffff;
 }
 
@@ -180,6 +180,15 @@
     overflow-y: scroll;
     overflow-x: hidden;
     height: calc(100vh - 10em);
+    padding: 1em;
+    margin-top: 1em;
+}
+
+/* CAN Bus */
+.can-log {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: calc(100vh - 17.5rem);
     padding: 1em;
     margin-top: 1em;
 }

@@ -4,5 +4,6 @@
   "rs232": "/dev/ttyAMA1",
   "rs485": "/dev/ttyAMA3",
   "rs232_2": "/dev/ttyAMA1",
-  "rs485_5": "/dev/ttyAMA3"
+  "rs485_5": "/dev/ttyAMA3",
+  "can": "can0"
 }
