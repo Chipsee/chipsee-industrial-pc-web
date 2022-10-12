@@ -40,8 +40,10 @@ pip install -r requirements.txt
 ```bash
 # Re-activate the virtual environment if you have exited from it
 . venv/bin/activate
-# Start the demo using Flask
+# Start the demo using Flask for development
 python app.py
+# or start the demo for production
+gunicorn -k geventwebsocket.gunicorn.workers.GeventWebSocketWorker -w 1 -b 0.0.0.0:5000 app:app
 ```
 Then go to Chromium web browser and enter address `127.0.0.1:5000` in the address bar of web browser.
 

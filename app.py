@@ -1,6 +1,10 @@
+import gevent  # (Websocket support)
+from gevent import monkey  # (Websocket support)
+monkey.patch_all()  # (Websocket support) This patch should be carried out as early as possible.
+
 from flask import Flask, render_template
 from flask import request
-from flask_socketio import SocketIO, emit # Websocket
+from flask_socketio import SocketIO, emit # (Websocket support)
 
 from models.brightness import Brightness
 from models.gpio import GPIO
@@ -8,11 +12,9 @@ from models.serial_port import SerialPort
 from models.buzzer import Buzzer
 from models.can_bus import CanBus
 
-import eventlet # To assist websocket.
-eventlet.monkey_patch()
-
 app = Flask(__name__)
-socketio = SocketIO(app)
+socketio = SocketIO(app, async_mode="gevent")
+
 dev_gpio = GPIO()
 dev_rs232 = SerialPort(name="rs232")
 dev_rs485 = SerialPort(name="rs485")
@@ -89,6 +91,7 @@ def rs232():
 
 @socketio.on('rs232_tx')
 def rs232_tx(data):
+    print(data)
     dev_rs232.tx(data.get('data'))
 
 def rs232_rx():
@@ -96,9 +99,7 @@ def rs232_rx():
         data = dev_rs232.rx()
         if data:
             socketio.emit('rs232_rx', { 'data': data })
-        else:
-            continue
-eventlet.spawn(rs232_rx) # background task to read 232 device
+gevent.spawn(rs232_rx) # background task to read 232 device
 
 @app.route("/rs485")
 def rs485():
@@ -113,9 +114,7 @@ def rs485_rx():
         data = dev_rs485.rx()
         if data:
             socketio.emit('rs485_rx', { 'data': data })
-        else:
-            continue
-eventlet.spawn(rs485_rx) # background task to read 485 device
+gevent.spawn(rs485_rx) # background task to read 485 device
 
 # CAN Bus
 @app.route("/can_bus")
@@ -131,7 +130,7 @@ def can_recv():
         return
     for msg in dev_can_bus.bus:
         socketio.emit('can_recv', { 'data': str(msg) })
-eventlet.spawn(can_recv) # background task to read CAN device
+gevent.spawn(can_recv) # background task to read CAN device
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
