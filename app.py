@@ -133,8 +133,7 @@ def can_bus():
 
 @sock.route('/can_send')
 def can_send(ws):
-    time.sleep(1)
-    while True:
+    while ws.connected:
         data = ws.receive()
         _d = json.loads(data)
         msg = dev_can_bus.send(id=_d.get("id"), data=_d.get("data"))
@@ -142,6 +141,8 @@ def can_send(ws):
 
 @sock.route('/can_recv')
 def can_recv(ws):
-    time.sleep(1)
-    for msg in dev_can_bus.bus:
+    while ws.connected:
+        msg = dev_can_bus.recv()
+        if msg is None:
+            return
         ws.send(msg)

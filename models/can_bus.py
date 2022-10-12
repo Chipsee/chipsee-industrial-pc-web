@@ -3,14 +3,20 @@ from lib.chipsee_board import board
 
 class CanBus(object):
     def __init__(self):
-        self.bus = can.Bus(
-            interface = 'socketcan',
-            channel = board.devices().get("can"),
-            bitrate = 500000,
-            receive_own_messages = False
-        )
+        try:
+            self.bus = can.Bus(
+                interface = 'socketcan',
+                channel = board.devices().get("can"),
+                bitrate = 500000,
+                receive_own_messages = False
+            )
+        except OSError as e:
+            self.bus = None
+            print("CAN bus not initialized! CAN bus initialization error: {}".format(e))
 
     def send(self, id=123, data=""):
+        if self.bus is None:
+            return
         try:
             id = int(id)
         except ValueError as e:
@@ -27,3 +33,9 @@ class CanBus(object):
             self.bus.send(message, timeout=0.2)
         except can.exceptions.CanOperationError as e:
             print("CAN error: {}".format(e))
+
+    def recv(self):
+        if not self.bus:
+            return None
+        for msg in self.bus:
+            return msg
