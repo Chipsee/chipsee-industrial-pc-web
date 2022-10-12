@@ -1,5 +1,6 @@
 from flask import Flask, render_template
 from flask import request
+from flask_socketio import SocketIO, emit
 
 from models.brightness import Brightness
 from models.gpio import GPIO
@@ -7,11 +8,10 @@ from models.serial_port import SerialPort
 from models.buzzer import Buzzer
 from models.can_bus import CanBus
 
-from flask_sock import Sock
-import time, json
+import time
 
 app = Flask(__name__)
-sock = Sock(app)
+socketio = SocketIO(app)
 dev_gpio = GPIO()
 dev_rs232 = SerialPort(name="rs232")
 dev_rs485 = SerialPort(name="rs485")
@@ -90,59 +90,57 @@ def rs232():
 def rs485():
     return render_template('rs485.html')
 
-@sock.route('/rs232_tx')
-def rs232_tx(ws):
-    time.sleep(1)
-    while True:
-        data = ws.receive()
-        dev_rs232.tx(data)
-        ws.send(data)
+# @sock.route('/rs232_tx')
+# def rs232_tx(ws):
+#     time.sleep(1)
+#     while True:
+#         data = ws.receive()
+#         dev_rs232.tx(data)
+#         ws.send(data)
 
-@sock.route('/rs232_rx')
-def rs232_rx(ws):
-    time.sleep(1)
-    while True:
-        data = dev_rs232.rx()
-        if data:
-            ws.send(data)
-        else:
-            continue
+# @sock.route('/rs232_rx')
+# def rs232_rx(ws):
+#     time.sleep(1)
+#     while True:
+#         data = dev_rs232.rx()
+#         if data:
+#             ws.send(data)
+#         else:
+#             continue
 
-@sock.route('/rs485_tx')
-def rs485_tx(ws):
-    time.sleep(1)
-    while True:
-        data = ws.receive()
-        dev_rs485.tx(data)
-        ws.send(data)
+# @sock.route('/rs485_tx')
+# def rs485_tx(ws):
+#     time.sleep(1)
+#     while True:
+#         data = ws.receive()
+#         dev_rs485.tx(data)
+#         ws.send(data)
 
-@sock.route('/rs485_rx')
-def rs485_rx(ws):
-    time.sleep(1)
-    while True:
-        data = dev_rs485.rx()
-        if data:
-            ws.send(data)
-        else:
-            continue
+# @sock.route('/rs485_rx')
+# def rs485_rx(ws):
+#     time.sleep(1)
+#     while True:
+#         data = dev_rs485.rx()
+#         if data:
+#             ws.send(data)
+#         else:
+#             continue
 
 # CAN Bus
 @app.route("/can_bus")
 def can_bus():
     return render_template('can_bus.html')
 
-@sock.route('/can_send')
-def can_send(ws):
-    while ws.connected:
-        data = ws.receive()
-        _d = json.loads(data)
-        msg = dev_can_bus.send(id=_d.get("id"), data=_d.get("data"))
+@socketio.on('can_send')
+def can_send(data):
+    dev_can_bus.send(data)
 
+@socketio.on('can_recv')
+def can_recv():
+    if not dev_can_bus.bus:
+        return
+    for msg in dev_can_bus.bus:
+        emit('can_recv', msg)
 
-@sock.route('/can_recv')
-def can_recv(ws):
-    while ws.connected:
-        msg = dev_can_bus.recv()
-        if msg is None:
-            return
-        ws.send(msg)
+if __name__ == '__main__':
+    socketio.run(app, debug=True)

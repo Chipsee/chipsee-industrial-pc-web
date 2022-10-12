@@ -39,7 +39,7 @@ pip install -r requirements.txt
 # Re-activate the virtual environment if you have exited from it
 . venv/bin/activate
 # Start the demo using Flask
-flask run
+python app.py
 ```
 Then go to Chromium web browser and enter address `127.0.0.1:5000` in the address bar of web browser.
 

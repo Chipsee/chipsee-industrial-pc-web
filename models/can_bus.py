@@ -14,9 +14,11 @@ class CanBus(object):
             self.bus = None
             print("CAN bus not initialized! CAN bus initialization error: {}".format(e))
 
-    def send(self, id=123, data=""):
+    def send(self, payload):
         if self.bus is None:
             return
+        id = payload.get("id"),
+        data = payload.get("data")
         try:
             id = int(id)
         except ValueError as e:
@@ -34,8 +36,4 @@ class CanBus(object):
         except can.exceptions.CanOperationError as e:
             print("CAN error: {}".format(e))
 
-    def recv(self):
-        if not self.bus:
-            return None
-        for msg in self.bus:
-            return msg
+
