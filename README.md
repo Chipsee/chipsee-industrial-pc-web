@@ -30,6 +30,8 @@ cd cm4_demo_python_flask
 python3 -m venv venv
 # Activate the virtual environment
 . venv/bin/activate
+# Upgrade Pip if your pip version is too old (< 21.0)
+pip install --upgrade pip
 # Install the required Python packages
 pip install -r requirements.txt
 ```
