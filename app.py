@@ -9,6 +9,8 @@ from models.buzzer import Buzzer
 from models.can_bus import CanBus
 
 import time
+import eventlet
+eventlet.monkey_patch()
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -135,12 +137,15 @@ def can_bus():
 def can_send(data):
     dev_can_bus.send(data)
 
-@socketio.on('can_recv')
+# Start a background task to receive from CAN hardware,
+# then emit through websocket. Reference:
+# https://github.com/miguelgrinberg/python-socketio/issues/16#issuecomment-195152403
 def can_recv():
     if not dev_can_bus.bus:
         return
     for msg in dev_can_bus.bus:
-        emit('can_recv', msg)
+        socketio.emit('can_recv', { 'data': str(msg) })
+eventlet.spawn(can_recv)
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)

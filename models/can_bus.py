@@ -17,7 +17,7 @@ class CanBus(object):
     def send(self, payload):
         if self.bus is None:
             return
-        id = payload.get("id"),
+        id = payload.get("id")
         data = payload.get("data")
         try:
             id = int(id)

@@ -10,8 +10,7 @@
 
 <body class="dark-bg sticky-body">
     <div class="container">
-        <p><a href="{{ url_for('home') }}">Home</a></p>
-        <form id="can_bus" class="">
+        <form id="can_bus" class="mt-2">
             <div class="row mb-3">
                 <label for="can_bus_arbitration_id" class="text-white col-2 col-form-label col-form-label-lg fw-bold">CAN ID</label>
                 <div class="col-10">
@@ -45,10 +44,10 @@
 </html>
 <script>
   // Initialize websocket.
-  let socket = io({transports: ['websocket']});
+  let canWebSocket = io({transports: ['websocket']});
 
   // CAN Receive through websocket.
-  socket.on('can_recv', (msg) => {
+  canWebSocket.on('can_recv', (msg) => {
       log(msg.data, 'success', 'end');
   });
 
@@ -58,7 +57,7 @@
     const canIdField = document.querySelector("#can_bus_arbitration_id");
     const canDataField = document.querySelector("#can_bus_text");
     log(`ID: ${canIdField.value}, DATA: ` + canDataField.value, 'primary', 'start');
-    socket.emit('can_send', {id: canIdField.value, data: canDataField.value});
+    canWebSocket.emit('can_send', {id: canIdField.value, data: canDataField.value});
     canDataField.value = '';
   }
 
@@ -67,7 +66,7 @@
   for(let btn of btns) {
     btn.addEventListener('click', (event) => {
         log('ID: 123, DATA: ' + btn.textContent, 'primary', 'start');
-        socket.emit('can_send', { id: "123", data: btn.textContent });
+        canWebSocket.emit('can_send', { id: "123", data: btn.textContent });
     });
   }
 
