@@ -5,6 +5,7 @@
     <title>Serial Port | Chipsee Industrial PC Demo</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <script src="{{ url_for('static', filename='js/socket.io.js') }}"></script>
 </head>
 
 <body class="dark-bg sticky-body">
@@ -29,43 +30,44 @@
 
 </html>
 <script>
+  // Initialize websocket.
+  let rs232WebSocket = io({transports: ['websocket']});
+
+  // RS232 Receive through websocket.
+  rs232WebSocket.on('rs232_rx', (msg) => {
+    log('RX <<< ' + msg.data, 'success', 'end');
+  });
+
+  // Send from input field through websocket
+  document.querySelector('#rs232_tx').onsubmit = (event) => {
+    event.preventDefault();
+    const textField = document.querySelector("#rs232_tx_text");
+    log('TX >>> ' + textField.value, 'primary', 'start');
+    rs232WebSocket.emit('rs232_tx', {data: textField.value});
+    textField.value = '';
+  }
+
+  // Send from input button clicks through websocket
+  const btns = document.querySelectorAll(".rs232-tx")
+  for(let btn of btns) {
+    btn.addEventListener('click', (event) => {
+      log('TX >>> ' + btn.textContent, 'primary', 'start');
+      rs232WebSocket.emit('rs232_tx', {data: btn.textContent});
+    });
+  }
+
   const log = (text, style, position) => {
     let logElem = document.getElementById('log');
     // Append new messages from Serial port TX/RX.
     logElem.innerHTML += `
       <div class="row justify-content-${position} px-2 flex-nowrap">
-        <div class="alert alert-${style} ms-2 py-2 my-1 col-auto fs-4">${text}</div><br>
+        <div class="alert alert-${style} ms-2 py-2 my-1 col-auto fs-4 w-75">${text}</div><br>
       </div>
     `;
 
     // Scroll to the messages bottom.
     logElem.scrollTop = logElem.scrollHeight;
   };
-
-  // TX from input field
-  const rs232TX = new WebSocket('ws://' + location.host + '/rs232_tx');
-  document.querySelector('#rs232_tx').onsubmit = (event) => {
-    event.preventDefault();
-    const textField = document.querySelector("#rs232_tx_text");
-    log('TX >>> ' + textField.value, 'primary', 'start');
-    rs232TX.send(textField.value);
-    textField.value = '';
-  }
-
-  // TX from input button clicks
-  const btns = document.querySelectorAll(".rs232-tx")
-  for(let btn of btns) {
-    btn.addEventListener('click', (event) => {
-    log('TX >>> ' + btn.textContent, 'primary', 'start');
-      rs232TX.send(btn.textContent);
-    });
-  }
-
-  // RX
-  const rs232RX = new WebSocket('ws://' + location.host + '/rs232_rx');
-  rs232RX.addEventListener('message', ev => {
-    log('RX <<< ' + ev.data, 'success', 'end');
-  });
 
   // Clear messages.
   document.querySelector("#clear").addEventListener('click', (event) => {

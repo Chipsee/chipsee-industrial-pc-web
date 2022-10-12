@@ -1,6 +1,6 @@
 from flask import Flask, render_template
 from flask import request
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit # Websocket
 
 from models.brightness import Brightness
 from models.gpio import GPIO
@@ -8,8 +8,7 @@ from models.serial_port import SerialPort
 from models.buzzer import Buzzer
 from models.can_bus import CanBus
 
-import time
-import eventlet
+import eventlet # To assist websocket.
 eventlet.monkey_patch()
 
 app = Flask(__name__)
@@ -88,45 +87,35 @@ def api_buzzer():
 def rs232():
     return render_template('rs232.html')
 
+@socketio.on('rs232_tx')
+def rs232_tx(data):
+    dev_rs232.tx(data.get('data'))
+
+def rs232_rx():
+    while True:
+        data = dev_rs232.rx()
+        if data:
+            socketio.emit('rs232_rx', { 'data': data })
+        else:
+            continue
+eventlet.spawn(rs232_rx) # background task to read 232 device
+
 @app.route("/rs485")
 def rs485():
     return render_template('rs485.html')
 
-# @sock.route('/rs232_tx')
-# def rs232_tx(ws):
-#     time.sleep(1)
-#     while True:
-#         data = ws.receive()
-#         dev_rs232.tx(data)
-#         ws.send(data)
+@socketio.on('rs485_tx')
+def rs485_tx(data):
+    dev_rs485.tx(data.get('data'))
 
-# @sock.route('/rs232_rx')
-# def rs232_rx(ws):
-#     time.sleep(1)
-#     while True:
-#         data = dev_rs232.rx()
-#         if data:
-#             ws.send(data)
-#         else:
-#             continue
-
-# @sock.route('/rs485_tx')
-# def rs485_tx(ws):
-#     time.sleep(1)
-#     while True:
-#         data = ws.receive()
-#         dev_rs485.tx(data)
-#         ws.send(data)
-
-# @sock.route('/rs485_rx')
-# def rs485_rx(ws):
-#     time.sleep(1)
-#     while True:
-#         data = dev_rs485.rx()
-#         if data:
-#             ws.send(data)
-#         else:
-#             continue
+def rs485_rx():
+    while True:
+        data = dev_rs485.rx()
+        if data:
+            socketio.emit('rs485_rx', { 'data': data })
+        else:
+            continue
+eventlet.spawn(rs485_rx) # background task to read 485 device
 
 # CAN Bus
 @app.route("/can_bus")
@@ -137,15 +126,12 @@ def can_bus():
 def can_send(data):
     dev_can_bus.send(data)
 
-# Start a background task to receive from CAN hardware,
-# then emit through websocket. Reference:
-# https://github.com/miguelgrinberg/python-socketio/issues/16#issuecomment-195152403
 def can_recv():
     if not dev_can_bus.bus:
         return
     for msg in dev_can_bus.bus:
         socketio.emit('can_recv', { 'data': str(msg) })
-eventlet.spawn(can_recv)
+eventlet.spawn(can_recv) # background task to read CAN device
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
