@@ -1,6 +1,33 @@
 import serial
 from lib.chipsee_board import board
 
+class ReadLine:
+    """
+    A helper class that does nothing but speeds up reading through pyserial
+    Reference: https://github.com/pyserial/pyserial/issues/216
+    """
+    def __init__(self, ser):
+        self.buf = bytearray()
+        self.ser = ser
+    
+    def readline(self):
+        i = self.buf.find(b"\n")
+        if i >= 0:
+            r = self.buf[:i+1]
+            self.buf = self.buf[i+1:]
+            return r
+        while True:
+            i = max(1, min(2048, self.ser.in_waiting))
+            data = self.ser.read(i)
+            # print(data)
+            i = data.find(b"\n")
+            if i >= 0:
+                r = self.buf + data[:i+1]
+                self.buf[0:] = data[i+1:]
+                return r
+            else:
+                self.buf.extend(data)
+                
 class SerialPort(object):
     """
     RS232 and RS485 can share this same class.
@@ -13,8 +40,9 @@ class SerialPort(object):
         self.device = board.devices().get(name)
         if self.device is None:
             return
-        self.baud_rate = 115200
-        self.ser = serial.Serial(self.device, self.baud_rate, timeout=1)
+        self.baud_rate = 9600
+        self.ser = serial.Serial(self.device, self.baud_rate, timeout=2)
+        self.reader = ReadLine(self.ser)
 
     def tx(self, str_data):
         if self.device is None:
@@ -25,5 +53,8 @@ class SerialPort(object):
     def rx(self):
         if self.device is None:
             return
-        data = self.ser.readline().decode("utf-8")
-        return data
+        while(True):
+            data = self.reader.readline().decode("utf-8")
+            return data
+
+
