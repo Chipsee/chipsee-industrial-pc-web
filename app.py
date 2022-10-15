@@ -48,11 +48,9 @@ def api_brightness():
 # GPIO
 @app.route("/gpio")
 def gpio():
-    in_1 = "Unknown"
-    in_2 = "Unknown"
-    in_3 = "Unknown"
-    in_4 = "Unknown"
-    return render_template('gpio.html', in_1=in_1, in_2=in_2, in_3=in_3, in_4=in_4)
+    gpio_ins = dev_gpio.inputs
+    gpio_outs = dev_gpio.outputs
+    return render_template('gpio.html', gpio_ins=gpio_ins, gpio_outs=gpio_outs)
 
 @app.route('/api/gpio/<gpioX>', methods=['GET', 'POST'])
 def api_gpio(gpioX):

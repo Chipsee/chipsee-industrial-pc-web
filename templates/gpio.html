@@ -5,48 +5,54 @@
 </head>
 <body>
     <p><a href="{{ url_for('home') }}">Home</a></p>
-    <p>
-        <div>
-            <input type="checkbox" id="out_1" name="out_1">
-            <label for="out_1">OUT1</label>
-        </div>
-        <div>
-            <input type="checkbox" id="out_2" name="out_2">
-            <label for="out_2">OUT2</label>
-        </div>
-        <div>
-            <input type="checkbox" id="out_3" name="out_3">
-            <label for="out_3">OUT3</label>
-        </div>
-        <div>
-            <input type="checkbox" id="out_4" name="out_4">
-            <label for="out_4">OUT4</label>
-        </div>
-        <div>IN1: <span id="in_1">{{in_1}}</span></div>
-        <div>IN2: <span id="in_2">{{in_2}}</span></div>
-        <div>IN3: <span id="in_3">{{in_3}}</span></div>
-        <div>IN4: <span id="in_4">{{in_4}}</span></div>
-    </p>
+    <div id="gpio-outs">
+        {% for gpio_out in gpio_outs %}
+        <!-- The  { %  % } marks are Jinja2 markup to run Python code in HTML-like Jinja2 template, when generating HTML in the backend -->
+            <div>
+                <input type="checkbox" id="{{ gpio_out }}" name="{{ gpio_out }}" class="gpio-out">
+                <label for="{{ gpio_out }}">{{ gpio_out }}</label>
+            </div>
+        {% endfor %}
+
+        {% if not gpio_outs %}
+            <p>There is no gpio output devices for this device, or they haven't been configured in the configuration file.</p>
+        {% endif %}
+    </div>
+    <div id="gpio-ins">
+        {% for gpio_in in gpio_ins %}
+            <div> 
+                {{ gpio_in }}: <span id="{{ gpio_in }}" class="gpio-in">{{ gpio_ins[gpio_in] }}</span>
+            </div>
+        {% endfor %}
+
+        {% if not gpio_ins %}
+            <p>There is no gpio input devices for this device, or they haven't been configured in the configuration file.</p>
+        {% endif %}
+    </div>
 </body>
 
 </html>
 <script>
 class SetGPIOOutput {
     constructor() {
-        this.endPoint = "{{ url_for('home') }}" + "api/gpio/";
-        this.outputs = ['out_1', 'out_2', 'out_3', 'out_4'];
-        for (let outputX of this.outputs) {
-            document.querySelector(`#${outputX}`).onchange = (e) => {
-              let checked = e.target.checked;
-              if (checked) {
-                this.setOutput(outputX, 1);
-              } else {
-                this.setOutput(outputX, 0);
-              }
-            }
+        // When check/uncheck a GPIO output checkbox, invoke JS to start a POST
+        // request to let Python backend adjust the GPIO hardware voltage level.
+        this.endPoint = "/api/gpio/";
+        let gpioOuts = document.querySelectorAll(".gpio-out");
+        for (let gpioOut of gpioOuts) {
+            gpioOut.addEventListener('change', (e) => {
+                let checked = e.target.checked;
+                let outputX = e.target.id;
+                if (checked) {
+                    this.setOutput(outputX, 1);
+                } else {
+                    this.setOutput(outputX, 0);
+                }
+            });
         }
     }
 
+    // A helper function to perform XHR request to the backend server.
     setOutput(outputX, value) {
         fetch(this.endPoint + outputX, {
           method: 'POST', // or 'PUT'
@@ -71,37 +77,36 @@ class SetGPIOOutput {
 
 class PollGPIOInput {
     constructor() {
-        let endPoint = "{{ url_for('home') }}" + "api/gpio/";
-        this.inputs = ['in_1', 'in_2', 'in_3', 'in_4'];
-        this.inputElements = new Map();
-        this.inputUrls = new Map();
-        for (let inputX of this.inputs) {
-            this.inputElements.set(inputX, document.querySelector(`#${inputX}`));
-            this.inputUrls.set(inputX, endPoint + inputX)
-            this.poll(inputX);
+        // Periodically polling the Python backend to obtain current GPIO hardware input voltage status.
+        this.endPoint = "/api/gpio/";
+        let gpioIns = document.querySelectorAll(".gpio-in");
+        for(let gpioIn of gpioIns) {
+            this.poll(gpioIn, 1000);
         }
     }
 
-    check(inputX) {
-        fetch(this.inputUrls.get(inputX))
+    poll(gpioIn, interval) {
+        // interval: millisecond. The time inteval between each two consecutive polls.
+        setInterval(() => this.check_once(gpioIn), interval);
+    }
+
+    check_once(gpioIn) {
+        let api_url = this.endPoint + gpioIn.id;
+        fetch(api_url)
         .then((response) => response.json())
-        .then((data) => {
-            let currInput = data[inputX];
-            let inputElem = this.inputElements.get(inputX);
-            inputElem.textContent = currInput;
-            console.log(data)
+        .then((status_data) => {
+            this.update_with(status_data, gpioIn)
         })
         .catch((error) => {
             console.error('Error:', error);
         });
     }
 
-    poll(inputX, interval=1000) {
-        setInterval(() => this.check(inputX), interval);
-        // this.check(inputX);
+    update_with(status_data, gpioIn) {
+        gpioIn.textContent = status_data[gpioIn.id];
     }
 }
 
-let longPolling = new PollGPIOInput();
+let pollInputs = new PollGPIOInput();
 let setOutputs = new SetGPIOOutput();
 </script>

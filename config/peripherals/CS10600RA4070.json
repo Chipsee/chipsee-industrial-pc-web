@@ -5,5 +5,17 @@
   "rs485": "/dev/ttyAMA3",
   "rs232_2": "/dev/ttyAMA1",
   "rs485_5": "/dev/ttyAMA3",
-  "can": "can0"
+  "can": "can0",
+  "gpio_out": {
+    "out_1": "/dev/chipsee-gpio1", 
+    "out_2": "/dev/chipsee-gpio2", 
+    "out_3": "/dev/chipsee-gpio3", 
+    "out_4": "/dev/chipsee-gpio4"
+  },
+  "gpio_in": {
+    "in_1": "/dev/chipsee-gpio5", 
+    "in_2": "/dev/chipsee-gpio6", 
+    "in_3": "/dev/chipsee-gpio7", 
+    "in_4": "/dev/chipsee-gpio8"
+  }
 }
