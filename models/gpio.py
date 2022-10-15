@@ -34,6 +34,22 @@ class GPIO:
         except FileNotFoundError as e:
             return "[FileNotFoundError]: GPIO device {} cannot be found on this machine.".format(inputX)
 
+    def status(self, gpioX):
+        """
+        Check current status of GPIO pin, especially for GPIO out.
+        """
+        if gpioX in self.inputs:
+            return self.input(gpioX)
+        if gpioX in self.outputs:
+            try:
+                with open(self.outputs[gpioX], 'r') as f:
+                    return f.read()
+            except PermissionError as e:
+                return "[PermissionError]: GPIO device {} cannot be found or cannot be operated.".format(gpioX)
+            except FileNotFoundError as e:
+                return "[FileNotFoundError]: GPIO device {} cannot be found on this machine.".format(gpioX)
+        return False
+            
     def validate_input(self, inputX):
         """
         InputX are, e.g.: /dev/chipsee-gpio5 ~ /dev/chipsee-gpio8 for IN1 ~ IN4 for CM4.

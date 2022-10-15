@@ -33,37 +33,37 @@
 
 .brightness-card {
     background-color: #c9f9f3b8;
-    background-image: url("../images/svg/brightness.svg");
+    background-image: url("../images/svg/home/brightness.svg");
     color: #ffffff;
 }
 
 .gpio-card {
     background-color: #e5a1da;
-    background-image: url("../images/svg/gpio.svg");
+    background-image: url("../images/svg/home/gpio.svg");
     color: #ffffff;
 }
 
 .serial-card {
     background-color: #a1a1e5;
-    background-image: url("../images/svg/serial.svg");
+    background-image: url("../images/svg/home/serial.svg");
     color: #ffffff;
 }
 
 .buzzer-card {
     background-color: #cc2c85;
-    background-image: url("../images/svg/buzzer.svg");
+    background-image: url("../images/svg/home/buzzer.svg");
     color: #f4fefa;
 }
 
 .can-bus-card {
     background-color: #cc2c85;
-    background-image: url("../images/svg/can_bus.svg"), linear-gradient(39deg, rgba(63, 94, 251, 1) 0%, rgba(252, 70, 107, 1) 100%);
+    background-image: url("../images/svg/home/can_bus.svg"), linear-gradient(39deg, rgba(63, 94, 251, 1) 0%, rgba(252, 70, 107, 1) 100%);
     color: #ffffff;
 }
 
 .serial-485-card {
     background-color: #cfd3d5b8;
-    background-image: url("../images/svg/serial-485.svg"), linear-gradient(45deg, rgba(043, 250, 121, 0.4906163148853291) 0%, rgba(230, 222, 59, 1) 100%);
+    background-image: url("../images/svg/home/serial-485.svg"), linear-gradient(45deg, rgba(043, 250, 121, 0.4906163148853291) 0%, rgba(230, 222, 59, 1) 100%);
     color: #ffffff;
 }
 
@@ -191,4 +191,37 @@
     height: calc(100vh - 17.5rem);
     padding: 1em;
     margin-top: 1em;
+}
+
+/* GPIO */
+input.gpio-out[type=checkbox]:checked + label {
+    background: url("../images/svg/gpio/button-checked.svg") no-repeat;
+    height: 125px;
+    width: 125px;
+    background-size: 100%;
+    transition: background-image 0.2s ease-in-out;
+}
+
+input.gpio-out[type=checkbox] + label {
+    background: url("../images/svg/gpio/button-closed.svg") no-repeat;
+    height: 125px;
+    width: 125px;
+    background-size: 100%;
+    transition: background-image 0.2s ease-in-out;
+}
+
+input.gpio-in[type=checkbox]:checked + label {
+    background: url("../images/svg/gpio/button-checked.svg") no-repeat;
+    height: 125px;
+    width: 125px;
+    background-size: 100%;
+    transition: background-image 0.2s ease-in-out;
+}
+
+input.gpio-in[type=checkbox] + label {
+    background: url("../images/svg/gpio/button-closed.svg") no-repeat;
+    height: 125px;
+    width: 125px;
+    background-size: 100%;
+    transition: background-image 0.2s ease-in-out;
 }

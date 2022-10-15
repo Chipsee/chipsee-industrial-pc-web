@@ -68,6 +68,13 @@ def api_gpio(gpioX):
             return { 'status': 'Success', 'msg': gpioX }
         return { 'status': 'Error', 'msg': msg }
 
+@app.route('/api/gpio/<gpioX>/status', methods=['GET'])
+def api_gpio_status(gpioX):
+    msg = dev_gpio.status(gpioX=gpioX)
+    if msg:
+        return { gpioX: msg }
+    return { gpioX: "Not a valid Chipsee CM4 GPIO port." }
+    
 # Buzzer
 @app.route("/buzzer")
 def buzzer():
