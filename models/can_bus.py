@@ -1,19 +1,38 @@
 import can
+import subprocess
 from lib.chipsee_board import board
 
 class CanBus(object):
     def __init__(self):
+        self.can_dev_path = board.devices().get("can")
+        if not self.can_dev_path:
+            self.bus = None
+            print("Cannot find CAN settings in board config. CAN bus not initialized.")
+            return
         try:
+            self.bring_up_can_device()
             self.bus = can.Bus(
                 interface = 'socketcan',
-                channel = board.devices().get("can"),
+                channel = self.can_dev_path,
                 bitrate = 500000,
                 receive_own_messages = False
             )
         except OSError as e:
             self.bus = None
             print("CAN bus not initialized! CAN bus initialization error: {}".format(e))
-
+        
+    def bring_up_can_device(self):
+        """
+        If CAN bus device is not brought up from Linux, eg, with the "ip link up..." command,
+        CAN device will not work.
+        This method calls the Linux command for you to bring the CAN device up, if you do not
+        need CAN device, or your Linux user doesn't have sudo privilege, please comment out the method call.
+        """
+        can_init_cmd = ['sudo', 'ip', 'link', 'set', self.can_dev_path, 'type', 'can', 'bitrate', '50000', 'triple-sampling', 'on']
+        can_up_cmd = ['sudo', 'ip', 'link', 'set', self.can_dev_path, 'up']
+        subprocess.run(can_init_cmd)
+        subprocess.run(can_up_cmd)
+        
     def send(self, payload):
         if self.bus is None:
             return
@@ -34,6 +53,11 @@ class CanBus(object):
         try:
             self.bus.send(message, timeout=0.2)
         except can.exceptions.CanOperationError as e:
-            print("CAN error: {}".format(e))
+            print("CAN bus can.exceptions.CanOperationError: {}. Did you bring up the CAN interface of this device?".format(e))
 
-
+    def start_recv(self, emit_to):
+        try:
+            for msg in self.bus:
+                emit_to.emit('can_recv', { 'data': str(msg) })
+        except can.exceptions.CanOperationError as e:
+            print("CAN BUS OSError {}. Did you bring up the CAN interface of this device?".format(e))

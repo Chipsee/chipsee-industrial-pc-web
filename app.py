@@ -123,13 +123,16 @@ def can_bus():
 
 @socketio.on('can_send')
 def can_send(data):
+    # Listen to browser CAN form/button instructions, then send the data through CAN hardware.
+    if not dev_can_bus.bus:
+        return
     dev_can_bus.send(data)
 
 def can_recv():
-    if not dev_can_bus.bus:
+    # Listen to CAN hardware in the background, if data comes, push it to the browser.
+    if dev_can_bus.bus is None:
         return
-    for msg in dev_can_bus.bus:
-        socketio.emit('can_recv', { 'data': str(msg) })
+    dev_can_bus.start_recv(emit_to=socketio)
 gevent.spawn(can_recv) # background task to read CAN device
 
 if __name__ == '__main__':
