@@ -9,8 +9,8 @@ class CanBus(object):
             self.bus = None
             print("Cannot find CAN settings in board config. CAN bus not initialized.")
             return
+        self.bring_up_can_device()
         try:
-            self.bring_up_can_device()
             self.bus = can.Bus(
                 interface = 'socketcan',
                 channel = self.can_dev_path,
@@ -19,7 +19,7 @@ class CanBus(object):
             )
         except OSError as e:
             self.bus = None
-            print("CAN bus not initialized! CAN bus initialization error: {}".format(e))
+            print("CAN bus not initialized. CAN bus initialization error: {}".format(e))
         
     def bring_up_can_device(self):
         """
@@ -31,7 +31,15 @@ class CanBus(object):
         can_init_cmd = ['sudo', 'ip', 'link', 'set', self.can_dev_path, 'type', 'can', 'bitrate', '50000', 'triple-sampling', 'on']
         can_up_cmd = ['sudo', 'ip', 'link', 'set', self.can_dev_path, 'up']
         subprocess.run(can_init_cmd)
-        subprocess.run(can_up_cmd)
+        max_attempts = 3
+        # Sometimes CAN device responds with a `RTNETLINK answers: No such device` error.
+        # Retry can resolve the error and bring CAN up. (Noticed on PX30)
+        for i in range(max_attempts):
+            return_code = subprocess.run(can_up_cmd).returncode
+            if return_code == 0:
+                break # OK, can is brought up successfully.
+            elif return_code == 2:
+                continue
         
     def send(self, payload):
         if self.bus is None:
