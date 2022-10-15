@@ -23,6 +23,8 @@ It contains 6 HTML web pages to control input and output of these peripherals,
 a Flask web server to handle the HTTP requests for us.
 
 ## How to Install
+Use a Linux user with `sudo` privilige, e.g. on CM4 just use pi, on PX30 you can use root (`sudo su` to switch to root user. Or create a user with sudo privilege), otherwise some hardware may or may not work, such as screen brightness.
+
 ```bash
 git clone https://github.com/printfinn/cm4_demo_python_flask.git
 cd cm4_demo_python_flask
@@ -81,6 +83,7 @@ in the future, but any experienced programmer should be able to figure it out by
     1. **Screen Panel Brightness**: Brightness can be interacted with a bunch of Linux files in: `/sys/class/backlight/pwm-backlight`
     1. **Serial Port**: Use a Serial library to talk to Linux serial device. Python has `pyserial`, Ruby has a ruby-serialport [gem](https://github.com/hparra/ruby-serialport), JS has node-serialport [library](https://github.com/serialport/node-serialport), C++, Java should have their own solutions. Since Chipsee's Industrial Pi's RS232 serial port is just a Linux serial device, you can use any libraries that can handle Linux serial devices to control it.
     1. **Buzzer**: Control a buzzer with writing to Linux file: `/dev/buzzer`.
+    1. **CAN Bus**: CAN devices are abstracted as Linux network interfaces in the Linux kernel, use `ifconfig` to check them, use `ip link set can0 ***` commands to configure and enable them. Then use a CAN library to send / receive messages through CAN hardware, like `python-can`. We haven't tested other languages, but other programming languages should have their own solutions to control a CAN device.
 1. In the browser client, you can use FETCH API or XHR to visit your web server's API endpoint, to send control signals to the hardware peripherals, so that you don't need to refresh the page. But if you want to test with a traditional request-response cycle, it's also fine.
-1. You can also use a WebSocket for continously reading status of GPIO/Serail Port. This demo uses `poll` strategy for reading GPIO input status, and uses `websocket` to read RS232 port messages. They're not mandatory, pick the solution that works best for your problem!
+1. You can also use a WebSocket for continously reading status of GPIO/Serail Port. This demo uses `poll` strategy for reading GPIO input status, and uses `websocket` to read serial ports and CAN messages. They're not mandatory, pick the solution that works best for your problem!
 

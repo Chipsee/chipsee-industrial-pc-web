@@ -91,10 +91,11 @@ def rs232():
 
 @socketio.on('rs232_tx')
 def rs232_tx(data):
-    print(data)
+    # Listen to browser Serial instructions, then send the data through serial hardware.
     dev_rs232.tx(data.get('data'))
 
 def rs232_rx():
+    # Continuously read data from Serial Port hardware, if data comes, push it to browser.
     while True:
         data = dev_rs232.rx()
         if data:
@@ -107,9 +108,11 @@ def rs485():
 
 @socketio.on('rs485_tx')
 def rs485_tx(data):
+    # Listen to browser Serial instructions, then send the data through serial hardware.
     dev_rs485.tx(data.get('data'))
 
 def rs485_rx():
+    # Continuously read data from Serial Port hardware, if data comes, push it to browser.
     while True:
         data = dev_rs485.rx()
         if data:
