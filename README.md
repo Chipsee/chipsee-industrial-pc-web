@@ -34,15 +34,17 @@ python3 -m venv venv
 pip install --upgrade pip
 # Install the required Python packages
 pip install -r requirements.txt
+# Alternatively, upgrade setuptools (this will install dependency for gunicorn, recommended to execute)
+pip install -U setuptools
 ```
 
 ## How to start
 ```bash
 # Re-activate the virtual environment if you have exited from it
 . venv/bin/activate
-# Start the demo using Flask for development
+# Start the demo using Flask for development (handy for debugging, but not recommended. This has a bad performance for websocket server, may cause serial device to lose data in some situations.)
 python app.py
-# or start the demo for production
+# or, start the demo for production (also recommended for development)
 gunicorn -k geventwebsocket.gunicorn.workers.GeventWebSocketWorker -w 1 -b 0.0.0.0:5000 app:app
 ```
 Then go to Chromium web browser and enter address `127.0.0.1:5000` in the address bar of web browser.
