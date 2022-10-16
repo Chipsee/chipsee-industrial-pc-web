@@ -105,6 +105,8 @@ def rs232_rx():
         data = dev_rs232.rx()
         if data:
             socketio.emit('rs232_rx', { 'data': data })
+        if data is None:
+            break
 gevent.spawn(rs232_rx) # background task to read 232 device
 
 @app.route("/rs485")
@@ -122,6 +124,8 @@ def rs485_rx():
         data = dev_rs485.rx()
         if data:
             socketio.emit('rs485_rx', { 'data': data })
+        if data is None:
+            break
 gevent.spawn(rs485_rx) # background task to read 485 device
 
 # CAN Bus

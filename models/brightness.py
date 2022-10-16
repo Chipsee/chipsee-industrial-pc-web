@@ -7,6 +7,7 @@ class Brightness:
     def __init__(self):
         self.device = board.devices().get("brightness")
         if self.device is None:
+            print("Brightness: cannot find brightness device in config file, buzzer not initialized.")
             return
         self.max_brightness_f = os.path.join(self.device, "max_brightness")
         self.actual_brightness_f = os.path.join(self.device, "actual_brightness")

@@ -38,6 +38,7 @@ class SerialPort(object):
     def __init__(self, name):
         self.device = board.devices().get(name)
         if self.device is None:
+            print("{}: cannot find serial device in config file, serial device not initialized.".format(name))
             return
         self.baud_rate = 115200
         self.ser = serial.Serial(self.device, self.baud_rate, timeout=10)
@@ -51,7 +52,7 @@ class SerialPort(object):
 
     def rx(self):
         if self.device is None:
-            return
+            return None
 
         while(True):
             try:

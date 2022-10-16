@@ -6,6 +6,8 @@ class Buzzer(object):
 
     def __init__(self):
         self.device = board.devices().get("buzzer")
+        if self.device is None:
+            print("Buzzer: cannot find buzzer device in config file, buzzer not initialized.")
 
     def set_to(self, status):
         if self.device is None:
