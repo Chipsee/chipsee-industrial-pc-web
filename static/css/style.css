@@ -176,6 +176,12 @@
     top: 40vh;
 }
 
+.brightness-slider-position-line-chart {
+    position: absolute;
+    right: -18vw;
+    bottom: 40vh;
+}
+
 .brightness-slider {
     transform: rotate(270deg);
     -webkit-appearance: none;

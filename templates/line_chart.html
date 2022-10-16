@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+<head>
+    <title>Line Chart | Chipsee Industrial PC Demo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/chart.js') }}"></script>
+</head>
+
+<body class="dark-bg sticky-body">
+    <div class="container">
+        <div class="d-flex justify-content-between row" style="height: 100vh;">
+            <div class="d-flex flex-column align-items-center justify-content-center col-auto" style="width: 80vw; height: 90vh;">
+                <div class="text-white fs-2 fw-bold my-3 d-flex align-items-center justify-content-evenly w-100">
+                    <div>Realtime Line Chart</div>
+                    <div>
+                        <button class="btn btn-lg btn-success fw-bold" id="start">Start</button>
+                        <button class="btn btn-lg btn-danger fw-bold" id="stop">Stop</button>
+                    </div>
+                </div>
+                <canvas id="myChart" class="bg-white rounded-2 flex-grow-1"></canvas>
+            </div>
+            <div class="position-relative col">
+                <input type="range" class="brightness-slider brightness-slider-position-line-chart" id="brightness-slider" name="brightness" min="0" max="100" step="1" value="{{ actual_brightness }}">
+                <span id="brightness-value" hidden>{{ actual_brightness }}</span>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script>
+class BrightnessSlider {
+    constructor() {
+        this.brightnessSlider = document.querySelector('#brightness-slider');
+        let curr_brightness = document.querySelector('#brightness-value');
+        document.addEventListener("DOMContentLoaded", () => {
+            this.brightnessSlider.value = `${curr_brightness.textContent.trim()}`;
+        });
+        this.start_listening();
+    }
+    start_listening() {
+        this.brightnessSlider.addEventListener('input', (event) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", '/api/line_chart', true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.send(`brightness=${this.brightnessSlider.value}`);
+            console.log(event.target.value);
+            // curr_brightness.textContent = `${event.target.value}`;
+        });
+    }
+    current_brightness() {
+        return this.brightnessSlider.value;
+    }
+}
+
+class LineChart {
+    constructor(brightnessSlider) {
+        const data = {
+            datasets: [{
+                label: 'Brightness',
+                backgroundColor: 'rgb(180, 32, 247)',
+                borderColor: 'rgb(180, 32, 247)',
+                pointRadius: 2, // Hide points.
+            }]
+        };
+        const options = {
+            'stepped': true,
+            scales: {
+                y: {
+                    title: {
+                        display: true,
+                        align: 'end',
+                        text: "Brightness",
+                        padding: 0, 
+                        font: { size: 24, family: 'Helvetica' }, 
+                        color: 'rgb(180, 32, 247)' 
+                    },
+                    ticks: { color: 'rgb(55, 55, 55)' },
+                    suggestedMin: 0,
+                    suggestedMax: 100
+                },
+                x: { 
+                    title: { 
+                        display: true, 
+                        text: 'Time', 
+                        align: 'end', 
+                        padding: 0, 
+                        color: 'rgb(180, 32, 247)', 
+                        font: { size: 24, family: 'Helvetica' } 
+                    }
+                }
+            },
+            layout: {
+                padding: { left: 10, right: 25, top: 30, bottom: 10 }
+            },
+            plugins: {
+                legend: {
+                    display: false,
+                }
+            }
+        };
+        const config = {
+            type: 'line',
+            data: data,
+            options: options
+        };
+        this.lineChart = new Chart(document.getElementById('myChart'), config);
+        this.lineChart.options.animation = false;
+        this.start_monitoring();
+    }
+
+    start_monitoring() {
+        clearInterval(this.job);
+        this.job = setInterval(() => this.updateData(), 150);
+    }
+
+    stop_monitoring() {
+        clearInterval(this.job);
+    }
+
+    updateData() {
+        this.lineChart.data.labels.push("");
+        this.lineChart.data.datasets.forEach((dataset) => {
+            if (this.lineChart.data.datasets[0].data.length > 32) {
+                // Data is FIFO.
+                dataset.data.splice(0, 1);
+                // Label Should be FIFO, but is LIFO, for performance, because we're not displaying labels.
+                this.lineChart.data.labels.pop();
+            }
+            dataset.data.push(brightnessSlider.current_brightness());
+        });
+        this.lineChart.update('none');
+    }
+}
+
+brightnessSlider = new BrightnessSlider();
+lineChart = new LineChart(brightnessSlider);
+
+const startBtn = document.querySelector("#start");
+const stopBtn = document.querySelector("#stop");
+startBtn.addEventListener('click', () => {
+    lineChart.start_monitoring();
+})
+stopBtn.addEventListener('click', () => {
+    lineChart.stop_monitoring();
+})
+</script>

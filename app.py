@@ -151,5 +151,23 @@ def can_recv():
     dev_can_bus.start_recv(emit_to=socketio)
 gevent.spawn(can_recv) # background task to read CAN device
 
+
+# Cases: Line Chart
+@app.route('/line_chart')
+def line_chart():
+    actual_brightness = dev_brightness.get_actual_brightness()
+    return render_template('line_chart.html', actual_brightness=actual_brightness)
+
+@app.route('/api/line_chart', methods=['GET', 'POST'])
+def api_line_chart():
+    if request.method == 'GET':
+        actual_brightness = dev_brightness.get_actual_brightness()
+        return {"brightness": actual_brightness}
+    if request.method == 'POST':
+        new_brightness = request.form["brightness"]
+        dev_brightness.set_brightness(brightness=new_brightness)
+        actual_brightness = dev_brightness.get_actual_brightness()
+        return {"brightness": actual_brightness}
+
 if __name__ == '__main__':
     socketio.run(app, debug=True)
