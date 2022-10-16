@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Cases | Chipsee Industrial PC Demo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+</head>
+
+<body class="dark-bg sticky-body">
+    <div class="d-flex">
+        <div class="d-flex align-items-center" id="prev-screen"><i class="arrow-left"></i></div>
+        <div class="row d-flex align-items-center justify-content-center" style="min-height: 100vh">
+            <a class="col-4 home-card-link" href="#">
+                <div class="home-card home-card-bg line-chart-card">
+                    <span class="home-card-text">Line Chart</span>
+                </div>
+            </a>
+            <a class="col-4 home-card-link" href="#">
+                <div class="home-card home-card-bg line-chart-card">
+                    <span class="home-card-text">Line Chart</span>
+                </div>
+            </a>
+            <a class="col-4 home-card-link" href="#">
+                <div class="home-card home-card-bg line-chart-card">
+                    <span class="home-card-text">Line Chart</span>
+                </div>
+            </a>
+            <a class="col-4 home-card-link" href="#">
+                <div class="home-card home-card-bg line-chart-card">
+                    <span class="home-card-text">Line Chart</span>
+                </div>
+            </a>
+            <a class="col-4 home-card-link" href="#">
+                <div class="home-card home-card-bg line-chart-card">
+                    <span class="home-card-text">Line Chart</span>
+                </div>
+            </a>
+            <a class="col-4 home-card-link" href="#">
+                <div class="home-card home-card-bg line-chart-card">
+                    <span class="home-card-text">Line Chart</span>
+                </div>
+            </a>
+        </div>
+        <div class="d-flex align-items-center" id="next-screen"><i class="arrow-right opacity-0"></i></div>
+    </div>
+</body>
+
+</html>
+<script>
+let nextScreenBtn = document.querySelector('#prev-screen');
+nextScreenBtn.addEventListener('click', () => {
+    window.location = '{{ url_for('home') }}'
+})
+</script>

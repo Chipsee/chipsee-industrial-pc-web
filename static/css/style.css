@@ -1,4 +1,3 @@
-/* Home Page */
 .dark-bg {
     background-color: #160129;
 }
@@ -8,6 +7,7 @@
     overflow: hidden;
 }
 
+/* Home Page */
 .home-card {
     border-radius: 6px;
     height: 40vh;
@@ -67,6 +67,32 @@
     color: #ffffff;
 }
 
+.arrow-right {
+  border: solid white;
+  border-width: 0 0.75em 0.75em 0;
+  display: inline-block;
+  padding: 0.75em;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  margin-right: 1.5em;
+}
+
+.arrow-left {
+  border: solid white;
+  border-width: 0 0.75em 0.75em 0;
+  display: inline-block;
+  padding: 0.75em;
+  transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
+  margin-left: 1.5em;
+}
+
+/* Cases  */
+.line-chart-card {
+    background-color: #cfd3d5b8;
+    background-image: url("../images/svg/cases/heat.svg"), linear-gradient(45deg, rgba(043, 250, 121, 0.4906163148853291) 0%, rgba(230, 222, 59, 1) 100%);
+    color: #ffffff;
+}
 /* Buzzer */
 .buzzer-btn {
     display: block;

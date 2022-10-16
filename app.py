@@ -26,6 +26,10 @@ dev_can_bus = CanBus()
 def home():
     return render_template('home.html')
 
+@app.route("/cases")
+def cases():
+    return render_template('cases.html')
+
 # Brightness
 @app.route('/brightness', methods=['GET', 'POST'])
 def brightness():
