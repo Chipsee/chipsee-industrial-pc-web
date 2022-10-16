@@ -8,9 +8,9 @@
 </head>
 
 <body class="dark-bg sticky-body">
-    <div class="container">
-        <div class="d-flex justify-content-between row" style="height: 100vh;">
-            <div class="d-flex flex-column align-items-center justify-content-center col-auto" style="width: 80vw; height: 90vh;">
+    <div class="px-4">
+        <div class="row w-100" style="height: 100vh;">
+            <div class="d-flex flex-column align-items-center justify-content-center col col-10" style="height: 90vh;">
                 <div class="text-white fs-2 fw-bold my-3 d-flex align-items-center justify-content-evenly w-100">
                     <div>Realtime Line Chart</div>
                     <div>
@@ -20,8 +20,8 @@
                 </div>
                 <canvas id="myChart" class="bg-white rounded-2 flex-grow-1"></canvas>
             </div>
-            <div class="position-relative col">
-                <input type="range" class="brightness-slider brightness-slider-position-line-chart" id="brightness-slider" name="brightness" min="0" max="100" step="1" value="{{ actual_brightness }}">
+            <div class="col col-1 position-relative">
+                <input type="range" class="brightness-slider brightness-slider-position-line-chart " id="brightness-slider" name="brightness" min="0" max="100" step="1" value="{{ actual_brightness }}">
                 <span id="brightness-value" hidden>{{ actual_brightness }}</span>
             </div>
         </div>
