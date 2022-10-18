@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Static IP Configuration | Chipsee Industrial PC Demo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+</head>
+
+<body style="overflow-x: hidden;">
+    <div class="container d-flex align-items-center justify-content-center fw-bold" style="min-height: 100vh;">
+        <div class="w-100">
+            <h2 class="text-center">Static IP Configuration</h2>
+            {% if msg %}
+                <p class="fw-bold alert alert-info d-flex align-items-center">
+                    <button type="button" class="btn-close me-3" data-bs-dismiss="alert" aria-label="Close"></button>
+                    {{ msg }}
+                </p>
+            {% endif %}
+            {% if form_errors %}
+                <p class="fw-bold alert alert-danger d-flex align-items-center">
+                    <button type="button" class="btn-close me-3" data-bs-dismiss="alert" aria-label="Close"></button>
+                    {% for error in form_errors %}
+                        {{ error }}<br>
+                    {% endfor %}
+                </p>
+            {% endif %}
+            <div>
+                <form id="form" method="post">
+                    <div class="mb-4 row">
+                        <p class="form-label col-form-label col-form-label-lg col-2 me-3">Interface</p>
+                        {% for nic in nics %}
+                            <input class="btn-check" type="radio" name="nic" id="{{ nic }}" value="{{ nic }}">
+                            <label class="btn btn-outline-primary btn-lg me-3 col-2 fw-bold" for="{{ nic }}">{{ nic }}</label>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-4 row">
+                        <label for="v4Address" class="form-label col-2 col-form-label col-form-label-lg">IPv4 Address</label>
+                        <div class="col-10">
+                            <input type="text" class="form-control form-control-lg" name="v4Address" value="{{ request.form['v4Address'] }}">
+                        </div>
+                    </div>
+                    <div class="mb-4 row">
+                        <label for="v6Address" class="form-label col-2 col-form-label col-form-label-lg">IPv6 Address</label>
+                        <div class="col-10">
+                            <input type="text" class="form-control form-control-lg" name="v6Address" value="{{ request.form['v6Address'] }}">
+                        </div>
+                    </div>
+                    <div class="mb-4 row">
+                        <label for="router" class="form-label col-2 col-form-label col-form-label-lg">Router</label>
+                        <div class="col-10">
+                            <input type="text" class="form-control form-control-lg" name="router" value="{{ request.form['router'] }}">
+                        </div>
+                    </div>
+                    <div class="mb-4 row">
+                        <label for="dns-server" class="form-label col-2 col-form-label col-form-label-lg">DNS Server</label>
+                        <div class="col-5">
+                            <input type="text" class="form-control form-control-lg" name="dns-server" placeholder="Primary DNS" value="{{ request.form['dns-server'] }}">
+                        </div>
+                        <div class="col-5">
+                            <input type="text" class="form-control form-control-lg" name="dns-server-secondary" placeholder="Secondary DNS" value="{{ request.form['dns-server-secondary'] }}">
+                        </div>
+                    </div>
+                    <div class="mb-2 row">
+                        <label for="dns-search" class="form-label col-2 col-form-label col-form-label-lg">DNS Search</label>
+                        <div class="col-10">
+                            <input type="text" class="form-control form-control-lg" name="dns-search" value="{{ request.form['dns-search'] }}">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-warning w-100 mt-1 fw-bold" id="submit">Apply</button>
+                    <div class="form-text">Network will be down for a few seconds after applying</div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script>
+// Avoid double form submission.
+const submitBtn = document.querySelector("#submit");
+const form = document.querySelector("#form");
+form.addEventListener('submit', (event) => {
+    submitBtn.setAttribute("disabled", true);
+    submitBtn.innerText = "Processing...";
+})
+
+// Close alert.
+const closeBtns = document.querySelectorAll(".btn-close");
+for(let closeBtn of closeBtns){
+    closeBtn.addEventListener('click', (event) => {
+        closeBtn.parentElement.remove();
+    })
+}
+</script>

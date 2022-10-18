@@ -17,5 +17,9 @@
     "in_2": "/dev/chipsee-gpio6", 
     "in_3": "/dev/chipsee-gpio7", 
     "in_4": "/dev/chipsee-gpio8"
+  },
+  "nics": {
+    "wlan0": "wlan0",
+    "eth0": "eth0"
   }
 }

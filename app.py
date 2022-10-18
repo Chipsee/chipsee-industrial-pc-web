@@ -11,6 +11,7 @@ from models.gpio import GPIO
 from models.serial_port import SerialPort
 from models.buzzer import Buzzer
 from models.can_bus import CanBus
+from models.ip_config import IpConfig
 
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode="gevent")
@@ -21,6 +22,7 @@ dev_rs485 = SerialPort(name="rs485")
 dev_brightness = Brightness()
 dev_buzzer = Buzzer()
 dev_can_bus = CanBus()
+dev_ip_config = IpConfig()
 
 @app.route("/")
 def home():
@@ -161,6 +163,8 @@ def line_chart():
 @app.route('/api/line_chart', methods=['GET', 'POST'])
 def api_line_chart():
     if request.method == 'GET':
+        # GET request shows an example to provide realtime data to browser from other devices, 
+        # but isn't actually used in this line chart html template.
         actual_brightness = dev_brightness.get_actual_brightness()
         return {"brightness": actual_brightness}
     if request.method == 'POST':
@@ -168,6 +172,15 @@ def api_line_chart():
         dev_brightness.set_brightness(brightness=new_brightness)
         actual_brightness = dev_brightness.get_actual_brightness()
         return {"brightness": actual_brightness}
+
+# Cases: Static IP setting
+@app.route('/ip_config', methods=['GET', 'POST'])
+def ip_config():
+    if request.method == 'GET':
+        return render_template('ip_config.html', nics=dev_ip_config.nics)
+    if request.method == 'POST':
+        msg, form_errors = dev_ip_config.handle_form(request.form)
+        return render_template('ip_config.html', nics=dev_ip_config.nics, msg=msg, form_errors=form_errors)
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
