@@ -3,5 +3,9 @@
   "buzzer": "/dev/buzzer",
   "rs232": "/dev/ttyS3",
   "rs485": "/dev/ttyS5",
-  "can": "can0"
+  "can": "can0",
+  "nics": {
+    "eth0": "NetworkManager",
+    "wlan0": "NetworkManager"
+  }
 }

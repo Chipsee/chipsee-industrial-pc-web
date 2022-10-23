@@ -10,7 +10,7 @@
 <body style="overflow-x: hidden;">
     <div class="container d-flex align-items-center justify-content-center fw-bold" style="min-height: 100vh;">
         <div class="w-100">
-            <h2 class="text-center">Static IP Configuration</h2>
+            <h2 class="text-center mb-4">Static IP Configuration</h2>
             {% if msg %}
                 <p class="fw-bold alert alert-info d-flex align-items-center">
                     <button type="button" class="btn-close me-3" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -18,38 +18,46 @@
                 </p>
             {% endif %}
             {% if form_errors %}
-                <p class="fw-bold alert alert-danger d-flex align-items-center">
+                <ol class="fw-bold alert alert-danger d-flex align-items-center">
                     <button type="button" class="btn-close me-3" data-bs-dismiss="alert" aria-label="Close"></button>
-                    {% for error in form_errors %}
-                        {{ error }}<br>
-                    {% endfor %}
-                </p>
+                    <div class="ms-4">
+                        {% for error in form_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </div>
+                </ol>
             {% endif %}
             <div>
                 <form id="form" method="post">
                     <div class="mb-4 row">
-                        <p class="form-label col-form-label col-form-label-lg col-2 me-3">Interface</p>
+                        <div class="form-label col-form-label col-form-label-lg col-2 me-3">Interface</div>
                         {% for nic in nics %}
                             <input class="btn-check" type="radio" name="nic" id="{{ nic }}" value="{{ nic }}">
                             <label class="btn btn-outline-primary btn-lg me-3 col-2 fw-bold" for="{{ nic }}">{{ nic }}</label>
                         {% endfor %}
+                        {% if not nics %}
+                            <span class="btn btn-outline-danger d-flex align-items-center me-3 col fw-bold fs-5 text-start">
+                                No NIC found from the board's configuration json file. You can add it from 'config/peripherals/{board ID}.json'
+                            </span>
+                        {% endif %}
                     </div>
                     <div class="mb-4 row">
-                        <label for="v4Address" class="form-label col-2 col-form-label col-form-label-lg">IPv4 Address</label>
+                        <div class="form-label col-form-label col-form-label-lg col-2 me-3">Version</div>
+                        <input class="btn-check" type="radio" name="ip-version" id="ipv4" value="ipv4" checked>
+                        <label class="btn btn-outline-success btn-lg me-3 col-2 fw-bold" for="ipv4">IPv4</label>
+                        <input class="btn-check" type="radio" name="ip-version" id="ipv6" value="ipv6">
+                        <label class="btn btn-outline-success btn-lg me-3 col-2 fw-bold" for="ipv6">IPv6</label>
+                    </div>
+                    <div class="mb-4 row">
+                        <label for="address" class="form-label col-2 col-form-label col-form-label-lg">IP Address</label>
                         <div class="col-10">
-                            <input type="text" class="form-control form-control-lg" name="v4Address" value="{{ request.form['v4Address'] }}">
+                            <input type="text" class="form-control form-control-lg" name="address" value="{{ request.form['address'] }}" placeholder="e.g 192.168.0.5/24, 2001:db8::1000/64">
                         </div>
                     </div>
                     <div class="mb-4 row">
-                        <label for="v6Address" class="form-label col-2 col-form-label col-form-label-lg">IPv6 Address</label>
+                        <label for="gateway" class="form-label col-2 col-form-label col-form-label-lg">Gateway</label>
                         <div class="col-10">
-                            <input type="text" class="form-control form-control-lg" name="v6Address" value="{{ request.form['v6Address'] }}">
-                        </div>
-                    </div>
-                    <div class="mb-4 row">
-                        <label for="router" class="form-label col-2 col-form-label col-form-label-lg">Router</label>
-                        <div class="col-10">
-                            <input type="text" class="form-control form-control-lg" name="router" value="{{ request.form['router'] }}">
+                            <input type="text" class="form-control form-control-lg" name="gateway" value="{{ request.form['gateway'] }}">
                         </div>
                     </div>
                     <div class="mb-4 row">

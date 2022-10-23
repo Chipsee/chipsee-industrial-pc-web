@@ -19,7 +19,7 @@
     "in_4": "/dev/chipsee-gpio8"
   },
   "nics": {
-    "wlan0": "wlan0",
-    "eth0": "eth0"
+    "wlan0": "dhcpcd",
+    "eth0": "dhcpcd"
   }
 }

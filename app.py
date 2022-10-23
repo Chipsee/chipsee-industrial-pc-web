@@ -22,7 +22,6 @@ dev_rs485 = SerialPort(name="rs485")
 dev_brightness = Brightness()
 dev_buzzer = Buzzer()
 dev_can_bus = CanBus()
-dev_ip_config = IpConfig()
 
 @app.route("/")
 def home():
@@ -176,11 +175,12 @@ def api_line_chart():
 # Cases: Static IP setting
 @app.route('/ip_config', methods=['GET', 'POST'])
 def ip_config():
+    dev_ip_config = IpConfig()
     if request.method == 'GET':
         return render_template('ip_config.html', nics=dev_ip_config.nics)
     if request.method == 'POST':
-        msg, form_errors = dev_ip_config.handle_form(request.form)
-        return render_template('ip_config.html', nics=dev_ip_config.nics, msg=msg, form_errors=form_errors)
+        res = dev_ip_config.handle_form(request.form)
+        return render_template('ip_config.html', nics=dev_ip_config.nics, msg=res.get("msg"), form_errors=res.get("errors"))
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
