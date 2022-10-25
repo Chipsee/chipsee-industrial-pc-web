@@ -8,10 +8,14 @@
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 </head>
 
-<body style="overflow-x: hidden;">
-    <div class="container d-flex align-items-center justify-content-center fw-bold" style="min-height: 100vh;">
+<body class="dark-bg text-white" style="overflow-x: hidden;">
+    <nav class="nav sticky-top justify-content-center bg-secondary">
+        <a class="nav-link" href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='images/svg/nav/home.svg') }}"></a>
+        <a class="nav-link" href="{{ url_for('cases') }}"><img src="{{ url_for('static', filename='images/svg/nav/cases.svg') }}"></a>
+    </nav>
+    <div class="container d-flex align-items-center justify-content-center fw-bold mt-3" style="min-height: 90vh;">
         <div class="w-100">
-            <h2 class="text-center mb-4">Static IP Configuration</h2>
+            <h2 class="text-center mb-4 fw-bold">Static IP Configuration</h2>
             {% if msg %}
                 <p class="fw-bold alert alert-info d-flex align-items-center">
                     <button type="button" class="btn-close me-3" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -31,10 +35,12 @@
             <div>
                 <form id="form" method="post">
                     <div class="mb-4 row">
-                        <div class="form-label col-form-label col-form-label-lg col-2 me-3">Interface</div>
+                        <div class="form-label col-2 col-form-label col-form-label-lg">Interface</div>
                         {% for nic in nics %}
-                            <input class="btn-check" type="radio" name="nic" id="{{ nic }}" value="{{ nic }}">
-                            <label class="btn btn-outline-primary btn-lg me-3 col-2 fw-bold" for="{{ nic }}">{{ nic }}</label>
+                            <div class="col col-2">
+                                <input class="btn-check" type="radio" name="nic" id="{{ nic }}" value="{{ nic }}" autocomplete="off" >
+                                <label class="btn btn-outline-danger border-2 border-danger border text-white btn-lg me-3 fw-bold w-100" for="{{ nic }}">{{ nic }}</label>
+                            </div>
                         {% endfor %}
                         {% if not nics %}
                             <span class="btn btn-outline-danger d-flex align-items-center me-3 col fw-bold fs-5 text-start">
@@ -43,45 +49,50 @@
                         {% endif %}
                     </div>
                     <div class="mb-4 row">
-                        <div class="form-label col-form-label col-form-label-lg col-2 me-3">Version</div>
-                        <input class="btn-check" type="radio" name="ip-version" id="ipv4" value="ipv4" checked>
-                        <label class="btn btn-outline-success btn-lg me-3 col-2 fw-bold" for="ipv4">IPv4</label>
-                        <input class="btn-check" type="radio" name="ip-version" id="ipv6" value="ipv6">
-                        <label class="btn btn-outline-success btn-lg me-3 col-2 fw-bold" for="ipv6">IPv6</label>
+                        <div class="form-label col-form-label col-form-label-lg col col-2">Version</div>
+                        <div class="col col-2">
+                            <input class="btn-check" type="radio" name="ip-version" id="ipv4" value="ipv4" checked>
+                            <label class="btn btn-outline-success btn-lg border-3 border-success text-white border w-100 fw-bold" for="ipv4">IPv4</label>
+                        </div>
+                        <div class="col col-2">
+                            <input class="btn-check" type="radio" name="ip-version" id="ipv6" value="ipv6">
+                            <label class="btn btn-outline-success btn-lg border-3 border-success text-white border w-100 fw-bold" for="ipv6">IPv6</label>
+                        </div>
                     </div>
                     <div class="mb-4 row">
                         <label for="address" class="form-label col-2 col-form-label col-form-label-lg">IP Address</label>
                         <div class="col-10">
-                            <input type="text" class="form-control form-control-lg" name="address" value="{{ request.form['address'] }}" placeholder="e.g 192.168.0.5/24, 2001:db8::1000/64">
+                            <input type="text" class="form-control form-control-lg text-white bg-dark" name="address" value="{{ request.form['address'] }}" placeholder="e.g 192.168.0.5/24, 2001:db8::1000/64">
                         </div>
                     </div>
                     <div class="mb-4 row">
                         <label for="gateway" class="form-label col-2 col-form-label col-form-label-lg">Gateway</label>
                         <div class="col-10">
-                            <input type="text" class="form-control form-control-lg" name="gateway" value="{{ request.form['gateway'] }}">
+                            <input type="text" class="form-control form-control-lg text-white bg-dark" name="gateway" value="{{ request.form['gateway'] }}">
                         </div>
                     </div>
                     <div class="mb-4 row">
                         <label for="dns-server" class="form-label col-2 col-form-label col-form-label-lg">DNS Server</label>
                         <div class="col-5">
-                            <input type="text" class="form-control form-control-lg" name="dns-server" placeholder="Primary DNS" value="{{ request.form['dns-server'] }}">
+                            <input type="text" class="form-control form-control-lg text-white bg-dark" name="dns-server" placeholder="Primary DNS" value="{{ request.form['dns-server'] }}">
                         </div>
                         <div class="col-5">
-                            <input type="text" class="form-control form-control-lg" name="dns-server-secondary" placeholder="Secondary DNS" value="{{ request.form['dns-server-secondary'] }}">
+                            <input type="text" class="form-control form-control-lg text-white bg-dark" name="dns-server-secondary" placeholder="Secondary DNS" value="{{ request.form['dns-server-secondary'] }}">
                         </div>
                     </div>
                     <div class="mb-2 row">
                         <label for="dns-search" class="form-label col-2 col-form-label col-form-label-lg">DNS Search</label>
                         <div class="col-10">
-                            <input type="text" class="form-control form-control-lg" name="dns-search" value="{{ request.form['dns-search'] }}">
+                            <input type="text" class="form-control form-control-lg text-white bg-dark" name="dns-search" value="{{ request.form['dns-search'] }}">
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-warning w-100 mt-1 fw-bold" id="submit">Apply</button>
+                    <button type="submit" class="btn btn-secondary fs-4 w-100 mt-3 fw-bold" id="submit">Apply</button>
                     <div class="form-text">Network will be down for a few seconds after applying</div>
                 </form>
             </div>
         </div>
     </div>
+    
 </body>
 
 </html>
