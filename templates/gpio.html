@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body class="dark-bg sticky-body">
-    <div class="container vh-100 d-flex flex-column justify-content-evenly">
+    {% include "common/navbar.html" %}
+    <div class="container d-flex flex-column justify-content-evenly" style="min-height: 90vh;">
         <div id="gpio-outs" class="d-flex justify-content-evenly">
             {% for gpio_out in gpio_outs %}
                 <div>

@@ -11,7 +11,7 @@
 <body class="dark-bg sticky-body">
     <div class="d-flex justify-content-evenly w-100">
         <a href="#" class="d-flex align-items-center px-2"><i class="arrow-left opacity-0"></i></a>
-        <div class="row d-flex align-items-center justify-content-center" style="min-height: 90vh">
+        <div class="row d-flex align-items-center justify-content-center" style="min-height: 100vh">
             <a class="col-4 home-card-link" href="{{ url_for('brightness') }}">
                 <div class="home-card home-card-bg brightness-card">
                     <span class="home-card-text">Brightness</span>
@@ -45,10 +45,6 @@
         </div>
         <a href="{{ url_for('cases') }}" class="d-flex align-items-center px-2"><i class="arrow-right"></i></a>   
     </div>
-    <nav class="nav fixed-bottom justify-content-center bg-secondary">
-        <a class="nav-link" href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='images/svg/nav/home.svg') }}"></a>
-        <a class="nav-link" href="{{ url_for('cases') }}"><img src="{{ url_for('static', filename='images/svg/nav/cases.svg') }}"></a>
-    </nav>
 </body>
 
 </html>

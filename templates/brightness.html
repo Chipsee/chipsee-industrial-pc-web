@@ -7,8 +7,9 @@
 </head>
 
 <body class="dark-bg sticky-body">
+    {% include "common/navbar.html" %}
     <div class="container position-relative">
-        <div class="brightness-text d-flex flex-column vh-100 align-items-center justify-content-center">
+        <div class="brightness-text d-flex flex-column align-items-center justify-content-center" style="height: 90vh;">
             <p class="brightness-desc">Brightness</p>
             <p class="brightness-value">{{ actual_brightness }}</p>
         </div>

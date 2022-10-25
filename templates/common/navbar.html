@@ -1,0 +1,4 @@
+<nav class="nav sticky-top justify-content-between bg-secondary">
+    <a class="nav-link" href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='images/svg/nav/Icon.png') }}" width="48px" class="img-fluid"></a>
+    <a class="nav-link" href="{{ url_for(request.endpoint, **request.view_args) }}"><img src="{{ url_for('static', filename='images/svg/nav/refresh.svg') }}"></a>
+</nav>

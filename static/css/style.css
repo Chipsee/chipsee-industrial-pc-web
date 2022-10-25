@@ -204,13 +204,13 @@
 .brightness-slider-position {
     position: absolute;
     left: 55vw;
-    top: 40vh;
+    top: 36vh;
 }
 
 .brightness-slider-position-line-chart {
     position: absolute;
     left: -24vh;
-    bottom: 40vh;
+    bottom: 44vh;
 }
 
 .brightness-slider {
@@ -242,7 +242,7 @@
 .log {
     overflow-y: scroll;
     overflow-x: hidden;
-    height: calc(100vh - 10em);
+    height: calc(100vh - 13.5em);
     padding: 1em;
     margin-top: 1em;
 }

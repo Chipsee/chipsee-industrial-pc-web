@@ -9,13 +9,10 @@
 </head>
 
 <body class="dark-bg text-white" style="overflow-x: hidden;">
-    <nav class="nav sticky-top justify-content-center bg-secondary">
-        <a class="nav-link" href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='images/svg/nav/home.svg') }}"></a>
-        <a class="nav-link" href="{{ url_for('cases') }}"><img src="{{ url_for('static', filename='images/svg/nav/cases.svg') }}"></a>
-    </nav>
-    <div class="container d-flex align-items-center justify-content-center fw-bold mt-3" style="min-height: 90vh;">
+    {% include "common/navbar.html" %}
+    <div class="container d-flex align-items-center justify-content-center fw-bold" style="min-height: 90vh;">
         <div class="w-100">
-            <h2 class="text-center mb-4 fw-bold">Static IP Configuration</h2>
+            <h2 class="text-center my-4 fw-bold">Static IP Configuration</h2>
             {% if msg %}
                 <p class="fw-bold alert alert-info d-flex align-items-center">
                     <button type="button" class="btn-close me-3" data-bs-dismiss="alert" aria-label="Close"></button>
