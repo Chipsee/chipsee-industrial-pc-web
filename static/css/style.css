@@ -24,6 +24,7 @@
 .home-card-text {
     margin-top: calc(20vh + 10%);
     font-size: 2.25em;
+    white-space: nowrap;
 }
 
 .home-card-bg {
@@ -89,23 +90,40 @@
 
 /* Cases  */
 .line-chart-card {
-    background-color: #cfd3d5b8;
-    background-image: url("../images/svg/cases/heat.svg"), linear-gradient(45deg, rgba(221,70,70,0.2889356426164216) 6%, rgba(255,202,231,1) 88%);
+    background-color: rgba(62,213,219,0.84);
+    background-image: url("../images/svg/cases/heat.svg");
     color: #ffffff;
 }
 
 .ip-config-card {
-    background-color: #cfd3d5b8;
-    background-image: url("../images/svg/cases/ip_config.svg"), linear-gradient(45deg, rgba(44,64,241,0.8155462868741247) 0%, rgba(151,238,109,1) 76%);
+    background-color: rgba(151,238,109, 76%) ;
+    background-image: url("../images/svg/cases/ip_config.svg");
     color: #ffffff;
 }
 
 .file-upload-card {
-    background-color: #cfd3d5b8;
-    background-image: url("../images/svg/cases/file_upload.svg"), linear-gradient(45deg, rgba(237,146,233,0.9275911048012955) 13%, rgba(109,238,237,1) 84%);;
+    background-color: #1780ab;
+    background-image: url("../images/svg/cases/file_upload.svg");
     color: #ffffff;
 }
 
+.charts-card {
+    background-color: #835abb;
+    background-image: url("../images/svg/cases/charts.svg");
+    color: #ffffff;
+}
+
+.modbus-card {
+    background-color: #ffb11e;
+    background-image: url("../images/svg/cases/modbus.svg");
+    color: #ffffff;
+}
+
+.more-card {
+    background-color: #3b65edbc;
+    background-image: url("../images/svg/cases/more.svg"), linear-gradient(45deg, rgba(104,195,23,0.8491597322522759) 13%, rgba(90,105,187,1) 83%);
+    color: #ffffff;
+}
 /* Buzzer */
 .buzzer-btn {
     display: block;

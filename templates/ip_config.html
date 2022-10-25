@@ -5,6 +5,7 @@
     <title>Static IP Configuration | Chipsee Industrial PC Demo</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 </head>
 
 <body style="overflow-x: hidden;">
@@ -92,12 +93,3 @@ form.addEventListener('submit', (event) => {
     submitBtn.setAttribute("disabled", true);
     submitBtn.innerText = "Processing...";
 })
-
-// Close alert.
-const closeBtns = document.querySelectorAll(".btn-close");
-for(let closeBtn of closeBtns){
-    closeBtn.addEventListener('click', (event) => {
-        closeBtn.parentElement.remove();
-    })
-}
-</script>
