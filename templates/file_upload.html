@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>File Upload | Chipsee Industrial PC Demo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+</head>
+
+<body class="dark-bg text-white sticky-body">
+    <div class="container">
+        <h2 class="text-center my-4 fw-bold">File Upload and Download</h2>
+        <div class="row w-100 gx-2">
+            <div class="col" style="height: 80vh;">
+                <div class="border rounded-2 p-3 h-100">
+                    {% if msg %}
+                        <p class="fw-bold alert alert-info d-flex align-items-center">
+                            <button type="button" class="btn-close me-3" data-bs-dismiss="alert" aria-label="Close"></button>
+                            {{ msg }}
+                        </p>
+                    {% endif %}
+                    {% if error %}
+                        <p class="fw-bold alert alert-danger d-flex align-items-center">
+                            <button type="button" class="btn-close me-3" data-bs-dismiss="alert" aria-label="Close"></button>
+                                {{ error }}
+                        </p>
+                    {% endif %}
+                    <h3 class="text-center fw-bold mt-5">Upload</h3>
+                    <div class="d-flex align-items-center justify-content-center h-75">
+                        <form method=post enctype=multipart/form-data class=" w-100">
+                            <div class="mb-3">
+                                <label for="formFileLg" class="form-label fw-bold fs-4">Please Select a File</label>
+                                <input class="form-control form-control-lg" id="formFileLg" type="file" name="file">
+                            </div>
+                            <input type=submit class="btn btn-lg w-100 btn-warning fw-bold" value=Upload>
+                            <div class="form-text fw-bold text-white">File will be uploaded to storage/ folder.</div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="border rounded-2 p-3 h-100">
+                    <h3 class="text-center fw-bold mt-5">Download</h3>
+                    <div class="d-flex align-items-center justify-content-center h-75">
+                        <a id="download-btn" class="btn btn-lg btn-warning fw-bold w-100" href="{{ url_for('download_file', fname='test_download.txt') }}">
+                            Long Press -> Save Link As
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script>
+    // Disable left click on download button. (Right click / long press is not disabled)
+    document.getElementById('download-btn').onclick = function(e) {
+        return false;
+    };
+</script>

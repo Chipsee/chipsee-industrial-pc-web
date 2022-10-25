@@ -90,13 +90,19 @@
 /* Cases  */
 .line-chart-card {
     background-color: #cfd3d5b8;
-    background-image: url("../images/svg/cases/heat.svg"), linear-gradient(45deg, rgba(043, 250, 121, 0.4906163148853291) 0%, rgba(230, 222, 59, 1) 100%);
+    background-image: url("../images/svg/cases/heat.svg"), linear-gradient(45deg, rgba(221,70,70,0.2889356426164216) 6%, rgba(255,202,231,1) 88%);
     color: #ffffff;
 }
 
 .ip-config-card {
     background-color: #cfd3d5b8;
     background-image: url("../images/svg/cases/ip_config.svg"), linear-gradient(45deg, rgba(44,64,241,0.8155462868741247) 0%, rgba(151,238,109,1) 76%);
+    color: #ffffff;
+}
+
+.file-upload-card {
+    background-color: #cfd3d5b8;
+    background-image: url("../images/svg/cases/file_upload.svg"), linear-gradient(45deg, rgba(237,146,233,0.9275911048012955) 13%, rgba(109,238,237,1) 84%);;
     color: #ffffff;
 }
 

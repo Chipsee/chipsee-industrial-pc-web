@@ -5,3 +5,5 @@ dist
 waitress_server.spec
 *.log
 log
+storage/*
+!storage/test_download.txt

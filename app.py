@@ -2,9 +2,12 @@ import gevent  # (Websocket support)
 from gevent import monkey  # (Websocket support)
 monkey.patch_all()  # (Websocket support) This patch should be carried out as early as possible.
 
-from flask import Flask, render_template
+from flask import Flask, redirect, render_template
 from flask import request
+from flask import send_from_directory # (Download file support)
 from flask_socketio import SocketIO, emit # (Websocket support)
+
+UPLOAD_FOLDER = 'storage/' # (Download file support)
 
 from models.brightness import Brightness
 from models.gpio import GPIO
@@ -12,8 +15,10 @@ from models.serial_port import SerialPort
 from models.buzzer import Buzzer
 from models.can_bus import CanBus
 from models.ip_config import IpConfig
+from models.file_upload import FileUpload
 
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER # (Download file support)
 socketio = SocketIO(app, async_mode="gevent")
 
 dev_gpio = GPIO()
@@ -181,6 +186,20 @@ def ip_config():
     if request.method == 'POST':
         res = dev_ip_config.handle_form(request.form)
         return render_template('ip_config.html', nics=dev_ip_config.nics, msg=res.get("msg"), form_errors=res.get("errors"))
+
+@app.route('/file_upload', methods=['GET', 'POST'])
+def file_upload():
+    if request.method == 'POST':
+        fu = FileUpload(folder=app.config["UPLOAD_FOLDER"], request=request)
+        res = fu.handle_file_request()
+        print(res.get("error"))
+        return render_template('file_upload.html', msg=res.get("msg"), error=res.get("error"))
+    if request.method == 'GET':
+        return render_template('file_upload.html')
+
+@app.route('/uploads/<fname>')
+def download_file(fname):
+    return send_from_directory(app.config["UPLOAD_FOLDER"], fname, as_attachment=True)
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
