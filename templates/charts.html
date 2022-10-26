@@ -16,11 +16,11 @@
             </div>
             <div class="col d-flex align-items-center justify-content-center flex-column" style="height:50vh; width:30vw">
                 <canvas id="doughnut-progress"></canvas>
-                <p class="position-absolute display-5 mt-3 ms-1 fw-bold" style="color: #1abafc;">80%</p>
+                <p class="position-absolute display-5 mt-3 ms-1 fw-bold" id="dp-value" style="color: #1abafc;">80%</p>
             </div>
             <div class="col d-flex align-items-center justify-content-center flex-column" style="height:50vh; width:30vw">
                 <canvas id="doughnut-monitor"></canvas>
-                <p class="position-absolute display-5 mt-3 ms-1 fw-bold" style="color: #21c341;">95%</p>
+                <p class="position-absolute display-5 mt-3 ms-1 fw-bold" id="dm-value" style="color: #21c341;">95%</p>
             </div>
         </div>
         <div class="row mt-3">
@@ -66,6 +66,12 @@ class PieChart {
             },
         };
         this.chart = new Chart(document.getElementById('pie'), this.config)
+        setInterval(() => {
+            this.chart.data.datasets.forEach((dataset) => {
+                dataset.data = Array.from({length: 6}, () => Math.random() * 10);
+            });
+            this.chart.update();
+        }, 1000)
     }
 }
 class DoughnutProgress {
@@ -98,6 +104,14 @@ class DoughnutProgress {
             },
         };
         this.chart = new Chart(document.getElementById('doughnut-progress'), this.config)
+        setInterval(() => {
+            this.chart.data.datasets.forEach((dataset) => {
+                let randomNum = Math.random();
+                document.querySelector('#dp-value').textContent = `${(randomNum*100).toFixed(0)}%`;
+                dataset.data = [randomNum, 1-randomNum];
+            });
+            this.chart.update();
+        }, 1000)
     }
 }
 class DoughnutMonitor {
@@ -117,6 +131,7 @@ class DoughnutMonitor {
             data: this.data,
             options: {
                 responsive: true,
+                
                 plugins: {
                 legend: {
                     // display: false,
@@ -130,6 +145,14 @@ class DoughnutMonitor {
             },
         };
         this.chart = new Chart(document.getElementById('doughnut-monitor'), this.config)
+        setInterval(() => {
+            this.chart.data.datasets.forEach((dataset) => {
+                let randomNum = Math.random();
+                document.querySelector('#dm-value').textContent = `${(randomNum*100).toFixed(0)}%`;
+                dataset.data = [randomNum, 1-randomNum];
+            });
+            this.chart.update();
+        }, 800)
     }
 }
 class HorizontalBar {
@@ -181,12 +204,18 @@ class HorizontalBar {
                 }
             },
         }
-        let chart = new Chart(document.getElementById('h-bar-chart'), this.config)
+        this.chart = new Chart(document.getElementById('h-bar-chart'), this.config)
+        setInterval(() => {
+            this.chart.data.datasets.forEach((dataset) => {
+                dataset.data = Array.from({length: 4}, () => Math.random() * 10);
+            });
+            this.chart.update();
+        }, 1000)
     }
 }
 class InterpolationLine {
     constructor() {
-        const DATA_COUNT = 20;
+        const DATA_COUNT = 16;
         const labels = [];
         for (let i = 0; i < DATA_COUNT; ++i) {
             labels.push(i.toString());
@@ -266,6 +295,20 @@ class InterpolationLine {
             },
         };
         this.chart = new Chart(document.getElementById('line-chart'), this.config);
+        this.step = 0;
+        setInterval(()=> {
+            let randomNum = this.step / 4;
+            this.step += 1;
+            if (this.step >= 256) { this.step = 0;}
+            this.chart.data.datasets.forEach((dataset, phaseIndex) => {
+                dataset.data = [];
+                for (let i = 0+randomNum; i < DATA_COUNT+randomNum; ++i) {
+                    let v = 220 * Math.sin(i + 2 * phaseIndex * Math.PI/3)
+                    dataset.data.push(v);
+                }
+            });
+            this.chart.update();
+        }, 250);
     }
 }
 let doughnutChart = new PieChart()
