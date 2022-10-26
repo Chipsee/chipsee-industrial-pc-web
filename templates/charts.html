@@ -131,7 +131,6 @@ class DoughnutMonitor {
             data: this.data,
             options: {
                 responsive: true,
-                
                 plugins: {
                 legend: {
                     // display: false,
@@ -188,19 +187,25 @@ class HorizontalBar {
                 // Elements options apply to all of the options unless overridden in a dataset
                 // In this case, we are setting the border of each horizontal bar to be 2px wide
                 elements: {
-                bar: {
-                    borderWidth: 2,
-                }
+                    bar: {
+                        borderWidth: 2,
+                    }
+                },
+                scales: {
+                    x: {
+                        min: 0,
+                        max: 10
+                    }
                 },
                 responsive: true,
                 plugins: {
-                legend: {
-                    position: 'top',
-                },
-                title: {
-                    display: true,
-                    text: 'Daily Summary'
-                }
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Daily Summary'
+                    }
                 }
             },
         }
@@ -267,10 +272,10 @@ class InterpolationLine {
             options: {
                 responsive: true,
                 plugins: {
-                title: {
-                    display: true,
-                    text: 'Input Voltage (V)'
-                },
+                    title: {
+                        display: true,
+                        text: 'Input Voltage (V)'
+                    },
                 },
                 interaction: {
                     intersect: false,
@@ -288,14 +293,15 @@ class InterpolationLine {
                             display: false,
                             text: 'Volts'
                         },
-                        suggestedMin: -220,
-                        suggestedMax: 220
+                        min: -220,
+                        max: 220
                     }
                 }
             },
         };
         this.chart = new Chart(document.getElementById('line-chart'), this.config);
         this.step = 0;
+        const phaseShift = Math.round(2 * Math.PI / 3.0 * 100) / 100;
         setInterval(()=> {
             let randomNum = this.step / 4;
             this.step += 1;
@@ -303,17 +309,17 @@ class InterpolationLine {
             this.chart.data.datasets.forEach((dataset, phaseIndex) => {
                 dataset.data = [];
                 for (let i = 0+randomNum; i < DATA_COUNT+randomNum; ++i) {
-                    let v = 220 * Math.sin(i + 2 * phaseIndex * Math.PI/3)
+                    let v = 220 * Math.sin(i + phaseIndex * phaseShift)
                     dataset.data.push(v);
                 }
             });
             this.chart.update();
-        }, 250);
+        }, 300);
     }
 }
 let doughnutChart = new PieChart()
 let doughnutChartProgress = new DoughnutProgress()
 let doughnutChartMonitor = new DoughnutMonitor();
 let horizontalBarChart = new HorizontalBar()
-let lienChart = new InterpolationLine();
+let lineChart = new InterpolationLine();
 </script>
