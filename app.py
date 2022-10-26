@@ -187,6 +187,7 @@ def ip_config():
         res = dev_ip_config.handle_form(request.form)
         return render_template('ip_config.html', nics=dev_ip_config.nics, msg=res.get("msg"), form_errors=res.get("errors"))
 
+# Cases: Uploading and Downloading File
 @app.route('/file_upload', methods=['GET', 'POST'])
 def file_upload():
     if request.method == 'POST':
@@ -200,6 +201,11 @@ def file_upload():
 @app.route('/uploads/<fname>')
 def download_file(fname):
     return send_from_directory(app.config["UPLOAD_FOLDER"], fname, as_attachment=True)
+
+# Cases: Charts Showcase
+@app.route('/charts')
+def charts():
+    return render_template('charts.html')
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
