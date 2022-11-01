@@ -209,6 +209,10 @@ def api_line_chart():
         actual_brightness = dev_brightness.get_actual_brightness()
         return {"brightness": actual_brightness}
     
+# Diagrams: Sine Wave
+@app.route('/sine_wave')
+def sine_wave():
+    return render_template('sine_wave.html')
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)

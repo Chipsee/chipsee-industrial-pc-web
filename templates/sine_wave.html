@@ -1,0 +1,162 @@
+<!doctype html>
+<html>
+<head>
+    <title>Sine Wave | Chipsee Industrial PC Demo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/chart.js') }}"></script>
+</head>
+
+<body class="sticky-body">
+    {% include "common/navbar.html" %}
+    <div class="container">
+        <h2 class="text-center mt-3">Power Grid Voltage</h2>
+        <div class="d-flex justify-content-evenly">
+            <div class="form-check" style="font-size: 2em;">
+                <input class="form-check-input" type="checkbox" value="" name="animation-switch" id="animation-switch">
+                <label class="form-check-label" for="flexCheckDefault">Animation</label>
+            </div>
+            <div>
+                <button class="btn btn-lg btn-success fw-bold" id="start">Start</button>
+                <button class="btn btn-lg btn-danger fw-bold" id="stop">Stop</button>
+            </div>
+        </div>
+        <div class="mt-1">
+            <canvas id="line-chart"></canvas>
+        </div>
+    </div>
+</body>
+
+</html>
+<script>
+class InterpolationLine {
+    constructor() {
+        this.dataPoints = 48;
+        const labels = [];
+        for (let i = 0; i < this.dataPoints; ++i) {
+            labels.push(i.toString());
+        }
+        const data = {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Phase A',
+                    data: Array(this.dataPoints).fill(0),
+                    pointRadius: 2,
+                    borderColor: '#ff5555',
+                    fill: false,
+                    cubicInterpolationMode: 'monotone',
+                    tension: 0.5
+                },
+                {
+                    label: 'Phase B',
+                    data: Array(this.dataPoints).fill(0),
+                    pointRadius: 2,
+                    borderColor: '#55ff5a',
+                    fill: false,
+                    cubicInterpolationMode: 'monotone',
+                    tension: 0.5
+                },
+                {
+                    label: 'Phase C',
+                    data: Array(this.dataPoints).fill(0),
+                    pointRadius: 2,
+                    borderColor: '#0fa9ff',
+                    fill: false,
+                    cubicInterpolationMode: 'monotone',
+                    tension: 0.5
+                }
+            ]
+        };
+
+        this.config = {
+            type: 'line',
+            data: data,
+            options: {
+                // animation: {
+                //     duration: 100,
+                //     easing: 'linear',
+                //     loop: false
+                // },
+                animation: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Transformer Output (V)'
+                    },
+                },
+                interaction: {
+                    intersect: false,
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: false,
+                            text: 'Volts'
+                        },
+                        min: -250,
+                        max: 250
+                    }
+                }
+            },
+        };
+        this.chart = new Chart(document.getElementById('line-chart'), this.config);
+        this.step = 0;
+        this.period = this.dataPoints / 4;
+        this.phaseShift = Math.round(2 * Math.PI / 3.0 * 100) / 100;
+    }
+
+    startMonitoring() {
+        clearInterval(this.job); // Avoid issues when pausing the chart with button.
+        this.job = setInterval(() => this.update(), 300);
+    }
+
+    stopMonitoring() {
+        clearInterval(this.job);
+    }
+
+    update() {
+        this.step += 1;
+        if (this.step >= this.dataPoints) { this.step = 0;}
+        this.chart.data.labels = [];
+        for (let i = 0; i < this.dataPoints; ++i) {
+            this.chart.data.labels.push(i.toString());
+        }
+        this.chart.data.datasets.forEach((dataset, phaseIndex) => {
+            dataset.data = [];
+            for (let i = 0+this.step; i < this.dataPoints+this.step; ++i) {
+                let v = 220 * Math.sin(i*Math.PI/this.period + phaseIndex * this.phaseShift);
+                dataset.data.push(v);
+            }
+        });
+        this.chart.update();
+    }
+}
+let lineChart = new InterpolationLine();
+document.querySelector("#animation-switch").onchange = (e) => {
+    let checked = e.target.checked;
+    if (checked) {
+        lineChart.config.options['animation'] = true;
+    } else {
+        lineChart.config.options['animation'] = false;
+    }
+}
+lineChart.startMonitoring();
+
+const startBtn = document.querySelector("#start");
+const stopBtn = document.querySelector("#stop");
+startBtn.addEventListener('click', () => {
+    lineChart.startMonitoring();
+})
+stopBtn.addEventListener('click', () => {
+    lineChart.stopMonitoring();
+})
+
+</script>
