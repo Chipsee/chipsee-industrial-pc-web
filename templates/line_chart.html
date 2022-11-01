@@ -19,7 +19,9 @@
                         <button class="btn btn-lg btn-danger fw-bold" id="stop">Stop</button>
                     </div>
                 </div>
-                <canvas id="myChart" class="bg-white rounded-2 flex-grow-1"></canvas>
+                <div class="mt-4 ms-2" style="height:95vh; width:80vw">
+                    <canvas id="myChart" class="bg-white rounded-2"></canvas>
+                </div>
             </div>
             <div class="col col-1 position-relative">
                 <input type="range" class="brightness-slider brightness-slider-position-line-chart " id="brightness-slider" name="brightness" min="0" max="100" step="1" value="{{ actual_brightness }}">
@@ -34,39 +36,52 @@
 class BrightnessSlider {
     constructor() {
         this.brightnessSlider = document.querySelector('#brightness-slider');
-        let curr_brightness = document.querySelector('#brightness-value');
+        let currBrightnessEle = document.querySelector('#brightness-value');
         document.addEventListener("DOMContentLoaded", () => {
-            this.brightnessSlider.value = `${curr_brightness.textContent.trim()}`;
+            this.brightnessSlider.value = `${currBrightnessEle.textContent.trim()}`;
         });
-        this.start_listening();
+        this.brightnessValue = 0;
+        this.startListening();
     }
-    start_listening() {
+
+    startListening() {
+        // Listening to slider event, then POST to server to change screen brightness of the hardware.
         this.brightnessSlider.addEventListener('input', (event) => {
             const xhr = new XMLHttpRequest();
             xhr.open("POST", '/api/line_chart', true);
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             xhr.send(`brightness=${this.brightnessSlider.value}`);
-            console.log(event.target.value);
-            // curr_brightness.textContent = `${event.target.value}`;
         });
     }
-    current_brightness() {
-        return this.brightnessSlider.value;
+
+    fetchBrightness() {
+        // Send GET request to server to get the actual brightness.
+        fetch(`/api/line_chart`)
+        .then((response) => response.json())
+        .then((brightness_data) => {
+            this.brightnessValue = brightness_data['brightness'].trim();
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
     }
 }
 
 class LineChart {
     constructor(brightnessSlider) {
+        this.dataPoints = 32; // Number of points to constructs this line chart.
         const data = {
+            labels: Array(this.dataPoints).fill(0),
             datasets: [{
                 label: 'Brightness',
+                data: Array(this.dataPoints).fill(0),
                 backgroundColor: 'rgb(180, 32, 247)',
                 borderColor: 'rgb(180, 32, 247)',
                 pointRadius: 2, // Hide points.
             }]
         };
         const options = {
-            'stepped': true,
+            'stepped': false,
             scales: {
                 y: {
                     title: {
@@ -108,28 +123,35 @@ class LineChart {
         };
         this.lineChart = new Chart(document.getElementById('myChart'), config);
         this.lineChart.options.animation = false;
-        this.start_monitoring();
+        this.startMonitoring();
     }
 
-    start_monitoring() {
-        clearInterval(this.job);
-        this.job = setInterval(() => this.updateData(), 150);
+    startMonitoring() {
+        clearInterval(this.job); // Avoid issues when pausing the chart with button.
+        this.job = setInterval(() => this.updateData(), 200);
     }
 
-    stop_monitoring() {
+    stopMonitoring() {
         clearInterval(this.job);
     }
 
     updateData() {
         this.lineChart.data.labels.push("");
         this.lineChart.data.datasets.forEach((dataset) => {
-            if (this.lineChart.data.datasets[0].data.length > 32) {
+            if (this.lineChart.data.datasets[0].data.length > this.dataPoints) {
                 // Data is FIFO.
                 dataset.data.splice(0, 1);
-                // Label Should be FIFO, but is LIFO, for performance, because we're not displaying labels.
+                // Label Should be FIFO, but is LIFO in this code for performance. (Because we're not displaying labels in this example.).
                 this.lineChart.data.labels.pop();
             }
-            dataset.data.push(brightnessSlider.current_brightness());
+            // You can fetch the realtime value from hardware then display it, to do so, uncomment the following two lines:
+            // brightnessSlider.fetchBrightness(); // Use hareware value
+            // let newValue = brightnessSlider.brightnessValue; // Use hareware value
+            // Alternatively, you can also use the value stored in the slider UI:
+
+            let newValue = brightnessSlider.brightnessSlider.value; // Use the HTML slider's value
+            dataset.data.push(newValue);
+            brightnessSlider.brightnessSlider.value = newValue;
         });
         this.lineChart.update('none');
     }
@@ -141,9 +163,9 @@ lineChart = new LineChart(brightnessSlider);
 const startBtn = document.querySelector("#start");
 const stopBtn = document.querySelector("#stop");
 startBtn.addEventListener('click', () => {
-    lineChart.start_monitoring();
+    lineChart.startMonitoring();
 })
 stopBtn.addEventListener('click', () => {
-    lineChart.stop_monitoring();
+    lineChart.stopMonitoring();
 })
 </script>

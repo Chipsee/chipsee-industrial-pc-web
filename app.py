@@ -167,8 +167,6 @@ def line_chart():
 @app.route('/api/line_chart', methods=['GET', 'POST'])
 def api_line_chart():
     if request.method == 'GET':
-        # GET request shows an example to provide realtime data to browser from other devices, 
-        # but isn't actually used in this line chart html template.
         actual_brightness = dev_brightness.get_actual_brightness()
         return {"brightness": actual_brightness}
     if request.method == 'POST':
