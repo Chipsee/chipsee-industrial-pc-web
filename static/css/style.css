@@ -11,6 +11,7 @@
 .home-card {
     border-radius: 6px;
     height: 40vh;
+    width: 27.5vw;
     padding: 1em;
     display: flex;
     align-items: center;

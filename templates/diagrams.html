@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Cases | Chipsee Industrial PC Demo</title>
+    <title>Diagrams | Chipsee Industrial PC Demo</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
@@ -10,21 +10,21 @@
 
 <body class="dark-bg sticky-body">
     <div class="d-flex justify-content-evenly w-100">
-        <a href="{{ url_for('home') }}" class="d-flex align-items-center px-2"><i class="arrow-left"></i></a>
+        <a href="{{ url_for('cases') }}" class="d-flex align-items-center px-2"><i class="arrow-left"></i></a>
         <div class="row d-flex align-items-center justify-content-center" style="min-height: 100vh">
-            <a class="col-4 home-card-link" href="{{ url_for('ip_config') }}">
-                <div class="home-card home-card-bg ip-config-card">
-                    <span class="home-card-text">Static IP</span>
+            <a class="col-4 home-card-link" href="{{ url_for('charts') }}">
+                <div class="home-card home-card-bg charts-card">
+                    <span class="home-card-text">Charts</span>
                 </div>
             </a>
-            <a class="col-4 home-card-link" href="{{ url_for('file_upload') }}">
-                <div class="home-card home-card-bg file-upload-card">
-                    <span class="home-card-text">File Upload</span>
+            <a class="col-4 home-card-link" href="{{ url_for('line_chart') }}">
+                <div class="home-card home-card-bg line-chart-card">
+                    <span class="home-card-text">Line Chart</span>
                 </div>
             </a>
             <a class="col-4 home-card-link" href="#">
-                <div class="home-card home-card-bg modbus-card">
-                    <span class="home-card-text">Modbus</span>
+                <div class="home-card home-card-bg more-card">
+                    <span class="home-card-text">More</span>
                 </div>
             </a>
             <a class="col-4 home-card-link" href="#">
@@ -43,7 +43,7 @@
                 </div>
             </a>
         </div>
-        <a href="{{ url_for('diagrams') }}" class="d-flex align-items-center px-2"><i class="arrow-right"></i></a>
+        <a href="#" class="d-flex align-items-center px-2"><i class="arrow-right opacity-0"></i></a>
     </div>
 </body>
 

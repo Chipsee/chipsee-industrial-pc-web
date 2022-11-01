@@ -36,6 +36,10 @@ def home():
 def cases():
     return render_template('cases.html')
 
+@app.route("/diagrams")
+def diagrams():
+    return render_template('diagrams.html')
+
 # Brightness
 @app.route('/brightness', methods=['GET', 'POST'])
 def brightness():
@@ -158,23 +162,6 @@ def can_recv():
 gevent.spawn(can_recv) # background task to read CAN device
 
 
-# Cases: Line Chart
-@app.route('/line_chart')
-def line_chart():
-    actual_brightness = dev_brightness.get_actual_brightness()
-    return render_template('line_chart.html', actual_brightness=actual_brightness)
-
-@app.route('/api/line_chart', methods=['GET', 'POST'])
-def api_line_chart():
-    if request.method == 'GET':
-        actual_brightness = dev_brightness.get_actual_brightness()
-        return {"brightness": actual_brightness}
-    if request.method == 'POST':
-        new_brightness = request.form["brightness"]
-        dev_brightness.set_brightness(brightness=new_brightness)
-        actual_brightness = dev_brightness.get_actual_brightness()
-        return {"brightness": actual_brightness}
-
 # Cases: Static IP setting
 @app.route('/ip_config', methods=['GET', 'POST'])
 def ip_config():
@@ -200,10 +187,28 @@ def file_upload():
 def download_file(fname):
     return send_from_directory(app.config["UPLOAD_FOLDER"], fname, as_attachment=True)
 
-# Cases: Charts Showcase
+# Diagrams: Charts Showcase
 @app.route('/charts')
 def charts():
     return render_template('charts.html')
+
+# Diagrams: Line Chart
+@app.route('/line_chart')
+def line_chart():
+    actual_brightness = dev_brightness.get_actual_brightness()
+    return render_template('line_chart.html', actual_brightness=actual_brightness)
+
+@app.route('/api/line_chart', methods=['GET', 'POST'])
+def api_line_chart():
+    if request.method == 'GET':
+        actual_brightness = dev_brightness.get_actual_brightness()
+        return {"brightness": actual_brightness}
+    if request.method == 'POST':
+        new_brightness = request.form["brightness"]
+        dev_brightness.set_brightness(brightness=new_brightness)
+        actual_brightness = dev_brightness.get_actual_brightness()
+        return {"brightness": actual_brightness}
+    
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
