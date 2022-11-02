@@ -1,0 +1,132 @@
+<!doctype html>
+<html>
+<head>
+    <title>Charts | Chipsee Industrial PC Demo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/chart.js') }}"></script>
+</head>
+
+<body class="sticky-body silver-bg">
+    {% include "common/navbar.html" %}
+    <div class="container mt-3">
+        <div class="d-inline-flex flex-column justify-content-between" style="width: 100%; height: 85vh;">
+            <div class="row">
+                <div class="col col-6">
+                    <h3 class="text-center fw-bold my-0">Output Power A</h3>
+                </div>
+                <div class="col col-6">
+                    <h3 class="text-center fw-bold my-0">Output Power B</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-6 d-flex align-items-center justify-content-center flex-column">
+                    <div style="width: 40vw;"><canvas id="doughnut-monitor"></canvas></div>
+                    <p class="position-absolute display-5 mt-3 ms-1 fw-bold" style="color: #21c341;"><span id="display-value">0</span>%</p>
+                </div>
+                <div class="col col-6 d-flex align-items-center justify-content-center flex-column">
+                    <div style="width: 40vw;"><canvas id="doughnut-monitor-2"></canvas></div>
+                    <p class="position-absolute display-5 mt-3 ms-1 fw-bold" style="color: #21c341;"><span id="display-value-2">0</span>%</p>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col col-6">
+                    <input type="range" class="output-slider" id="output-slider" min="0" max="100">
+                </div>
+                <div class="col col-6">
+                    <input type="range" class="output-slider" id="output-slider-2" min="0" max="100">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script>
+
+class DoughnutMonitor {
+    constructor(chartElemId, outputElemId) {
+        this.outputElemId = outputElemId;
+        this.data = {
+            labels: ['Machine Output'],
+            datasets: [
+                {
+                    label: 'Dataset 1',
+                    data: [0.00, 1.00],
+                    backgroundColor: ['#f97c28', '#21c341'],
+                }
+            ]
+        };
+        this.config = {
+            type: 'doughnut',
+            data: this.data,
+            options: {
+                animation: {
+                    duration: 3000
+                },
+                responsive: true,
+                plugins: {
+                    legend: {
+                        // display: false,
+                        position: 'bottom',
+                        labels: {
+                            font: {
+                                size: 24
+                            }
+                        }
+                    },
+                    title: {
+                        display: true,
+                        font: {
+                            size: 24
+                        },
+                        text: 'Turbine'
+                    }
+                }
+            },
+        };
+        this.chart = new Chart(document.getElementById(chartElemId), this.config)
+    }
+    update() {
+        this.chart.data.datasets.forEach((dataset) => {
+            let randomNum = Math.random();
+            document.querySelector(this.outputElemId).textContent = `${(randomNum*100).toFixed(0)}`;
+            dataset.data = [randomNum, 1-randomNum];
+        });
+        this.chart.update();
+    }
+    startMonitoring() {
+        clearInterval(this.job); // Avoid issues when pausing the chart with button.
+        this.job = setInterval(() => this.update(), 2000);
+    }
+    stopMonitoring() {
+        clearInterval(this.job);
+    }
+}
+class OutputSlider {
+    constructor(sliderElem, chartElem, valueElem) {
+        sliderElem.addEventListener('change', ()=> {
+            let newValue = (sliderElem.value.trim() / 100);
+            chartElem.stopMonitoring();
+            chartElem.chart.data.datasets.forEach((dataset) => {
+                dataset.data = [newValue, 1-newValue];
+            });
+            chartElem.chart.update();
+            valueElem.textContent = (newValue * 100).toFixed(0);
+        })
+    }
+}
+const bumpChart = new DoughnutMonitor('doughnut-monitor', '#display-value');
+const slider = document.querySelector("#output-slider")
+const outputValue = document.querySelector('#display-value')
+
+const outputSlider = new OutputSlider(slider, bumpChart, outputValue);
+bumpChart.startMonitoring();
+
+const bumpChart2 = new DoughnutMonitor('doughnut-monitor-2','#display-value-2');
+const slider2 = document.querySelector("#output-slider-2")
+const outputValue2 = document.querySelector('#display-value-2')
+
+const outputSlider2 = new OutputSlider(slider2, bumpChart2, outputValue2);
+bumpChart2.startMonitoring();
+</script>

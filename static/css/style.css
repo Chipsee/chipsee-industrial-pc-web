@@ -10,6 +10,7 @@
     background-color: #eaeaea;
 }
 .sticky-body {
+    overscroll-behavior-x: none;
     position: sticky;
     overflow: hidden;
 }
@@ -140,6 +141,19 @@
     background-image: url("../images/svg/diagrams/sine_wave.svg");
     color: #ffffff;
 }
+
+.bar-chart-card {
+    background-color: #38e025;
+    background-image: url("../images/svg/diagrams/bar_chart.svg");
+    color: #ffffff;
+}
+
+.doughnut-chart-card {
+    background-color: #336ff1;
+    background-image: url("../images/svg/diagrams/doughnut_chart.svg");
+    color: #ffffff;
+}
+
 /* Buzzer */
 .buzzer-btn {
     display: block;
@@ -239,12 +253,12 @@
     border-radius: 1em;
 }
 
-::-webkit-slider-runnable-track {
+#brightness-slider::-webkit-slider-runnable-track {
     background: linear-gradient(0deg, rgba(45, 45, 45, 1) 0%, rgba(42, 42, 42, 1) 100%);
     border-radius: 0.1em;
 }
 
-::-webkit-slider-thumb {
+#brightness-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     border-radius: 1em;
     width: 0px;
@@ -303,4 +317,27 @@ input.gpio-in[type=checkbox] + label {
     width: 125px;
     background-size: 100%;
     transition: background-image 0.2s ease-in-out;
+}
+
+/* Diagrams: Doughnut Chart */
+
+.output-slider {
+    height: 3em;
+    width: 100%;
+    -webkit-appearance: none;
+    overflow: hidden;
+}
+.output-slider::-webkit-slider-runnable-track {
+    background: linear-gradient(90deg, rgb(68, 245, 3) 0%, rgb(247, 47, 11) 100%);
+    border-radius: 0.2em;
+}
+
+.output-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border-radius: 0em;
+    width: 15px;
+    height: 3em;
+    cursor: ew-resize;
+    box-shadow: 0 0 0 10px rgb(228, 184, 38) inset;
+    transition: box-shadow 0.2s ease-in-out;
 }

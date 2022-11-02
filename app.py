@@ -214,5 +214,14 @@ def api_line_chart():
 def sine_wave():
     return render_template('sine_wave.html')
 
+# Diagrams: Bar Chart
+@app.route('/bar_chart')
+def bar_chart():
+    return render_template('bar_chart.html')
+
+# Diagrams: Doughnut Chart
+@app.route('/doughnut_chart')
+def doughnut_chart():
+    return render_template('doughnut_chart.html')
 if __name__ == '__main__':
     socketio.run(app, debug=True)

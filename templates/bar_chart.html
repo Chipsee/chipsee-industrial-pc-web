@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+<head>
+    <title>Charts | Chipsee Industrial PC Demo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/chart.js') }}"></script>
+</head>
+
+<body class="sticky-body silver-bg">
+    {% include "common/navbar.html" %}
+    <div class="container mt-1">
+        <h2 class="text-center fw-bold">Resource Usage</h2>
+        <div class="row mt-3">
+            <div class="col" style="width:85vw">
+                <canvas id="h-bar-chart"></canvas>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script>
+
+class HorizontalBar {
+    constructor() {
+        this.data = {
+            labels: ['Machine A', 'Machine B'],
+            datasets: [
+                {
+                    label: 'Cases',
+                    data: [2.2, 5.15, 7.63, 4.22],
+                    borderColor: '#fc89ea',
+                    backgroundColor: '#ff7aa7',
+                },
+                {
+                    label: 'Water(L)',
+                    data: [2.9, 4.51, 3.75, 5, 6.63],
+                    borderColor: '#ff9326',
+                    backgroundColor: '#ffa74f',
+                },
+                {
+                    label: 'Panel',
+                    data: [5.2, 1, 5.91, 8.5],
+                    borderColor: '#fcd71a',
+                    backgroundColor: '#fcfa1a',
+                }
+            ]
+        };
+        this.config = {
+            type: 'bar',
+            data: this.data,
+            options: {
+                indexAxis: 'y',
+                animation: {
+                    duration: 3000
+                },
+                // Elements options apply to all of the options unless overridden in a dataset
+                // In this case, we are setting the border of each horizontal bar to be 2px wide
+                elements: {
+                    bar: {
+                        borderWidth: 2,
+                    }
+                },
+                scales: {
+                    x: {
+                        min: 0,
+                        max: 100,
+                        ticks: {
+                            font: {
+                                size: 24,
+                                family:'vazir'
+                            }
+                        }
+                    },
+                    yield: {
+                        ticks: {
+                            font: {
+                                size: 24,
+                                family:'vazir'
+                            }
+                        }
+                    }
+                },
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            font: {
+                                size: 24
+                            }
+                        }
+                    },
+                    title: {
+                        display: true,
+                        font: {
+                            size: 24
+                        },
+                        text: 'Last 5 seconds'
+                    }
+                }
+            },
+        }
+        this.chart = new Chart(document.getElementById('h-bar-chart'), this.config)
+        setInterval(() => {
+            this.chart.data.datasets.forEach((dataset) => {
+                dataset.data = Array.from({length: 3}, () => Math.random() * 100);
+            });
+            this.chart.update();
+        }, 5000)
+    }
+}
+
+let horizontalBarChart = new HorizontalBar()
+</script>
