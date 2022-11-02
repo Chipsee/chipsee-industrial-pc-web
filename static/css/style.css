@@ -2,6 +2,13 @@
     background-color: #160129;
 }
 
+.dark-blue-bg {
+    background-color: #212c6b;
+}
+
+.silver-bg {
+    background-color: #eaeaea;
+}
 .sticky-body {
     position: sticky;
     overflow: hidden;

@@ -7,18 +7,21 @@
     <script src="{{ url_for('static', filename='js/chart.js') }}"></script>
 </head>
 
-<body class="sticky-body">
+<body class="sticky-body silver-bg">
     {% include "common/navbar.html" %}
     <div class="container">
-        <h2 class="text-center mt-3">Power Grid Voltage</h2>
+        <h2 class="text-center mt-3 text-secondary fw-bold">Power Grid Voltage</h2>
         <div class="d-flex justify-content-evenly">
             <div class="form-check" style="font-size: 2em;">
-                <input class="form-check-input" type="checkbox" value="" name="animation-switch" id="animation-switch">
-                <label class="form-check-label" for="flexCheckDefault">Animation</label>
+                <input class="btn-check" type="checkbox" checked name="animation-switch" id="animation-switch" autocomplete="off">
+                <label class="btn btn-lg fw-bold btn-outline-secondary" for="animation-switch">Animation</label>
             </div>
             <div>
-                <button class="btn btn-lg btn-success fw-bold" id="start">Start</button>
-                <button class="btn btn-lg btn-danger fw-bold" id="stop">Stop</button>
+                <input type="radio" class="btn-check" name="pause-chart" id="start" autocomplete="off" checked>
+                <label class="btn btn-lg fw-bold btn-outline-success" for="start">Start</label>
+
+                <input type="radio" class="btn-check" name="pause-chart" id="stop" autocomplete="off">
+                <label class="btn btn-lg fw-bold btn-outline-danger" for="stop">Stop</label>
             </div>
         </div>
         <div class="mt-1">
@@ -31,7 +34,7 @@
 <script>
 class InterpolationLine {
     constructor() {
-        this.dataPoints = 48;
+        this.dataPoints = 64;
         const labels = [];
         for (let i = 0; i < this.dataPoints; ++i) {
             labels.push(i.toString());
@@ -44,7 +47,7 @@ class InterpolationLine {
                     data: Array(this.dataPoints).fill(0),
                     pointRadius: 2,
                     borderColor: '#ff5555',
-                    fill: false,
+                    fill: true,
                     cubicInterpolationMode: 'monotone',
                     tension: 0.5
                 },
@@ -78,7 +81,7 @@ class InterpolationLine {
                 //     easing: 'linear',
                 //     loop: false
                 // },
-                animation: false,
+                animation: true,
                 plugins: {
                     title: {
                         display: true,

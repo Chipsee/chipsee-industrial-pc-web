@@ -7,20 +7,20 @@
     <script src="{{ url_for('static', filename='js/chart.js') }}"></script>
 </head>
 
-<body class="dark-bg sticky-body">
+<body class="silver-bg sticky-body">
     {% include "common/navbar.html" %}
     <div class="px-4">
         <div class="row w-100" style="height: 100vh;">
-            <div class="d-flex flex-column align-items-center justify-content-center col col-10" style="height: 85vh;">
-                <div class="text-white fs-2 fw-bold my-3 d-flex align-items-center justify-content-evenly w-100">
-                    <div>Realtime Line Chart</div>
+            <div class="d-flex flex-column align-items-center justify-content-evenly col col-10" style="height: 85vh;">
+                <div class="fs-2 fw-bold mt-3 d-flex align-items-center justify-content-evenly w-100">
+                    <div class="text-secondary">Realtime Line Chart</div>
                     <div>
-                        <button class="btn btn-lg btn-success fw-bold" id="start">Start</button>
-                        <button class="btn btn-lg btn-danger fw-bold" id="stop">Stop</button>
+                        <button class="btn btn-lg btn-secondary fw-bold" id="start">Start</button>
+                        <button class="btn btn-lg btn-secondary fw-bold" id="stop">Stop</button>
                     </div>
                 </div>
-                <div class="mt-4 ms-2" style="height:95vh; width:80vw">
-                    <canvas id="myChart" class="bg-white rounded-2"></canvas>
+                <div class="ms-2 d-flex flex-column justify-content-end" style="height:95vh; width:80vw">
+                    <canvas id="myChart" class="rounded-2" style="background: #ffffff50;"></canvas>
                 </div>
             </div>
             <div class="col col-1 position-relative">
@@ -71,12 +71,11 @@ class LineChart {
     constructor(brightnessSlider) {
         this.dataPoints = 32; // Number of points to constructs this line chart.
         const data = {
-            labels: Array(this.dataPoints).fill(0),
+            labels: Array(this.dataPoints).fill(""),
             datasets: [{
                 label: 'Brightness',
                 data: Array(this.dataPoints).fill(0),
-                backgroundColor: 'rgb(180, 32, 247)',
-                borderColor: 'rgb(180, 32, 247)',
+                borderColor: 'dark',
                 pointRadius: 2, // Hide points.
             }]
         };
@@ -89,10 +88,10 @@ class LineChart {
                         align: 'end',
                         text: "Brightness",
                         padding: 0, 
-                        font: { size: 24, family: 'Helvetica' }, 
-                        color: 'rgb(180, 32, 247)' 
+                        font: { size: 28, family: 'Helvetica' }, 
+                        color: 'dark' 
                     },
-                    ticks: { color: 'rgb(55, 55, 55)' },
+                    ticks: { color: 'dark' },
                     suggestedMin: 0,
                     suggestedMax: 100
                 },
@@ -102,8 +101,8 @@ class LineChart {
                         text: 'Time', 
                         align: 'end', 
                         padding: 0, 
-                        color: 'rgb(180, 32, 247)', 
-                        font: { size: 24, family: 'Helvetica' } 
+                        color: 'dark', 
+                        font: { size: 28, family: 'Helvetica' } 
                     }
                 }
             },
