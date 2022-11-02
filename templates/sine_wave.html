@@ -12,16 +12,27 @@
     <div class="container">
         <h2 class="text-center mt-3 text-secondary fw-bold">Power Grid Voltage</h2>
         <div class="d-flex justify-content-evenly">
-            <div class="form-check" style="font-size: 2em;">
-                <input class="btn-check" type="checkbox" checked name="animation-switch" id="animation-switch" autocomplete="off">
-                <label class="btn btn-lg fw-bold btn-outline-secondary" for="animation-switch">Animation</label>
-            </div>
             <div>
                 <input type="radio" class="btn-check" name="pause-chart" id="start" autocomplete="off" checked>
                 <label class="btn btn-lg fw-bold btn-outline-success" for="start">Start</label>
 
                 <input type="radio" class="btn-check" name="pause-chart" id="stop" autocomplete="off">
                 <label class="btn btn-lg fw-bold btn-outline-danger" for="stop">Stop</label>
+            </div>
+            <div class="d-flex">
+                <div>
+                    <input type="radio" class="btn-check" name="speed-adjust" id="up" autocomplete="off">
+                    <label class="btn btn-lg fw-bold btn-outline-secondary" for="up">-</label>
+                    
+                    <span class="fw-bold fs-5 border border-3 btn btn-lg">Interval: <span id="speed"></span>ms</span>
+
+                    <input type="radio" class="btn-check" name="speed-adjust" id="down" autocomplete="off">
+                    <label class="btn btn-lg fw-bold btn-outline-secondary" for="down">+</label>
+                </div>
+                <div class="form-check" style="font-size: 2em;">
+                    <input class="btn-check" type="checkbox" checked name="animation-switch" id="animation-switch" autocomplete="off">
+                    <label class="btn btn-lg fw-bold btn-outline-secondary" for="animation-switch">Smooth</label>
+                </div>
             </div>
         </div>
         <div class="mt-1">
@@ -47,7 +58,7 @@ class InterpolationLine {
                     data: Array(this.dataPoints).fill(0),
                     pointRadius: 2,
                     borderColor: '#ff5555',
-                    fill: true,
+                    fill: false,
                     cubicInterpolationMode: 'monotone',
                     tension: 0.5
                 },
@@ -112,13 +123,14 @@ class InterpolationLine {
         };
         this.chart = new Chart(document.getElementById('line-chart'), this.config);
         this.step = 0;
+        this.interval = 400;
         this.period = this.dataPoints / 4;
         this.phaseShift = Math.round(2 * Math.PI / 3.0 * 100) / 100;
     }
 
     startMonitoring() {
         clearInterval(this.job); // Avoid issues when pausing the chart with button.
-        this.job = setInterval(() => this.update(), 300);
+        this.job = setInterval(() => this.update(), this.interval);
     }
 
     stopMonitoring() {
@@ -142,6 +154,7 @@ class InterpolationLine {
         this.chart.update();
     }
 }
+// Initialize line chart
 let lineChart = new InterpolationLine();
 document.querySelector("#animation-switch").onchange = (e) => {
     let checked = e.target.checked;
@@ -153,6 +166,7 @@ document.querySelector("#animation-switch").onchange = (e) => {
 }
 lineChart.startMonitoring();
 
+// Bind methods to start/stop buttons
 const startBtn = document.querySelector("#start");
 const stopBtn = document.querySelector("#stop");
 startBtn.addEventListener('click', () => {
@@ -160,6 +174,24 @@ startBtn.addEventListener('click', () => {
 })
 stopBtn.addEventListener('click', () => {
     lineChart.stopMonitoring();
+})
+
+// Bind methods to speed up/down buttons
+const speedUpBtn = document.querySelector("#up");
+const speedDownBtn = document.querySelector("#down");
+const speedElem = document.querySelector("#speed");
+speedElem.textContent = lineChart.interval;
+speedUpBtn.addEventListener('click', () => {
+    lineChart.interval -= 20;
+    if(lineChart.interval <= 20) { lineChart.interval = 10; }
+    speedElem.textContent = lineChart.interval;
+    lineChart.startMonitoring();
+})
+speedDownBtn.addEventListener('click', () => {
+    lineChart.interval += 20;
+    if(lineChart.interval >= 2000) { lineChart.interval = 2000; }
+    speedElem.textContent = lineChart.interval;
+    lineChart.startMonitoring();
 })
 
 </script>
