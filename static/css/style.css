@@ -90,12 +90,6 @@
 }
 
 /* Cases  */
-.line-chart-card {
-    background-color: rgba(62,213,219,0.84);
-    background-image: url("../images/svg/cases/heat.svg");
-    color: #ffffff;
-}
-
 .ip-config-card {
     background-color: rgba(151,238,109, 76%) ;
     background-image: url("../images/svg/cases/ip_config.svg");
@@ -108,12 +102,6 @@
     color: #ffffff;
 }
 
-.charts-card {
-    background-color: #835abb;
-    background-image: url("../images/svg/cases/charts.svg");
-    color: #ffffff;
-}
-
 .modbus-card {
     background-color: #ffb11e;
     background-image: url("../images/svg/cases/modbus.svg");
@@ -123,6 +111,26 @@
 .more-card {
     background-color: #3b65edbc;
     background-image: url("../images/svg/cases/more.svg"), linear-gradient(45deg, rgba(104,195,23,0.8491597322522759) 13%, rgba(90,105,187,1) 83%);
+    color: #ffffff;
+}
+
+
+/* Diagrams */
+.line-chart-card {
+    background-color: rgba(62,213,219,0.84);
+    background-image: url("../images/svg/diagrams/line_chart.svg");
+    color: #ffffff;
+}
+
+.charts-card {
+    background-color: #835abb;
+    background-image: url("../images/svg/diagrams/charts.svg");
+    color: #ffffff;
+}
+
+.sine-wave-card {
+    background-color: #f4200d;
+    background-image: url("../images/svg/diagrams/sine_wave.svg");
     color: #ffffff;
 }
 /* Buzzer */
