@@ -1,4 +1,12 @@
 <nav class="nav sticky-top justify-content-between bg-secondary">
-    <a class="nav-link" href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='images/svg/nav/Icon.png') }}" width="24px" class="img-fluid"></a>
+    <div class="d-flex">
+        <a class="nav-link" href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='images/svg/nav/Icon.png') }}" width="24px" class="img-fluid"></a>
+        <a class="nav-link" id="go-back"><img src="{{ url_for('static', filename='images/svg/nav/back.svg') }}" width="24px" class="img-fluid"></a>
+    </div>
     <a class="nav-link" href="{{ url_for(request.endpoint, **request.view_args) }}"><img src="{{ url_for('static', filename='images/svg/nav/refresh.svg') }}" height="24px"></a>
 </nav>
+<script>
+    document.getElementById('go-back').addEventListener('click', () => {
+        history.back();
+    });
+</script>
