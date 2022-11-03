@@ -4,14 +4,19 @@
 <head>
     <title>Static IP Configuration | Chipsee Industrial PC Demo</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/simple_keyboard.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/simple_keyboard/index.modern.js') }}"></script>
 </head>
 
 <body class="dark-bg text-white" style="overflow-x: hidden;">
     {% include "common/navbar.html" %}
     <div class="container d-flex align-items-center justify-content-center fw-bold" style="min-height: 90vh;">
         <div class="w-100">
+            <div class="text-dark fixed-top">
+                <div class="simple-keyboard"></div>
+            </div>
             <h2 class="text-center my-4 fw-bold">Static IP Configuration</h2>
             {% if msg %}
                 <p class="fw-bold alert alert-info d-flex align-items-center">
@@ -59,37 +64,37 @@
                     <div class="mb-4 row">
                         <label for="address" class="form-label col-2 col-form-label col-form-label-lg">IP Address</label>
                         <div class="col-10">
-                            <input type="text" class="form-control form-control-lg text-white bg-dark" name="address" value="{{ request.form['address'] }}" placeholder="e.g 192.168.0.5/24, 2001:db8::1000/64">
+                            <input type="text" id="ip-input" class="form-control form-control-lg text-white bg-dark input" name="address" value="{{ request.form['address'] }}" placeholder="e.g 192.168.0.5/24, 2001:db8::1000/64">
                         </div>
                     </div>
                     <div class="mb-4 row">
                         <label for="gateway" class="form-label col-2 col-form-label col-form-label-lg">Gateway</label>
                         <div class="col-10">
-                            <input type="text" class="form-control form-control-lg text-white bg-dark" name="gateway" value="{{ request.form['gateway'] }}">
+                            <input type="text" id="gw-input" class="form-control form-control-lg text-white bg-dark input" name="gateway" value="{{ request.form['gateway'] }}">
                         </div>
                     </div>
                     <div class="mb-4 row">
                         <label for="dns-server" class="form-label col-2 col-form-label col-form-label-lg">DNS Server</label>
                         <div class="col-5">
-                            <input type="text" class="form-control form-control-lg text-white bg-dark" name="dns-server" placeholder="Primary DNS" value="{{ request.form['dns-server'] }}">
+                            <input type="text" id="dns-primary-input" class="form-control form-control-lg text-white bg-dark input" name="dns-server" placeholder="Primary DNS" value="{{ request.form['dns-server'] }}">
                         </div>
                         <div class="col-5">
-                            <input type="text" class="form-control form-control-lg text-white bg-dark" name="dns-server-secondary" placeholder="Secondary DNS" value="{{ request.form['dns-server-secondary'] }}">
+                            <input type="text" id="dns-secondary-input" class="form-control form-control-lg text-white bg-dark input" name="dns-server-secondary" placeholder="Secondary DNS" value="{{ request.form['dns-server-secondary'] }}">
                         </div>
                     </div>
                     <div class="mb-2 row">
                         <label for="dns-search" class="form-label col-2 col-form-label col-form-label-lg">DNS Search</label>
                         <div class="col-10">
-                            <input type="text" class="form-control form-control-lg text-white bg-dark" name="dns-search" value="{{ request.form['dns-search'] }}">
+                            <input type="text" id="dns-search-input" class="form-control form-control-lg text-white bg-dark input" name="dns-search" value="{{ request.form['dns-search'] }}">
                         </div>
                     </div>
                     <button type="submit" class="btn btn-secondary fs-4 w-100 mt-3 fw-bold" id="submit">Apply</button>
                     <div class="form-text">Network will be down for a few seconds after applying</div>
                 </form>
             </div>
+               
         </div>
     </div>
-    
 </body>
 
 </html>
@@ -101,3 +106,85 @@ form.addEventListener('submit', (event) => {
     submitBtn.setAttribute("disabled", true);
     submitBtn.innerText = "Processing...";
 })
+
+// Set virtual keyboard
+const Keyboard = window.SimpleKeyboard.default;
+let selectedInput;
+const defaultTheme = "hg-theme-default";
+
+let keyboard = new Keyboard({
+    theme: defaultTheme,
+    onChange: input => onChange(input),
+    onKeyPress: button => onKeyPress(button)
+});
+
+// Let virtual keyboard work with all input fields
+document.querySelectorAll(".input").forEach(input => {
+    input.addEventListener("focus", onInputFocus);
+    // Optional: Use if you want to track input changes
+    // made without simple-keyboard
+    input.addEventListener("input", onInputChange);
+});
+
+function onInputFocus(event) {
+    selectedInput = `#${event.target.id}`;
+
+    keyboard.setOptions({
+        inputName: event.target.id
+    });
+
+    showKeyboard();
+}
+
+function onInputChange(event) {
+    keyboard.setInput(event.target.value, event.target.id);
+}
+
+function onChange(input) {
+    document.querySelector(selectedInput || ".input").value = input;
+}
+
+function onKeyPress(button) {
+    /**
+     * Shift functionality
+     */
+    if (button === "{lock}" || button === "{shift}") handleShiftButton();
+}
+
+function handleShiftButton() {
+    let currentLayout = keyboard.options.layoutName;
+    let shiftToggle = currentLayout === "default" ? "shift" : "default";
+
+    keyboard.setOptions({
+    layoutName: shiftToggle
+    });
+}
+
+document.addEventListener("click", (event) => {
+    if (
+        /**
+         * Hide the keyboard when you're not clicking it or when clicking an input
+         * If you have installed a "click outside" library, please use that instead.
+         */
+        keyboard.options.theme.includes("show-keyboard") &&
+        !event.target.className.includes("input") &&
+        !event.target.className.includes("hg-button") &&
+        !event.target.className.includes("hg-row") &&
+        !event.target.className.includes("simple-keyboard")
+    ) {
+        hideKeyboard();
+    }
+});
+
+function showKeyboard() {
+    keyboard.setOptions({
+        theme: `${defaultTheme} show-keyboard`
+    });
+}
+
+function hideKeyboard() {
+    keyboard.setOptions({
+        theme: defaultTheme
+    });
+}
+</script>

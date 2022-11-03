@@ -341,3 +341,16 @@ input.gpio-in[type=checkbox] + label {
     box-shadow: 0 0 0 10px rgb(228, 184, 38) inset;
     transition: box-shadow 0.2s ease-in-out;
 }
+
+/* IP config: Virtual Keyboard */
+.simple-keyboard {
+    display: none;
+}
+.show-keyboard {
+    display: block;
+    animation: keyboard-in 0.3s;
+}
+@keyframes keyboard-in {
+    from {opacity: 0.2;}
+    to {opacity: 1;}
+}
