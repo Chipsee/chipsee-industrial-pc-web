@@ -1,0 +1,44 @@
+.slider__legend {
+    padding: 1rem 3rem 0 0;
+    list-style: none;
+}
+
+.slider__legend h2 {
+    margin-bottom: 1rem;
+}
+
+.slider__legend li {
+    display: flex;
+    margin-bottom: 0rem;
+}
+
+.slider__legend li span {
+    display: inline-block;
+}
+
+.slider__legend li span:first-child {
+    height: 20px;
+    width: 20px;
+    margin-bottom: -2px;
+}
+
+.slider__legend li span:nth-child(2) {
+    margin: 0 0.5rem;
+}
+
+.slider__legend li span:last-child {
+    font-size: 1.25rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums lining-nums;
+    min-width: 60px;
+}
+
+.sliderValue {
+    text-align: left;
+}
+
+.sliderLi {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

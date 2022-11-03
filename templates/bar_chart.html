@@ -1,19 +1,27 @@
 <!doctype html>
 <html>
+
 <head>
     <title>Charts | Chipsee Industrial PC Demo</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/round_slider.css') }}">
     <script src="{{ url_for('static', filename='js/chart.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/round_slider.js') }}"></script>
 </head>
 
 <body class="sticky-body silver-bg">
     {% include "common/navbar.html" %}
-    <div class="container mt-1">
-        <h2 class="text-center fw-bold">Resource Usage</h2>
-        <div class="row mt-3">
-            <div class="col" style="width:85vw">
-                <canvas id="h-bar-chart"></canvas>
+    <div class="container">
+        <div class="d-flex justify-content-center flex-column vh-100">
+            <h2 class="text-center fw-bold">Resource Usage</h2>
+            <div class="row">
+                <div class="col" style="width: 75vw">
+                    <canvas id="h-bar-chart"></canvas>
+                </div>
+                <div class="col col-3">
+                    <div id="round-slider" class="d-flex flex-column align-items-center justify-content-center h-100 w-100"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -21,96 +29,127 @@
 
 </html>
 <script>
-
-class HorizontalBar {
-    constructor() {
-        this.data = {
-            labels: ['Machine A', 'Machine B'],
-            datasets: [
-                {
-                    label: 'Cases',
-                    data: [2.2, 5.15, 7.63, 4.22],
-                    borderColor: '#fc89ea',
-                    backgroundColor: '#ff7aa7',
-                },
-                {
-                    label: 'Water(L)',
-                    data: [2.9, 4.51, 3.75, 5, 6.63],
-                    borderColor: '#ff9326',
-                    backgroundColor: '#ffa74f',
-                },
-                {
-                    label: 'Panel',
-                    data: [5.2, 1, 5.91, 8.5],
-                    borderColor: '#fcd71a',
-                    backgroundColor: '#fcfa1a',
-                }
-            ]
-        };
-        this.config = {
-            type: 'bar',
-            data: this.data,
-            options: {
-                indexAxis: 'y',
-                animation: {
-                    duration: 3000
-                },
-                // Elements options apply to all of the options unless overridden in a dataset
-                // In this case, we are setting the border of each horizontal bar to be 2px wide
-                elements: {
-                    bar: {
-                        borderWidth: 2,
+    class HorizontalBar {
+        constructor() {
+            this.data = {
+                labels: ['Machine A', 'Machine B'],
+                datasets: [
+                    {
+                        label: 'Cases(pcs)',
+                        data: [0, 0],
+                        borderColor: '#fc89ea',
+                        backgroundColor: '#ff7aa7',
+                    },
+                    {
+                        label: 'Water(L)',
+                        data: [10, 55],
+                        borderColor: '#ff9326',
+                        backgroundColor: '#ffa74f',
+                    },
+                    {
+                        label: 'Panel(pcs)',
+                        data: [55, 80],
+                        borderColor: '#fcd71a',
+                        backgroundColor: '#fcfa1a',
                     }
-                },
-                scales: {
-                    x: {
-                        min: 0,
-                        max: 100,
-                        ticks: {
-                            font: {
-                                size: 24,
-                                family:'vazir'
+                ]
+            };
+            this.config = {
+                type: 'bar',
+                data: this.data,
+                options: {
+                    indexAxis: 'y',
+                    animation: {
+                        duration: 3000
+                    },
+                    // Elements options apply to all of the options unless overridden in a dataset
+                    // In this case, we are setting the border of each horizontal bar to be 2px wide
+                    elements: {
+                        bar: {
+                            borderWidth: 2,
+                        }
+                    },
+                    scales: {
+                        x: {
+                            min: 0,
+                            max: 100,
+                            ticks: {
+                                font: {
+                                    size: 24,
+                                    family: 'vazir'
+                                }
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                font: {
+                                    size: 24,
+                                    family: 'vazir'
+                                }
                             }
                         }
                     },
-                    yield: {
-                        ticks: {
-                            font: {
-                                size: 24,
-                                family:'vazir'
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    size: 24
+                                }
                             }
-                        }
-                    }
-                },
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                        labels: {
+                        },
+                        title: {
+                            display: true,
                             font: {
                                 size: 24
-                            }
+                            },
+                            text: 'Last 5 seconds'
                         }
-                    },
-                    title: {
-                        display: true,
-                        font: {
-                            size: 24
-                        },
-                        text: 'Last 5 seconds'
                     }
-                }
-            },
+                },
+            }
+            this.chart = new Chart(document.getElementById('h-bar-chart'), this.config);
+            this.manualValue = 0; // Will be altered by the round slider.
         }
-        this.chart = new Chart(document.getElementById('h-bar-chart'), this.config)
-        setInterval(() => {
-            this.chart.data.datasets.forEach((dataset) => {
-                dataset.data = Array.from({length: 3}, () => Math.random() * 100);
+        update() {
+            this.chart.data.datasets.forEach((dataset, index) => {
+                dataset.data = Array.from({ length: 2 }, () => Math.random() * 100); // Generate random value for bar chart.
+                if(index == 0) {
+                    dataset.data = Array(2).fill(this.manualValue);
+                }
             });
             this.chart.update();
-        }, 5000)
+        }
+        startMonitoring() {
+            clearInterval(this.job); // Avoid issues when pausing the chart with button.
+            this.job = setInterval(() => this.update(), 2000);
+        }
+        stopMonitoring() {
+            clearInterval(this.job);
+        }
     }
-}
 
-let horizontalBarChart = new HorizontalBar()
+    let horizontalBarChart = new HorizontalBar();
+    horizontalBarChart.startMonitoring();
+
+    // Round Slider Opitons
+    const opts = {
+        DOMselector: '#round-slider',
+        barChart: horizontalBarChart,
+        sliders: [
+            {
+                radius: 100,
+                min: 0,
+                max: 100,
+                step: 1,
+                initialValue: 0,
+                color: '#ff7aa7',
+                displayName: 'Cases(pcs)'
+            },
+        ]
+    };
+    // Instantiate the slider
+    const slider = new RoundSlider(opts);
+    slider.draw();
 </script>
