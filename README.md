@@ -16,18 +16,18 @@ Web framework: **Flask**
 Browser: **Chromium**
 
 ## Introduction
-This demo is a Python-Flask web application for testing the GPIO, buzzer, serial ports(RS232 and RS485), panel brightness and CAN bus of Chipsee Industrial PC. It also contains 3 use cases: setting static IP, uploading file to and downloading file from file system(including USB/TF card), drawing line chart from realtime data.
+This demo is a Python-Flask web application for testing the GPIO, buzzer, serial ports(RS232 and RS485), panel brightness and CAN bus of Chipsee Industrial PC. It also contains 2 use cases: setting static IP, uploading file to and downloading file from file system(including USB/TF card). It contains 5 examples to draw charts: draw bar chart, doughnut chart, sine wave from dummy data, and draw line chart from realtime data.
 
-It contains 9 HTML web pages to control input and output of these peripherals, 
+It contains 13 HTML web pages to demonstrate how to control input and output of these peripherals, 
 7 Python classes to control the logic of these peripherals,
-a Flask web server to handle the HTTP requests for us.
+a Flask web server to handle the HTTP requests.
 
 ## How to Install
-Use a Linux user with `sudo` privilige, e.g. on CM4 just use pi, on PX30 you can use root (`sudo su` to switch to root user. Or create a user with sudo privilege), otherwise some hardware may or may not work, such as screen brightness.
+Use a Linux user with `sudo` privilige, e.g. on CM4 just use pi, on PX30 you can use root (`sudo su` to switch to root user. Or create a user with sudo privilege), otherwise some hardware may not work, such as screen brightness (depending on the operating system version).
 
 ```bash
-git clone https://github.com/printfinn/cm4_demo_python_flask.git
-cd cm4_demo_python_flask
+git clone https://github.com/printfinn/chipsee-industrial-pc-web.git
+cd chipsee-industrial-pc-web
 # Create a Python project virtual environment
 python3 -m venv venv
 # Activate the virtual environment
@@ -47,12 +47,12 @@ pip install -U setuptools
 # Start the demo using Flask for development (Handy for debugging, but not recommended. Websocket will not work in this setting.)
 export FLASK_DEBUG=1
 flask run
-# or (Handy for debugging, but not recommended. This has a bad performance for websocket server, may cause serial device to lose data in some situations.)
+# or (Handy for debugging, but not recommended. Websocket works but has a bad performance, may cause serial device to lose data in some situations.)
 python app.py
 # or, start the demo for production (also recommended for development, everything works as expected, downside is you need to restart the server if code is modified.)
 gunicorn -k geventwebsocket.gunicorn.workers.GeventWebSocketWorker -w 1 -b 0.0.0.0:5000 app:app
 ```
-Then go to Chromium web browser and enter address `127.0.0.1:5000` in the address bar of web browser.
+Then, visit `127.0.0.1:5000` in Chromium web browser, you should see the web application GUI.
 
 ## How to stop
 Press ctrl + C to stop the Flask web server, then exit the virtual environment with:
@@ -64,7 +64,7 @@ deactivate
 `app.py` is the entry file of a Flask web app.
 
 ### models folder
-`models` folder contains the logic code to control different peripherals, for example: `models/brightness.py` contains code that adjusts the brightness of a PC's screen, `models/serial_port.py` contains code to utilize the RS232 and RS485 serial ports.
+`models` folder contains the logic code to control different peripherals, for example: `models/brightness.py` contains code that adjusts the brightness of a PC's screen, `models/serial_port.py` contains code to utilize the RS232 and RS485 serial ports, so does `can_bus.py`, `gpio.py`, etc.
 
 ### templates folder
 `templates` folder is the Flask's convention of storing html web pages. In this app, each peripheral has a html file in the templates folder. For example: `templates/brightness.html` is an example web page of how user could use a browser as GUI to adjust the brightness of a PC's screen.
@@ -73,7 +73,7 @@ deactivate
 `static` folder contains the CSS, images and some JS files.
 
 ### config folder
-`config` folder contains the configurations of this app. It has a `peripherals` sub directory, which contains PC-specific settings for different Chipsee PCs, for example: `config/peripherals/CS10600RA4070.json` file contains the `Chipsee Industrial Pi`'s peripherals' Linux file paths, `config/peripherails/CS12800PX101A.json` file contains the file path of the `PX30` PC. Those file path may or may not differ between different PCs, this is a convenient way to organize the configuration of different PCs. You can also hard-code the Linux file path in each model's Python classes (inside `models/{peripheral_name}.py` if your code are not designed to support different PCs.
+`config` folder contains the configurations of this app. It has a `peripherals` sub directory, which contains PC-specific settings for different Chipsee PCs, for example: `config/peripherals/CS10600RA4070.json` file contains the `Chipsee Industrial Pi`'s peripherals' Linux file paths, `config/peripherails/CS12800PX101A.json` file contains the file path of the `PX30` PC. Those file path may or may not differ between different PCs, this is a convenient way to organize the configuration of different PCs. You can also hard-code the Linux file path in each model's Python classes (inside `models/{peripheral_name}.py` if your code are not designed to support different PCs (this is not recommended, because it makes it difficult to run your code on different models of Chipsee PCs, but if you only have one type of Chipsee industrial PC, you can do this).
 
 ## Notes for Developers
 1. This demo uses Flask because Python code is easier to understand and Flask is a simpler Python web framework.
@@ -81,7 +81,7 @@ You can indeed use any web framework you wish: Nodejs, Ruby on Rails, Django, Ph
 1. If you're using another web framework that is not written in Python, we encourage you to read the code in `models` folder of this repo, and
 read the [Chipsee software documents](https://docs.chipsee.com/PCs/Pi/Software/Debian.html) to figure out how to manipulate the hardware
 peripherals of Chipsee Industrial PC in your chosen programming language. We'll provide more examples for different programming languages
-in the future, but any experienced programmer should be able to figure it out by themselves. Here are some hints:
+in the future, but any experienced programmer should be able to figure it out by themselves. Here are some hints for *Chipsee Industrial Raspberry Pi PC*, but the general idea should apply to other PCs as well:
     1. **GPIO**: GPIO are files on the Linux OS, manipulate them by reading writing these files: `/dev/chipsee-gpio1` ~ `/dev/chipsee-gpio8`
     1. **Screen Panel Brightness**: Brightness can be interacted with a bunch of Linux files in: `/sys/class/backlight/pwm-backlight`
     1. **Serial Port**: Use a Serial library to talk to Linux serial device. Python has `pyserial`, Ruby has a ruby-serialport [gem](https://github.com/hparra/ruby-serialport), JS has node-serialport [library](https://github.com/serialport/node-serialport), C++, Java should have their own solutions. Since Chipsee's Industrial Pi's RS232 serial port is just a Linux serial device, you can use any libraries that can handle Linux serial devices to control it.
