@@ -103,10 +103,21 @@ def api_buzzer():
         return { 'status': 'Success', 'msg': new_status }
     return { 'status': 'Error', 'msg': msg }
 
-# Serial
+# Serial RS232
 @app.route("/rs232")
 def rs232():
-    return render_template('rs232.html')
+    return render_template('rs232.html', closed=dev_rs232.closed)
+
+@app.route("/api/rs232", methods=['POST'])
+def api_rs232():
+    # Open / Close Serial Port on POST form.
+    req = request.json
+    new_status = str(req['status'])
+    if new_status == "1":
+        dev_rs232.open()
+    elif new_status == "0":
+        dev_rs232.close()
+    return { 'status': 'Success', 'msg': new_status }
 
 @socketio.on('rs232_tx')
 def rs232_tx(data):
@@ -123,9 +134,21 @@ def rs232_rx():
             break
 gevent.spawn(rs232_rx) # background task to read 232 device
 
+# Serial RS485
 @app.route("/rs485")
 def rs485():
-    return render_template('rs485.html')
+    return render_template('rs485.html', closed=dev_rs485.closed)
+
+@app.route("/api/rs485", methods=['POST'])
+def api_rs485():
+    # Open / Close Serial Port on POST form.
+    req = request.json
+    new_status = str(req['status'])
+    if new_status == "1":
+        dev_rs485.open()
+    elif new_status == "0":
+        dev_rs485.close()
+    return { 'status': 'Success', 'msg': new_status }
 
 @socketio.on('rs485_tx')
 def rs485_tx(data):
