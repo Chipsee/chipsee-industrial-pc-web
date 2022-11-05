@@ -12,8 +12,10 @@ Jinja2==3.1.2
 MarkupSafe==2.1.1
 msgpack==1.0.4
 packaging==21.3
+pymodbus==3.0.0
 pyparsing==3.0.9
 pyserial==3.5
+pyserial-asyncio==0.6
 python-can==4.0.0
 python-engineio==4.3.4
 python-socketio==5.7.1
