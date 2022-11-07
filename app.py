@@ -17,6 +17,7 @@ from models.can_bus import CanBus
 from models.ip_config import IpConfig
 from models.file_upload import FileUpload
 from models.modbus_server_sync import ModbusServerSync
+from models.modbus_client_sync import ModbusClientSync
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER # (Download file support)
@@ -31,6 +32,10 @@ dev_can_bus = CanBus()
 dev_modbus_servers = {
     "tcp": ModbusServerSync(comm="tcp", emit_to=socketio),
     "serial": ModbusServerSync(comm="serial", emit_to=socketio, serial_device_name="rs485")
+}
+dev_modbus_clients = {
+    "tcp": ModbusClientSync(comm="tcp", emit_to=socketio),
+    "serial": ModbusClientSync(comm="serial", emit_to=socketio, serial_device_name="rs485")
 }
 
 @app.route("/")
@@ -196,6 +201,20 @@ def api_modbus_server():
 def run_modbus(comm):
     dev_modbus_servers[comm].run_server()
     
+@app.route("/modbus_client")
+def modbus_client():
+    return render_template('modbus_client.html')
+
+@app.route("/api/modbus_client", methods=['POST'])
+def api_modbus_client():
+    req = request.json
+    comm = str(req['comm'])
+    if comm == "tcp":
+        dev_modbus_clients["tcp"].run_client()
+    elif comm == "serial":
+        dev_modbus_clients["serial"].run_client()
+    return { 'status': 'Success', 'data': 'OK' }
+
 # CAN Bus
 @app.route("/can_bus")
 def can_bus():

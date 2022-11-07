@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Modbus Client | Chipsee Industrial PC Demo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <script src="{{ url_for('static', filename='js/socket.io.js') }}"></script>
+</head>
+
+<body class="dark-bg sticky-body">
+    {% include "common/navbar.html" %}
+    <div class="container">
+        <div class="d-flex my-3 align-items-center justify-content-evenly">
+            <h3 class="text-white">Modbus Client (Sync)</h3>
+            <button class="btn btn-success ms-3 fw-bold test-modbus" id="tcp">Test Modbus Client(TCP)</button>
+            <button class="btn btn-success ms-3 fw-bold test-modbus" id="serial">Test Modbus Client(Serial)</button>
+            <button class="btn btn-danger ms-3 fw-bold" id="clear">Clear All</button>
+        </div>
+        <div id="log" class="log"></div>
+        <p class="fs-5 text-white">
+            TCP modbus client will be tested against current machine, be sure to start TCP modbus server first.
+        </p>
+        <p class="fs-5 text-white">
+            Serial modbus client will be tested using RS485, be sure RS485 is closed before testing.
+        </p>
+    </div>
+</body>
+
+</html>
+<script>
+    // Initialize websocket.
+    let modbusWebSocket = io({ transports: ['websocket'] });
+
+    // Listening to modbus client messages through websocket.
+    modbusWebSocket.on('modbus_client', (msg) => {
+        log(msg.data, msg.direction);
+    });
+
+    // Append new messages received from modbus to web page.
+    const log = (text, direction) => {
+        let logElem = document.getElementById('log');
+        let alignPostision = "start";
+        let alertColor = "success";
+        if (direction == "in") {
+            alignPostision = "start";
+            alertColor = "success";
+        } else if (direction == "out") {
+            alignPostision = "end";
+            alertColor = "warning"
+        }
+        logElem.innerHTML += `
+      <div class="row justify-content-${alignPostision} px-2 flex-nowrap">
+        <div class="alert alert-${alertColor} ms-2 py-2 my-1 col-auto fs-4 w-75 text-break">${text}</div><br>
+      </div>
+    `;
+        // Scroll to the messages bottom.
+        logElem.scrollTop = logElem.scrollHeight;
+    };
+
+    // Call modbus client test.
+    let btns = document.querySelectorAll(".test-modbus");
+    for (let btn of btns) {
+        btn.addEventListener('click', (event) => {
+            fetch("/api/modbus_client", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 'comm': event.target.id }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data['status'] === 'Success') {
+                        console.log('Success:', data);
+                    } else {
+                        throw (data['msg'])
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        })
+    }
+    // Clear messages.
+    document.querySelector("#clear").addEventListener('click', (event) => {
+        let logElem = document.getElementById('log');
+        logElem.innerHTML = "";
+    })
+</script>
