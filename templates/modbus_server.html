@@ -15,14 +15,14 @@
             <h3 class="text-white">Modbus Server (Sync)</h3>
             <div class="form-check form-switch ms-3 d-flex align-items-center justify-content-between"
                 style="font-size: 2em">
-                <input class="form-check-input my-2" type="checkbox" role="switch" id="tcp" {{ "checked"
-                    if tcp_closed==False }}>
+                <input class="form-check-input my-2" type="checkbox" role="switch" id="tcp" {{ "checked" if
+                    tcp_closed==False }}>
                 <label class="form-check-label text-white fw-bold fs-5 ms-2" for="tcp">TCP</label>
             </div>
             <div class="form-check form-switch ms-3 d-flex align-items-center justify-content-between"
                 style="font-size: 2em">
-                <input class="form-check-input my-2" type="checkbox" role="switch" id="serial"
-                    {{ "checked" if serial_closed==False }}>
+                <input class="form-check-input my-2" type="checkbox" role="switch" id="serial" {{ "checked" if
+                    serial_closed==False }}>
                 <label class="form-check-label text-white fw-bold fs-5 ms-2" for="serial">Serial</label>
             </div>
             <button class="btn btn-danger ms-3 fw-bold" id="clear">Clear All</button>
@@ -53,6 +53,12 @@
         logElem.scrollTop = logElem.scrollHeight;
     };
 
+    // Clear messages.
+    document.querySelector("#clear").addEventListener('click', (event) => {
+        let logElem = document.getElementById('log');
+        logElem.innerHTML = "";
+    })
+    
     class ModbusSwitch {
         constructor(elemId) {
             this.endPoint = "/api/modbus_server";

@@ -12,12 +12,12 @@ from pymodbus.transaction import ModbusRtuFramer
 
 # Logging is extremely handy for debugging modbus, uncomment the following if you encounter weird bugs.
 
-import logging
-FORMAT = ('%(asctime)-15s %(threadName)-15s'
-          ' %(levelname)-8s %(module)-15s:%(lineno)-8s %(message)s')
-logging.basicConfig(format=FORMAT)
-log = logging.getLogger()
-log.setLevel(logging.DEBUG)
+# import logging
+# FORMAT = ('%(asctime)-15s %(threadName)-15s'
+#           ' %(levelname)-8s %(module)-15s:%(lineno)-8s %(message)s')
+# logging.basicConfig(format=FORMAT)
+# log = logging.getLogger()
+# log.setLevel(logging.DEBUG)
 
             
 class ModbusServerSync(object):
@@ -75,7 +75,7 @@ class ModbusServerSync(object):
                 if self.emit_to is not None:
                     msg = "Starting a modbus TCP server on {}:{}".format(self.tcp_address_ip, self.tcp_address_port)
                     self.emit_to.emit(self.websocket_name, { 'data':  msg })
-                print(msg)
+                # print(msg)
                 self.server = ModbusTcpServer(
                     context, 
                     identity=identity, 
@@ -86,7 +86,7 @@ class ModbusServerSync(object):
                 if self.emit_to is not None:
                     msg = "Port {} is occupied, will start on port {}".format(self.tcp_address_port, self.tcp_address_port+1)
                     self.emit_to.emit(self.websocket_name, { 'data':  msg })
-                print(msg)
+                # print(msg)
                 if self.tcp_address_port < 65535:
                     self.tcp_address_port += 1
                 self.run_server()
@@ -100,8 +100,8 @@ class ModbusServerSync(object):
                 identity=identity, 
                 framer=ModbusRtuFramer, 
                 port=self.serial_address, 
-                timeout=3, 
-                baudrate=9600
+                timeout=0.005, 
+                baudrate=115200
             )
         else:
             self.server = None
@@ -148,11 +148,11 @@ class CustomDataBlock(ModbusSparseDataBlock):
     def emit_write_to_websocket(self, address, value):
         if self.emit_to is not None:
             msg = "Modbus: Set value: {} to address: {}".format(value, address)
-            print("Emit ({}) to websocket modbus_recv".format(msg))
+            # print("Emit ({}) to websocket modbus_recv".format(msg))
             self.emit_to.emit(self.websocket_name, { 'data':  msg })
     
     def emit_read_to_websocket(self, address, count):
         if self.emit_to is not None:
             msg = "Modbus: Get value: count {} from address: {}".format(address, count)
-            print("Emit ({}) to websocket modbus_recv".format(msg))
+            # print("Emit ({}) to websocket modbus_recv".format(msg))
             self.emit_to.emit(self.websocket_name, { 'data':  msg })
