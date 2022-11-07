@@ -110,9 +110,15 @@
     color: #ffffff;
 }
 
-.modbus-card {
+.modbus-server-card {
     background-color: #ffb11e;
-    background-image: url("../images/svg/cases/modbus.svg");
+    background-image: url("../images/svg/cases/modbus_server.svg");
+    color: #ffffff;
+}
+
+.modbus-client-card {
+    background-color: #24c9f6;
+    background-image: url("../images/svg/cases/modbus_client.svg");
     color: #ffffff;
 }
 

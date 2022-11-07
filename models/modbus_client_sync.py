@@ -112,7 +112,7 @@ class ModbusClientSync(object):
             'write_address':   1,
             'write_registers': [20]*8,
         }
-        self.emit("Read write registeres simulataneously (0x01, 1, 8, 1, [20]*8):")
+        self.emit("Read write registers simulataneously (0x01, 1, 8, 1, [20]*8):")
         rq = client.readwrite_registers(unit=UNIT, **arguments)
         self.emit(rq.registers, "out") # should be [20]*8
         self.emit("Read holding registers (1, 8, 0x01):")

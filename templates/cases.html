@@ -12,6 +12,16 @@
     <div class="d-flex justify-content-evenly w-100">
         <a href="{{ url_for('home') }}" class="d-flex align-items-center px-2"><i class="arrow-left"></i></a>
         <div class="row d-flex align-items-center justify-content-center" style="min-height: 100vh">
+            <a class="col-4 home-card-link" href="{{ url_for('modbus_server') }}">
+                <div class="home-card home-card-bg modbus-server-card">
+                    <span class="home-card-text">Modbus Server</span>
+                </div>
+            </a>
+            <a class="col-4 home-card-link" href="{{ url_for('modbus_client') }}">
+                <div class="home-card home-card-bg modbus-client-card">
+                    <span class="home-card-text">Modbus Client</span>
+                </div>
+            </a>
             <a class="col-4 home-card-link" href="{{ url_for('ip_config') }}">
                 <div class="home-card home-card-bg ip-config-card">
                     <span class="home-card-text">Static IP</span>
@@ -22,25 +32,13 @@
                     <span class="home-card-text">File Upload</span>
                 </div>
             </a>
-            <a class="col-4 home-card-link" href="{{ url_for('modbus_server') }}">
-                <div class="home-card home-card-bg modbus-card">
-                    <span class="home-card-text">Modbus Server</span>
-                </div>
-            </a>
-            <a class="col-4 home-card-link" href="{{ url_for('modbus_client') }}">
-                <div class="home-card home-card-bg modbus-card">
-                    <span class="home-card-text">Modbus Client</span>
-                </div>
+            <a class="col-4">
             </a>
             <a class="col-4 home-card-link" href="#">
                 <div class="home-card home-card-bg more-card">
                     <span class="home-card-text">Coming soon</span>
                 </div>
             </a>
-            <div class="col-4">
-            </div>
-            <div class="col-4">
-            </div>
         </div>
         <a href="{{ url_for('diagrams') }}" class="d-flex align-items-center px-2"><i class="arrow-right"></i></a>
     </div>
