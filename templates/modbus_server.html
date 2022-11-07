@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Modbus Server | Chipsee Industrial PC Demo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <script src="{{ url_for('static', filename='js/socket.io.js') }}"></script>
+</head>
+
+<body class="dark-bg sticky-body">
+    {% include "common/navbar.html" %}
+    <div class="container">
+        <div class="d-flex my-3 align-items-center justify-content-evenly">
+            <h3 class="text-white">Modbus Server (Sync)</h3>
+            <div class="form-check form-switch ms-3 d-flex align-items-center justify-content-between"
+                style="font-size: 2em">
+                <input class="form-check-input my-2" type="checkbox" role="switch" id="tcp" {{ "checked"
+                    if tcp_closed==False }}>
+                <label class="form-check-label text-white fw-bold fs-5 ms-2" for="tcp">TCP</label>
+            </div>
+            <div class="form-check form-switch ms-3 d-flex align-items-center justify-content-between"
+                style="font-size: 2em">
+                <input class="form-check-input my-2" type="checkbox" role="switch" id="serial"
+                    {{ "checked" if serial_closed==False }}>
+                <label class="form-check-label text-white fw-bold fs-5 ms-2" for="serial">Serial</label>
+            </div>
+            <button class="btn btn-danger ms-3 fw-bold" id="clear">Clear All</button>
+        </div>
+        <div id="log" class="log"></div>
+    </div>
+</body>
+
+</html>
+<script>
+    // Initialize websocket.
+    let modbusWebSocket = io({ transports: ['websocket'] });
+
+    // Listening to modbus messages through websocket.
+    modbusWebSocket.on('modbus_server', (msg) => {
+        log(msg.data);
+    });
+
+    // Append new messages received from modbus to web page.
+    const log = (text) => {
+        let logElem = document.getElementById('log');
+        logElem.innerHTML += `
+      <div class="row justify-content-end px-2 flex-nowrap">
+        <div class="alert alert-success ms-2 py-2 my-1 col-auto fs-4 w-75">${text}</div><br>
+      </div>
+    `;
+        // Scroll to the messages bottom.
+        logElem.scrollTop = logElem.scrollHeight;
+    };
+
+    class ModbusSwitch {
+        constructor(elemId) {
+            this.endPoint = "/api/modbus_server";
+            document.querySelector(`#${elemId}`).onchange = (e) => {
+                let checked = e.target.checked;
+                if (checked) {
+                    this.setModbus(1, elemId);
+                } else {
+                    this.setModbus(0, elemId);
+                }
+            }
+        }
+
+        setModbus(value, comm) {
+            fetch(this.endPoint, {
+                method: 'POST', // or 'PUT'
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 'status': value, 'comm': comm }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data['status'] === 'Success') {
+                        console.log('Success:', data);
+                    } else {
+                        throw (data['msg'])
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+    }
+    let tcpSwitch = new ModbusSwitch("tcp");
+    let serialSwitch = new ModbusSwitch("serial");
+</script>

@@ -16,6 +16,7 @@ from models.buzzer import Buzzer
 from models.can_bus import CanBus
 from models.ip_config import IpConfig
 from models.file_upload import FileUpload
+from models.modbus_server_sync import ModbusServerSync
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER # (Download file support)
@@ -27,6 +28,10 @@ dev_rs485 = SerialPort(name="rs485")
 dev_brightness = Brightness()
 dev_buzzer = Buzzer()
 dev_can_bus = CanBus()
+dev_modbus_servers = {
+    "tcp": ModbusServerSync(comm="tcp", emit_to=socketio),
+    "serial": ModbusServerSync(comm="serial", emit_to=socketio, serial_device_name="rs485")
+}
 
 @app.route("/")
 def home():
@@ -165,6 +170,32 @@ def rs485_rx():
             break
 gevent.spawn(rs485_rx) # background task to read 485 device
 
+# Modbus Server
+@app.route("/modbus_server")
+def modbus_server():
+    return render_template('modbus_server.html', 
+        serial_closed=dev_modbus_servers["serial"].closed, 
+        tcp_closed=dev_modbus_servers["tcp"].closed
+    )
+
+@app.route("/api/modbus_server", methods=['POST'])
+def api_modbus_server():
+    # Start / stop Modbus server on POST form.
+    req = request.json
+    new_status = str(req['status'])
+    comm = str(req['comm'])
+    if new_status == "1":
+        thread = gevent.spawn(run_modbus(comm))
+        # Modbus server will block running from here, until stopped.
+        thread.kill()
+        return { 'status': 'Success', 'comm': comm, 'msg': 'Blocking modbus server returned.' }
+    elif new_status == "0":
+        dev_modbus_servers[comm].stop()
+        return { 'status': 'Success', 'comm': comm, 'msg': new_status }
+
+def run_modbus(comm):
+    dev_modbus_servers[comm].run_server()
+    
 # CAN Bus
 @app.route("/can_bus")
 def can_bus():
