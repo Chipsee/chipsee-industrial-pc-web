@@ -16,15 +16,26 @@ Web framework: **Flask**
 Browser: **Chromium**
 
 ## Introduction
-This demo is a Python-Flask web application for testing the GPIO, buzzer, serial ports(RS232 and RS485), panel brightness and CAN bus of Chipsee Industrial PC. It also contains 2 use cases: setting static IP, uploading file to and downloading file from file system(including USB/TF card). It contains 5 examples to draw charts: draw bar chart, doughnut chart, sine wave from dummy data, and draw line chart from realtime data.
+This demo is a Python-Flask web application for testing the GPIO, buzzer, serial ports(RS232 and RS485), panel brightness and CAN bus of Chipsee Industrial PC. It also contains 4 use cases: setting static IP, uploading file to and downloading file from file system(including USB/TF card), modbus server(slave) and modbus client(master). It contains 5 examples to draw charts: draw bar chart, doughnut chart, sine wave from dummy data, and draw line chart from realtime data.
 
-It contains 13 HTML web pages to demonstrate how to control input and output of these peripherals, 
-7 Python classes to control the logic of these peripherals,
+It contains 15 HTML web pages to demonstrate how to control input and output of these peripherals, 
+9 Python classes to control the logic of these peripherals,
 a Flask web server to handle the HTTP requests.
 
-## How to Install
-Use a Linux user with `sudo` privilige, e.g. on CM4 just use pi, on PX30 you can use root (`sudo su` to switch to root user. Or create a user with sudo privilege), otherwise some hardware may not work, such as screen brightness (depending on the operating system version).
+## Supported Features
 
+1. GPIO
+1. Serial port (232 and 485)
+1. Screen backlight 
+1. Buzzer
+1. CAN bus
+1. Modbus (server and client)
+1. Static IP
+1. File upload/download
+1. Dynamic charts(line chart, sine wave, bar chart, doughnut chart)
+
+## How to Install
+Boot you industrial PC and type the following commands in a command line tool, you may use xterm from within the industrial PC, or SSH into it with PuTTY (Windows), Terminal(MacOS) or your favorite Linux CMD tool:
 ```bash
 git clone https://github.com/printfinn/chipsee-industrial-pc-web.git
 cd chipsee-industrial-pc-web
@@ -34,10 +45,11 @@ python3 -m venv venv
 . venv/bin/activate
 # Upgrade Pip if your pip version is too old (< 21.0)
 pip install --upgrade pip
+# upgrade setuptools (optional. This will install dependency for gunicorn, recommended to execute)
+pip install -U setuptools
 # Install the required Python packages
 pip install -r requirements.txt
-# Alternatively, upgrade setuptools (this will install dependency for gunicorn, recommended to execute)
-pip install -U setuptools
+
 ```
 
 ## How to start
@@ -89,7 +101,13 @@ in the future, but any experienced programmer should be able to figure it out by
     1. **CAN Bus**: CAN devices are abstracted as Linux network interfaces in the Linux kernel, use `ifconfig` to check them, use `ip link set can0 ***` commands to configure and enable them. Then use a CAN library to send / receive messages through CAN hardware, like `python-can`. We haven't tested other languages, but other programming languages should have their own solutions to control a CAN device.
     1. **Static IP**: Setting static IP involves OS level configuration, in the Pi PC, the official Pi OS from Raspberry Foundation uses `dhcpcd`, and the community is gradually migrating to `NetworkManager`; in the PX30's Debian system, `NetworkManager` is operating the network, which also has a command line tool: `nmcli`. This app demonstrates both methods: it modifies the `dhcpcd.conf` file to set static IP for Pi PC, for PX30, it runs `nmcli` commands to set static IP.
     1. **Uploading Downloading to File System(USB/TF card)**: Uploading file is nothing special but a HTML form with a `<input type="file">`. Downloading is right clicking(equivalent to long pressing on a touch panel) a file link then click `save link as` like you download a file on your own PC with a browser.
+    1. **Modbus**: You can use `pymodbus` lib for Python. For C/C++ use the `libmodbus` which is written in C. This code uses `pymodbus-2.5.3`, read the code in `model/modbus_client_sync.py`, or read the official `pymodbus` doc to learn how to let your industrial PC speak modbus language. 
     1. **Drawing line chart from realtime data**: You can send HTTP XHR requests (or use websockets) to your Flask server, to query the data with Javascript, then draw the returned realtime data with `chart.js` library.
 1. In the browser client, you can use FETCH API or XHR to visit your web server's API endpoint, to send control signals to the hardware peripherals, so that you don't need to refresh the page. But if you want to test with a traditional request-response cycle, it's also fine.
 1. You can also use a WebSocket for continously reading status of GPIO/Serail Port. This demo uses `poll` strategy for reading GPIO input status, and uses `websocket` to read serial ports and CAN messages. They're not mandatory, pick the solution that works best for your problem!
+
+
+## FAQ
+1. Q: Setting *Backlight* and *GPIO* won't work, it says there is a "Permission Error", what's going on?<br>
+A: Adjusting backlight or set GPIO to low/high requires `write` permission to Linux files, and the Linux user you're using to run Flask server(this program) does not have this permission. Take a look at the backlight and GPIO's file permission in Linux, for example, if you're using the user `linaro` in `PX30 PC`, you need to give `/sys/class/backlight/backlight` a `write` permission. To do this [For PX30 only!] run a `sudo chmod 646 /sys/class/backlight/backlight` should resolve the issue. For other industrial PCs, find the backlight or GPIO Linux file, then give your Linux user a write permission of these files.
 
