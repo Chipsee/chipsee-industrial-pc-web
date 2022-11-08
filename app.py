@@ -202,6 +202,7 @@ def api_modbus_server():
 def run_modbus(comm):
     dev_modbus_servers[comm].run_server()
     
+# Modbus Client
 @app.route("/modbus_client")
 def modbus_client():
     return render_template('modbus_client.html')
@@ -297,5 +298,6 @@ def bar_chart():
 @app.route('/doughnut_chart')
 def doughnut_chart():
     return render_template('doughnut_chart.html')
+
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    socketio.run(app, host='0.0.0.0', debug=True)

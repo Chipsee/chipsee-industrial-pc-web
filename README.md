@@ -57,12 +57,11 @@ pip install -r requirements.txt
 # Re-activate the virtual environment if you have exited from it
 . venv/bin/activate
 # Start the demo using Flask for development (Handy for debugging, but not recommended. Websocket will not work in this setting.)
-export FLASK_DEBUG=1
-flask run
+flask --debug run
 # or (Handy for debugging, but not recommended. Websocket works but has a bad performance, may cause serial device to lose data in some situations.)
 python app.py
 # or, start the demo for production (also recommended for development, everything works as expected, downside is you need to restart the server if code is modified.)
-gunicorn -k geventwebsocket.gunicorn.workers.GeventWebSocketWorker -w 1 -b 0.0.0.0:5000 app:app
+. bin/dev
 ```
 Then, visit `127.0.0.1:5000` in Chromium web browser, you should see the web application GUI.
 
