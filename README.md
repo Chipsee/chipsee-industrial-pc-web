@@ -18,7 +18,7 @@ Browser: **Chromium**
 ## Introduction
 This demo is a Python-Flask web application for testing the GPIO, buzzer, serial ports(RS232 and RS485), panel brightness and CAN bus of Chipsee Industrial PC. It also contains 4 use cases: setting static IP, uploading file to and downloading file from file system(including USB/TF card), modbus server(slave) and modbus client(master). It contains 5 examples to draw charts: draw bar chart, doughnut chart, sine wave from dummy data, and draw line chart from realtime data.
 
-It contains 15 HTML web pages to demonstrate how to control input and output of these peripherals, 
+It contains 17 HTML web pages to demonstrate how to control input and output of these peripherals, 
 9 Python classes to control the logic of these peripherals,
 a Flask web server to handle the HTTP requests.
 
@@ -32,6 +32,8 @@ a Flask web server to handle the HTTP requests.
 1. Modbus (server and client)
 1. Static IP
 1. File upload/download
+1. Video playback
+1. Audio playback
 1. Dynamic charts(line chart, sine wave, bar chart, doughnut chart)
 
 ## How to Install
@@ -63,7 +65,21 @@ python app.py
 # or, start the demo for production (also recommended for development, everything works as expected, downside is you need to restart the server if code is modified.)
 . bin/dev
 ```
-Then, visit `127.0.0.1:5000` in Chromium web browser, you should see the web application GUI.
+
+## Start your browser in full screen mode
+Visit `127.0.0.1:5000` in Chromium web browser, you should see the web application GUI.
+
+Or use command line to open a browser:
+```bash
+# Recommended for development
+chromium-browser --start-fullscreen 127.0.0.1:5000
+# Alternatively, start Chromium in kiosk mode (recommended for production):
+chromium-browser --kiosk 127.0.0.1:5000
+# If you see "chromium-browser: command not found", try:
+chromium --start-fullscreen 127.0.0.1:5000
+# And:
+chromium --kiosk 127.0.0.1:5000
+```
 
 ## How to stop
 Press ctrl + C to stop the Flask web server, then exit the virtual environment with:
@@ -102,6 +118,7 @@ in the future, but any experienced programmer should be able to figure it out by
     1. **Uploading Downloading to File System(USB/TF card)**: Uploading file is nothing special but a HTML form with a `<input type="file">`. Downloading is right clicking(equivalent to long pressing on a touch panel) a file link then click `save link as` like you download a file on your own PC with a browser.
     1. **Modbus**: You can use `pymodbus` lib for Python. For C/C++ use the `libmodbus` which is written in C. This code uses `pymodbus-2.5.3`, read the code in `model/modbus_client_sync.py`, or read the official `pymodbus` doc to learn how to let your industrial PC speak modbus language. 
     1. **Drawing line chart from realtime data**: You can send HTTP XHR requests (or use websockets) to your Flask server, to query the data with Javascript, then draw the returned realtime data with `chart.js` library.
+    1. **Video playback and audio playback**: They have browser native supports, just make sure you write the correct media file path.
 1. In the browser client, you can use FETCH API or XHR to visit your web server's API endpoint, to send control signals to the hardware peripherals, so that you don't need to refresh the page. But if you want to test with a traditional request-response cycle, it's also fine.
 1. You can also use a WebSocket for continously reading status of GPIO/Serail Port. This demo uses `poll` strategy for reading GPIO input status, and uses `websocket` to read serial ports and CAN messages. They're not mandatory, pick the solution that works best for your problem!
 

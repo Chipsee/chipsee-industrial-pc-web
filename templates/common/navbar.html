@@ -1,12 +1,67 @@
 <nav class="nav sticky-top justify-content-between bg-secondary">
     <div class="d-flex">
-        <a class="nav-link" href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='images/svg/nav/Icon.png') }}" width="24px" class="img-fluid"></a>
-        <a class="nav-link" id="go-back"><img src="{{ url_for('static', filename='images/svg/nav/back.svg') }}" width="24px" class="img-fluid"></a>
+        <a class="nav-link" href="{{ url_for('home') }}">
+            <img src="{{ url_for('static', filename='images/svg/nav/Icon.png') }}" width="24px" class="img-fluid">
+        </a>
+        <a class="nav-link mx-3" id="go-back">
+            <img src="{{ url_for('static', filename='images/svg/nav/back.svg') }}" width="24px" class="img-fluid">
+        </a>
+        <a class="nav-link" href="{{ url_for(request.endpoint, **request.view_args) }}">
+            <img src="{{ url_for('static', filename='images/svg/nav/refresh.svg') }}" height="24px">
+        </a>
     </div>
-    <a class="nav-link" href="{{ url_for(request.endpoint, **request.view_args) }}"><img src="{{ url_for('static', filename='images/svg/nav/refresh.svg') }}" height="24px"></a>
+    <div class="d-flex">
+        <a class="nav-link text-white" id="close">
+            <img src="{{ url_for('static', filename='images/svg/nav/close.svg') }}" height="24px">
+        </a>
+        <a class="nav-link text-white mx-5" id="reboot">
+            <img src="{{ url_for('static', filename='images/svg/nav/reboot.svg') }}" height="24px">
+        </a>
+        <a class="nav-link text-white" id="shutdown">
+            <img src="{{ url_for('static', filename='images/svg/nav/shutdown.svg') }}" height="24px">
+        </a>
+    </div>
 </nav>
 <script>
-    document.getElementById('go-back').addEventListener('click', () => {
+    const serverControl = (cmd) => {
+        fetch("/api/server_control", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 'cmd': cmd }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data['status'] === 'Success') {
+                    console.log('Success:', data);
+                } else {
+                    throw (data['msg'])
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+    document.querySelector('#go-back').addEventListener('click', () => {
         history.back();
     });
+    document.querySelector("#close").addEventListener('click', () => {
+        let check = confirm("Are you sure you want to EXIT the browser?");
+        if (check == true) {
+            serverControl("close_browser");
+        }
+    })
+    document.querySelector("#reboot").addEventListener('click', () => {
+        let check = confirm("Are you sure you want to REBOOT the PC?");
+        if (check == true) {
+            serverControl("reboot");
+        }
+    })
+    document.querySelector("#shutdown").addEventListener('click', () => {
+        let check = confirm("Are you sure you want to SHUTDOWN the PC?");
+        if (check == true) {
+            serverControl("shutdown");
+        }
+    })
 </script>

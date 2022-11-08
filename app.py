@@ -8,6 +8,7 @@ from flask import send_from_directory # (Download file support)
 from flask_socketio import SocketIO, emit # (Websocket support)
 
 UPLOAD_FOLDER = 'storage/' # (Download file support)
+from lib.server_control import ServerControl
 
 from models.brightness import Brightness
 from models.gpio import GPIO
@@ -244,7 +245,6 @@ def can_recv():
     # Listen to CAN hardware in the background, if data comes, push it to the browser.
     dev_can_bus.start_recv(emit_to=socketio)
 
-
 # Cases: Static IP setting
 @app.route('/ip_config', methods=['GET', 'POST'])
 def ip_config():
@@ -317,5 +317,12 @@ def bar_chart():
 def doughnut_chart():
     return render_template('doughnut_chart.html')
 
+# Common: Server Controls
+@app.route('/api/server_control', methods=['POST'])
+def server_control():
+    cmd = str(request.json['cmd'])
+    ServerControl().run(cmd)
+    return  { 'status': 'Success', 'msg': 'OK' }
+    
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', debug=True)
