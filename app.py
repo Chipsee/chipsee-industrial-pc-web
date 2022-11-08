@@ -270,6 +270,16 @@ def file_upload():
 def download_file(fname):
     return send_from_directory(app.config["UPLOAD_FOLDER"], fname, as_attachment=True)
 
+# Cases: Video Play
+@app.route("/video_play")
+def video_play():
+    return render_template('video_play.html')
+
+# Cases: Audio Play
+@app.route("/audio_play")
+def audio_play():
+    return render_template('audio_play.html')
+
 # Diagrams: Charts Showcase
 @app.route('/charts')
 def charts():

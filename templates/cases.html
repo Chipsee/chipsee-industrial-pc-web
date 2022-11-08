@@ -32,11 +32,14 @@
                     <span class="home-card-text">File Upload</span>
                 </div>
             </a>
-            <a class="col-4">
+            <a class="col-4 home-card-link" href="{{ url_for('video_play') }}">
+                <div class="home-card home-card-bg video-play-card">
+                    <span class="home-card-text">Video</span>
+                </div>
             </a>
-            <a class="col-4 home-card-link" href="#">
-                <div class="home-card home-card-bg more-card">
-                    <span class="home-card-text">Coming soon</span>
+            <a class="col-4 home-card-link" href="{{ url_for('audio_play') }}">
+                <div class="home-card home-card-bg audio-play-card">
+                    <span class="home-card-text">Audio</span>
                 </div>
             </a>
         </div>

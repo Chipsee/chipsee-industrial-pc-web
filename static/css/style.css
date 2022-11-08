@@ -88,13 +88,13 @@
 
 .can-bus-card {
     background-color: #cc2c85;
-    background-image: url("../images/svg/home/can_bus.svg"), linear-gradient(39deg, rgba(63, 94, 251, 1) 0%, rgba(252, 70, 107, 1) 100%);
+    background-image: url("../images/svg/home/can_bus.svg"),  linear-gradient(35deg, rgba(126, 171, 87, 0.849) 0%, rgb(86, 214, 243) 100%);
     color: #ffffff;
 }
 
 .serial-485-card {
     background-color: #cfd3d5b8;
-    background-image: url("../images/svg/home/serial-485.svg"), linear-gradient(45deg, rgba(043, 250, 121, 0.4906163148853291) 0%, rgba(230, 222, 59, 1) 100%);
+    background-image: url("../images/svg/home/serial-485.svg"), linear-gradient(35deg, rgba(043, 250, 121, 0.4906163148853291) 0%, rgba(230, 222, 59, 1) 100%);
     color: #ffffff;
 }
 
@@ -143,9 +143,15 @@
     color: #ffffff;
 }
 
-.more-card {
+.video-play-card {
+    background-color: #b22bdbbc;
+    background-image: url("../images/svg/cases/video_play.svg");
+    color: #ffffff;
+}
+
+.audio-play-card {
     background-color: #3b65edbc;
-    background-image: url("../images/svg/cases/more.svg"), linear-gradient(45deg, rgba(104,195,23,0.8491597322522759) 13%, rgba(90,105,187,1) 83%);
+    background-image: url("../images/svg/cases/audio_play.svg"), linear-gradient(39deg, rgba(63, 94, 251, 1) 0%, rgba(252, 70, 107, 1) 100%);
     color: #ffffff;
 }
 
@@ -289,6 +295,30 @@
     transition: box-shadow 0.2s ease-in-out;
 }
 
+/* Audio Play */
+.audio-slider {
+    -webkit-appearance: none;
+    overflow: hidden;
+    height: 5vw;
+    width: 80vh;
+    cursor: pointer;
+    border-radius: 1em;
+}
+
+.audio-slider::-webkit-slider-runnable-track {
+    background: linear-gradient(0deg, rgba(45, 45, 45, 1) 0%, rgba(42, 42, 42, 1) 100%);
+    border-radius: 0.1em;
+}
+
+.audio-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border-radius: 1em;
+    width: 0px;
+    height: 12vw;
+    background: #fff;
+    box-shadow: -41vh 0 2em 41vh #fff, inset 0 0 0 0px #fff;
+    transition: box-shadow 0.2s ease-in-out;
+}
 /* Serial Port */
 .log {
     overflow-y: scroll;

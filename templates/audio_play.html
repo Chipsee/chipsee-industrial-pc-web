@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Audio | Chipsee Industrial PC Demo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <script src="{{ url_for('static', filename='js/socket.io.js') }}"></script>
+</head>
+
+<body class="dark-bg sticky-body">
+    {% include "common/navbar.html" %}
+    <div class="d-flex flex-column align-items-center justify-content-center vh-100">
+        <audio controls style="width: 50%" autoplay id="player">
+            <source src="{{ url_for('static', filename='video_audio/audio_joplin.mp3') }}" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        <div class="mt-5">
+            <input type="range" class="audio-slider" id="volume" min="0" max="100" step="1" value="50">
+        </div>
+    </div>
+</body>
+
+</html>
+<script>
+    const player = document.querySelector("#player");
+    player.volume = 0.5;
+    document.querySelector("#volume").onclick = function (e) {
+        return false;
+    };
+    document.querySelector("#volume").addEventListener('input', (event) => {
+        player.volume = event.target.value / 100;
+    });
+</script>

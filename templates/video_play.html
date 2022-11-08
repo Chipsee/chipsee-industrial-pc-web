@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Video | Chipsee Industrial PC Demo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <script src="{{ url_for('static', filename='js/socket.io.js') }}"></script>
+</head>
+
+<body class="dark-bg sticky-body">
+    {% include "common/navbar.html" %}
+    <video class="w-100 h-100" controls autoplay loop>
+        <source src="{{ url_for('static', filename='video_audio/video_720.mp4') }}" type="video/mp4">
+        Your browser does not support the video element.
+    </video>
+</body>
+
+</html>
