@@ -1,5 +1,6 @@
 <!doctype html>
 <html>
+
 <head>
     <title>Brightness | Chipsee Industrial PC Demo</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
@@ -13,27 +14,28 @@
             <p class="brightness-desc">Brightness</p>
             <p class="brightness-value">{{ actual_brightness }}</p>
         </div>
-        <input type="range" class="brightness-slider brightness-slider-position" id="brightness-slider" name="brightness" min="0" max="100" step="1" value="{{ actual_brightness }}">
+        <input type="range" class="brightness-slider brightness-slider-position" id="brightness-slider"
+            name="brightness" min="0" max="{{ max_brightness }}" step="1" value="{{ actual_brightness }}">
     </div>
 </body>
 
 </html>
 <script>
-const brightnessSlider = document.querySelector('#brightness-slider');
-const curr_brightness = document.querySelector('.brightness-value');
-document.addEventListener("DOMContentLoaded", () => {
-    brightnessSlider.value = `${curr_brightness.textContent.trim()}`;
-});
-brightnessSlider.addEventListener('input', (event) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", '/api/brightness', true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = () => { // Call a function when the state changes.
-        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-            // Request finished. Do processing here.
+    const brightnessSlider = document.querySelector('#brightness-slider');
+    const curr_brightness = document.querySelector('.brightness-value');
+    document.addEventListener("DOMContentLoaded", () => {
+        brightnessSlider.value = `${curr_brightness.textContent.trim()}`;
+    });
+    brightnessSlider.addEventListener('input', (event) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", '/api/brightness', true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = () => { // Call a function when the state changes.
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                // Request finished. Do processing here.
+            }
         }
-    }
-    xhr.send(`brightness=${brightnessSlider.value}`);
-    curr_brightness.textContent = `${event.target.value}`;
-});
+        xhr.send(`brightness=${brightnessSlider.value}`);
+        curr_brightness.textContent = `${event.target.value}`;
+    });
 </script>

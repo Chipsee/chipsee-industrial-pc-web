@@ -54,8 +54,9 @@ def diagrams():
 @app.route('/brightness', methods=['GET', 'POST'])
 def brightness():
     if request.method == 'GET':
-        actual_brightness = dev_brightness.get_actual_brightness()
-        return render_template('brightness.html', actual_brightness=actual_brightness)
+        actual_b = dev_brightness.get_actual_brightness()
+        max_b = dev_brightness.max_brightness or "100"
+        return render_template('brightness.html', actual_brightness=actual_b, max_brightness=max_b)
     if request.method == 'POST':
         new_brightness = request.form["brightness"]
         dev_brightness.set_brightness(brightness=new_brightness)
