@@ -220,21 +220,29 @@ def api_modbus_client():
 # CAN Bus
 @app.route("/can_bus")
 def can_bus():
-    return render_template('can_bus.html')
+    closed = dev_can_bus.closed
+    return render_template('can_bus.html', closed=closed)
 
 @socketio.on('can_send')
 def can_send(data):
     # Listen to browser CAN form/button instructions, then send the data through CAN hardware.
-    if not dev_can_bus.bus:
-        return
     dev_can_bus.send(data)
 
+@app.route("/api/can_bus", methods=['POST'])
+def api_can_bus():
+    # Start / stop CAN bus receiver on POST form.
+    req = request.json
+    new_status = str(req['status'])
+    if new_status == "1":
+        gevent.spawn(can_recv) # background task to read CAN device
+        return { 'status': 'Success', 'msg': 'CAN started.' }
+    elif new_status == "0":
+        dev_can_bus.close_receiver()
+        return { 'status': 'Success', 'msg': new_status }
+    
 def can_recv():
     # Listen to CAN hardware in the background, if data comes, push it to the browser.
-    if dev_can_bus.bus is None:
-        return
     dev_can_bus.start_recv(emit_to=socketio)
-gevent.spawn(can_recv) # background task to read CAN device
 
 
 # Cases: Static IP setting
