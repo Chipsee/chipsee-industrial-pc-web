@@ -9,13 +9,19 @@
 
 <body class="dark-bg sticky-body">
     {% include "common/navbar.html" %}
-    <div class="container position-relative">
-        <div class="brightness-text d-flex flex-column align-items-center justify-content-center" style="height: 90vh;">
-            <p class="brightness-desc">Brightness</p>
-            <p class="brightness-value">{{ actual_brightness }}</p>
+    <div class="row w-100">
+        <div class="col col-9 vh-100">
+            <div class="brightness-text d-flex flex-column align-items-center justify-content-center"
+                style="height:95vh;">
+                <div class="brightness-desc">Brightness</div>
+                <div class="brightness-value">{{ actual_brightness }}</div>
+            </div>
         </div>
-        <input type="range" class="brightness-slider brightness-slider-position" id="brightness-slider"
-            name="brightness" min="0" max="{{ max_brightness }}" step="1" value="{{ actual_brightness }}">
+        <div class="col position-relative">
+            <input type="range" class="brightness-slider brightness-slider-position"
+                id="brightness-slider" name="brightness" min="0" max="{{ max_brightness }}" step="1"
+                value="{{ actual_brightness }}">
+        </div>
     </div>
 </body>
 

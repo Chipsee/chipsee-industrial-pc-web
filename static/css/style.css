@@ -1,3 +1,24 @@
+/* Common */
+@font-face {
+    font-family: notosans;
+    src: url(../font/NotoSans-Regular.ttf);
+    font-weight: normal;
+}
+@font-face {
+    font-family: notosans;
+    src: url(../font/NotoSans-Bold.ttf);
+    font-weight: bold;
+}
+@font-face {
+    font-family: notosans;
+    src: url(../font/NotoSans-Italic.ttf);
+    font-style: italic;
+}
+
+* {
+    font-family: notosans, Sans-serif, system-ui, "Lucida Console", monospace, Serif
+}
+
 .dark-bg {
     background-color: #160129;
 }
@@ -225,7 +246,7 @@
 .brightness-desc {
     background: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.8155462868741247) 0%, rgba(252, 255, 231, 1) 46%, rgba(255, 255, 255, 0.5242297602634804) 100%);
     -webkit-background-clip: text;
-    font-size: 8em;
+    font-size: 7em;
     -webkit-text-fill-color: transparent;
 }
 
@@ -238,12 +259,6 @@
 }
 
 .brightness-slider-position {
-    position: absolute;
-    left: 55vw;
-    top: 36vh;
-}
-
-.brightness-slider-position-line-chart {
     position: absolute;
     left: -24vh;
     bottom: 44vh;
