@@ -2,8 +2,12 @@
   "brightness": "/sys/class/backlight/pwm-backlight",
   "buzzer": "/dev/buzzer",
   "rs232": "/dev/ttyAMA1",
-  "rs485": "/dev/ttyAMA3",
+  "rs485": "/dev/ttyAMA2",
+  "rs232_0": "/dev/ttyAMA0",
   "rs232_2": "/dev/ttyAMA1",
+  "rs232_3": "/dev/ttyAMA2",
+  "rs485_3": "/dev/ttyAMA2",
+  "rs232_5": "/dev/ttyAMA3",
   "rs485_5": "/dev/ttyAMA3",
   "can": "can0",
   "gpio_out": {
