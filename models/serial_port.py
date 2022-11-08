@@ -34,7 +34,7 @@ class SerialPort(object):
             return
         if self.closed:
             return
-        data = f"{str_data}\n".encode("utf-8")
+        data = f"{str_data.strip()}\n".encode("utf-8")
         self.ser.write(data)
 
     def rx(self):
