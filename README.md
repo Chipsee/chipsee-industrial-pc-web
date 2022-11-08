@@ -106,7 +106,3 @@ in the future, but any experienced programmer should be able to figure it out by
 1. You can also use a WebSocket for continously reading status of GPIO/Serail Port. This demo uses `poll` strategy for reading GPIO input status, and uses `websocket` to read serial ports and CAN messages. They're not mandatory, pick the solution that works best for your problem!
 
 
-## FAQ
-1. Q: Setting *Backlight* and *GPIO* won't work, it says there is a "Permission Error", what's going on?<br>
-A: Adjusting backlight or set GPIO to low/high requires `write` permission to Linux files, and the Linux user you're using to run Flask server(this program) does not have this permission. Take a look at the backlight and GPIO's file permission in Linux, for example, if you're using the user `linaro` in `PX30 PC`, you need to give `/sys/class/backlight/backlight` a `write` permission. To do this [For PX30 only!] run a `sudo chmod 646 /sys/class/backlight/backlight` should resolve the issue. For other industrial PCs, find the backlight or GPIO Linux file, then give your Linux user a write permission of these files.
-

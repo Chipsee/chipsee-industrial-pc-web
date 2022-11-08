@@ -1,5 +1,6 @@
 import os
 import json
+import subprocess
 
 from lib.chipsee_board import board
 
@@ -12,6 +13,7 @@ class Brightness:
         self.max_brightness_f = os.path.join(self.device, "max_brightness")
         self.actual_brightness_f = os.path.join(self.device, "actual_brightness")
         self.brightness_f = os.path.join(self.device, "brightness")
+        self.give_linux_permission()
         self.init_max_brightness()
 
     def get_actual_brightness(self):
@@ -37,3 +39,12 @@ class Brightness:
     def init_max_brightness(self):
         with open(self.max_brightness_f, 'r') as f:
             self.max_brightness = int(f.read())
+
+    def give_linux_permission(self):
+        """
+        Some Industrial PC doesn't allow write permission of brightness file, like PX30.
+        This method gives write permission of backlight brightness Linux file to the user running this program.
+        """
+        if self.device is None:
+            return
+        subprocess.run(["sudo", "chmod", "a+w", self.brightness_f])
