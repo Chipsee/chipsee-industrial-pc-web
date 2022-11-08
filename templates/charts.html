@@ -1,5 +1,6 @@
 <!doctype html>
 <html>
+
 <head>
     <title>Charts | Chipsee Industrial PC Demo</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
@@ -14,11 +15,13 @@
             <div class="col" style="height:50vh; width:40vw">
                 <canvas id="pie"></canvas>
             </div>
-            <div class="col d-flex align-items-center justify-content-center flex-column" style="height:50vh; width:30vw">
+            <div class="col d-flex align-items-center justify-content-center flex-column"
+                style="height:50vh; width:30vw">
                 <canvas id="doughnut-progress"></canvas>
                 <p class="position-absolute display-5 mt-3 ms-1 fw-bold" id="dp-value" style="color: #1abafc;">80%</p>
             </div>
-            <div class="col d-flex align-items-center justify-content-center flex-column" style="height:50vh; width:30vw">
+            <div class="col d-flex align-items-center justify-content-center flex-column"
+                style="height:50vh; width:30vw">
                 <canvas id="doughnut-monitor"></canvas>
                 <p class="position-absolute display-5 mt-3 ms-1 fw-bold" id="dm-value" style="color: #21c341;">95%</p>
             </div>
@@ -36,290 +39,290 @@
 
 </html>
 <script>
-class PieChart {
-    constructor() {
-        this.data = {
-            labels: ['Pre', 'Onload', 'Post', 'Idle', 'Heavy', 'Low'],
-            datasets: [
-                {
-                label: 'Dataset 1',
-                data: [6.92, 31.24, 13.66, 14, 55, 21.55],
-                backgroundColor: ['#faad60', '#e88efb', '#3a9cfc', '#ff7667', '#1ae3bd', '#ffee4f'],
-                }
-            ]
-        };
-        this.config = {
-            type: 'pie',
-            data: this.data,
-            options: {
-                responsive: true,
-                plugins: {
-                legend: {
-                    // display: false,
-                    position: 'bottom',
-                },
-                title: {
-                    display: true,
-                    text: 'Resources Usage'
-                }
-                }
-            },
-        };
-        this.chart = new Chart(document.getElementById('pie'), this.config)
-        setInterval(() => {
-            this.chart.data.datasets.forEach((dataset) => {
-                dataset.data = Array.from({length: 6}, () => Math.random() * 10);
-            });
-            this.chart.update();
-        }, 1000)
-    }
-}
-class DoughnutProgress {
-    constructor() {
-        this.data = {
-            labels: ['Completed', 'Remaining'],
-            datasets: [
-                {
-                label: 'Dataset 1',
-                data: [0.8, 0.2],
-                backgroundColor: ['#1abafc', '#e9fb02'],
-                }
-            ]
-        };
-        this.config = {
-            type: 'doughnut',
-            data: this.data,
-            options: {
-                responsive: true,
-                plugins: {
-                legend: {
-                    // display: false,
-                    position: 'bottom',
-                },
-                title: {
-                    display: true,
-                    text: 'Jobs Stats'
-                }
-                }
-            },
-        };
-        this.chart = new Chart(document.getElementById('doughnut-progress'), this.config)
-        setInterval(() => {
-            this.chart.data.datasets.forEach((dataset) => {
-                let randomNum = Math.random();
-                document.querySelector('#dp-value').textContent = `${(randomNum*100).toFixed(0)}%`;
-                dataset.data = [randomNum, 1-randomNum];
-            });
-            this.chart.update();
-        }, 1000)
-    }
-}
-class DoughnutMonitor {
-    constructor() {
-        this.data = {
-            labels: ['Success', 'Failure'],
-            datasets: [
-                {
-                label: 'Dataset 1',
-                data: [0.95, 0.05],
-                backgroundColor: ['#21c341', '#f97c28'],
-                }
-            ]
-        };
-        this.config = {
-            type: 'doughnut',
-            data: this.data,
-            options: {
-                responsive: true,
-                plugins: {
-                legend: {
-                    // display: false,
-                    position: 'bottom',
-                },
-                title: {
-                    display: true,
-                    text: 'Success Rate'
-                }
-                }
-            },
-        };
-        this.chart = new Chart(document.getElementById('doughnut-monitor'), this.config)
-        setInterval(() => {
-            this.chart.data.datasets.forEach((dataset) => {
-                let randomNum = Math.random();
-                document.querySelector('#dm-value').textContent = `${(randomNum*100).toFixed(0)}%`;
-                dataset.data = [randomNum, 1-randomNum];
-            });
-            this.chart.update();
-        }, 800)
-    }
-}
-class HorizontalBar {
-    constructor() {
-        this.data = {
-            labels: ['Mon', 'Tues', 'Wed', 'Thu'],
-            datasets: [
-                {
-                label: 'Temp',
-                data: [2.2, 5.15, 7.63, 4.22],
-                borderColor: '#fc89ea',
-                backgroundColor: '#ff7aa7',
-                },
-                {
-                label: 'Pressure',
-                data: [2.9, 4.51, 3.75, 5, 6.63],
-                borderColor: '#ff9326',
-                backgroundColor: '#ffa74f',
-                },
-                {
-                label: 'Wind',
-                data: [5.2, 1, 5.91, 8.5],
-                borderColor: '#fcd71a',
-                backgroundColor: '#fcfa1a',
-                }
-            ]
-        };
-        this.config = {
-            type: 'bar',
-            data: this.data,
-            options: {
-                indexAxis: 'y',
-                // Elements options apply to all of the options unless overridden in a dataset
-                // In this case, we are setting the border of each horizontal bar to be 2px wide
-                elements: {
-                    bar: {
-                        borderWidth: 2,
+    class PieChart {
+        constructor() {
+            this.data = {
+                labels: ['Pre', 'Onload', 'Post', 'Idle', 'Heavy', 'Low'],
+                datasets: [
+                    {
+                        label: 'Dataset 1',
+                        data: [6.92, 31.24, 13.66, 14, 55, 21.55],
+                        backgroundColor: ['#faad60', '#e88efb', '#3a9cfc', '#ff7667', '#1ae3bd', '#ffee4f'],
                     }
-                },
-                scales: {
-                    x: {
-                        min: 0,
-                        max: 10
-                    }
-                },
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: true,
-                        text: 'Daily Summary'
-                    }
-                }
-            },
-        }
-        this.chart = new Chart(document.getElementById('h-bar-chart'), this.config)
-        setInterval(() => {
-            this.chart.data.datasets.forEach((dataset) => {
-                dataset.data = Array.from({length: 4}, () => Math.random() * 10);
-            });
-            this.chart.update();
-        }, 1000)
-    }
-}
-class InterpolationLine {
-    constructor() {
-        const DATA_COUNT = 16;
-        const labels = [];
-        for (let i = 0; i < DATA_COUNT; ++i) {
-            labels.push(i.toString());
-        }
-        let datapointsA = [];
-        let datapointsB = [];
-        let datapointsC = [];
-        for (let i = 0; i < DATA_COUNT; ++i) {
-            let vA = 220 * Math.sin(i)
-            let vB = 220 * Math.sin(i + 4 * Math.PI/3)
-            let vC = 220 * Math.sin(i + 2 * Math.PI/3)
-            datapointsA.push(vA.toString());
-            datapointsB.push(vB.toString());
-            datapointsC.push(vC.toString());
-        }
-        const data = {
-            labels: labels,
-            datasets: [
-                {
-                    label: 'Phase A',
-                    data: datapointsA,
-                    pointRadius: 4,
-                    borderColor: '#ff5555',
-                    fill: false,
-                    tension: 0.5
-                },
-                {
-                    label: 'Phase B',
-                    data: datapointsB,
-                    pointRadius: 4,
-                    borderColor: '#55ff5a',
-                    fill: true,
-                    tension: 0.5
-                },
-                {
-                    label: 'Phase C',
-                    data: datapointsC,
-                    pointRadius: 4,
-                    borderColor: '#0fa9ff',
-                    fill: false,
-                    tension: 0.5
-                }
-            ]
-        };
-
-        this.config = {
-            type: 'line',
-            data: data,
-            options: {
-                responsive: true,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Input Voltage (V)'
-                    },
-                },
-                interaction: {
-                    intersect: false,
-                },
-                scales: {
-                    x: {
-                        display: true,
+                ]
+            };
+            this.config = {
+                type: 'pie',
+                data: this.data,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            // display: false,
+                            position: 'bottom',
+                        },
                         title: {
-                            display: true
+                            display: true,
+                            text: 'Resources Usage'
+                        }
+                    }
+                },
+            };
+            this.chart = new Chart(document.getElementById('pie'), this.config)
+            setInterval(() => {
+                this.chart.data.datasets.forEach((dataset) => {
+                    dataset.data = Array.from({ length: 6 }, () => Math.random() * 10);
+                });
+                this.chart.update();
+            }, 1000)
+        }
+    }
+    class DoughnutProgress {
+        constructor() {
+            this.data = {
+                labels: ['Completed', 'Remaining'],
+                datasets: [
+                    {
+                        label: 'Dataset 1',
+                        data: [0.8, 0.2],
+                        backgroundColor: ['#1abafc', '#e9fb02'],
+                    }
+                ]
+            };
+            this.config = {
+                type: 'doughnut',
+                data: this.data,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            // display: false,
+                            position: 'bottom',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Jobs Stats'
+                        }
+                    }
+                },
+            };
+            this.chart = new Chart(document.getElementById('doughnut-progress'), this.config)
+            setInterval(() => {
+                this.chart.data.datasets.forEach((dataset) => {
+                    let randomNum = Math.random();
+                    document.querySelector('#dp-value').textContent = `${(randomNum * 100).toFixed(0)}%`;
+                    dataset.data = [randomNum, 1 - randomNum];
+                });
+                this.chart.update();
+            }, 1000)
+        }
+    }
+    class DoughnutMonitor {
+        constructor() {
+            this.data = {
+                labels: ['Success', 'Failure'],
+                datasets: [
+                    {
+                        label: 'Dataset 1',
+                        data: [0.95, 0.05],
+                        backgroundColor: ['#21c341', '#f97c28'],
+                    }
+                ]
+            };
+            this.config = {
+                type: 'doughnut',
+                data: this.data,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            // display: false,
+                            position: 'bottom',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Success Rate'
+                        }
+                    }
+                },
+            };
+            this.chart = new Chart(document.getElementById('doughnut-monitor'), this.config)
+            setInterval(() => {
+                this.chart.data.datasets.forEach((dataset) => {
+                    let randomNum = Math.random();
+                    document.querySelector('#dm-value').textContent = `${(randomNum * 100).toFixed(0)}%`;
+                    dataset.data = [randomNum, 1 - randomNum];
+                });
+                this.chart.update();
+            }, 800)
+        }
+    }
+    class HorizontalBar {
+        constructor() {
+            this.data = {
+                labels: ['Mon', 'Tues', 'Wed', 'Thu'],
+                datasets: [
+                    {
+                        label: 'Temp',
+                        data: [2.2, 5.15, 7.63, 4.22],
+                        borderColor: '#fc89ea',
+                        backgroundColor: '#ff7aa7',
+                    },
+                    {
+                        label: 'Pressure',
+                        data: [2.9, 4.51, 3.75, 5, 6.63],
+                        borderColor: '#ff9326',
+                        backgroundColor: '#ffa74f',
+                    },
+                    {
+                        label: 'Wind',
+                        data: [5.2, 1, 5.91, 8.5],
+                        borderColor: '#fcd71a',
+                        backgroundColor: '#fcfa1a',
+                    }
+                ]
+            };
+            this.config = {
+                type: 'bar',
+                data: this.data,
+                options: {
+                    indexAxis: 'y',
+                    // Elements options apply to all of the options unless overridden in a dataset
+                    // In this case, we are setting the border of each horizontal bar to be 2px wide
+                    elements: {
+                        bar: {
+                            borderWidth: 2,
                         }
                     },
-                    y: {
-                        display: true,
-                        title: {
-                            display: false,
-                            text: 'Volts'
+                    scales: {
+                        x: {
+                            min: 0,
+                            max: 10
+                        }
+                    },
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
                         },
-                        min: -220,
-                        max: 220
+                        title: {
+                            display: true,
+                            text: 'Daily Summary'
+                        }
                     }
-                }
-            },
-        };
-        this.chart = new Chart(document.getElementById('line-chart'), this.config);
-        this.step = 0;
-        const phaseShift = Math.round(2 * Math.PI / 3.0 * 100) / 100;
-        setInterval(()=> {
-            let randomNum = this.step / 4;
-            this.step += 1;
-            if (this.step >= 256) { this.step = 0;}
-            this.chart.data.datasets.forEach((dataset, phaseIndex) => {
-                dataset.data = [];
-                for (let i = 0+randomNum; i < DATA_COUNT+randomNum; ++i) {
-                    let v = 220 * Math.sin(i + phaseIndex * phaseShift)
-                    dataset.data.push(v);
-                }
-            });
-            this.chart.update();
-        }, 300);
+                },
+            }
+            this.chart = new Chart(document.getElementById('h-bar-chart'), this.config)
+            setInterval(() => {
+                this.chart.data.datasets.forEach((dataset) => {
+                    dataset.data = Array.from({ length: 4 }, () => Math.random() * 10);
+                });
+                this.chart.update();
+            }, 1000)
+        }
     }
-}
-let doughnutChart = new PieChart()
-let doughnutChartProgress = new DoughnutProgress()
-let doughnutChartMonitor = new DoughnutMonitor();
-let horizontalBarChart = new HorizontalBar()
-let lineChart = new InterpolationLine();
+    class InterpolationLine {
+        constructor() {
+            const DATA_COUNT = 16;
+            const labels = [];
+            for (let i = 0; i < DATA_COUNT; ++i) {
+                labels.push(i.toString());
+            }
+            let datapointsA = [];
+            let datapointsB = [];
+            let datapointsC = [];
+            for (let i = 0; i < DATA_COUNT; ++i) {
+                let vA = 220 * Math.sin(i)
+                let vB = 220 * Math.sin(i + 4 * Math.PI / 3)
+                let vC = 220 * Math.sin(i + 2 * Math.PI / 3)
+                datapointsA.push(vA.toString());
+                datapointsB.push(vB.toString());
+                datapointsC.push(vC.toString());
+            }
+            const data = {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Phase A',
+                        data: datapointsA,
+                        pointRadius: 4,
+                        borderColor: '#ff5555',
+                        fill: false,
+                        tension: 0.5
+                    },
+                    {
+                        label: 'Phase B',
+                        data: datapointsB,
+                        pointRadius: 4,
+                        borderColor: '#55ff5a',
+                        fill: true,
+                        tension: 0.5
+                    },
+                    {
+                        label: 'Phase C',
+                        data: datapointsC,
+                        pointRadius: 4,
+                        borderColor: '#0fa9ff',
+                        fill: false,
+                        tension: 0.5
+                    }
+                ]
+            };
+
+            this.config = {
+                type: 'line',
+                data: data,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Input Voltage (V)'
+                        },
+                    },
+                    interaction: {
+                        intersect: false,
+                    },
+                    scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: true
+                            }
+                        },
+                        y: {
+                            display: true,
+                            title: {
+                                display: false,
+                                text: 'Volts'
+                            },
+                            min: -220,
+                            max: 220
+                        }
+                    }
+                },
+            };
+            this.chart = new Chart(document.getElementById('line-chart'), this.config);
+            this.step = 0;
+            const phaseShift = Math.round(2 * Math.PI / 3.0 * 100) / 100;
+            setInterval(() => {
+                let randomNum = this.step / 4;
+                this.step += 1;
+                if (this.step >= 256) { this.step = 0; }
+                this.chart.data.datasets.forEach((dataset, phaseIndex) => {
+                    dataset.data = [];
+                    for (let i = 0 + randomNum; i < DATA_COUNT + randomNum; ++i) {
+                        let v = 220 * Math.sin(i + phaseIndex * phaseShift)
+                        dataset.data.push(v);
+                    }
+                });
+                this.chart.update();
+            }, 300);
+        }
+    }
+    let doughnutChart = new PieChart()
+    let doughnutChartProgress = new DoughnutProgress()
+    let doughnutChartMonitor = new DoughnutMonitor();
+    let horizontalBarChart = new HorizontalBar()
+    let lineChart = new InterpolationLine();
 </script>

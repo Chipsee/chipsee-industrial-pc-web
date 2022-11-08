@@ -20,7 +20,8 @@
                     <canvas id="h-bar-chart"></canvas>
                 </div>
                 <div class="col col-3">
-                    <div id="round-slider" class="d-flex flex-column align-items-center justify-content-center h-100 w-100"></div>
+                    <div id="round-slider"
+                        class="d-flex flex-column align-items-center justify-content-center h-100 w-100"></div>
                 </div>
             </div>
         </div>
@@ -115,7 +116,7 @@
         update() {
             this.chart.data.datasets.forEach((dataset, index) => {
                 dataset.data = Array.from({ length: 2 }, () => Math.random() * 100); // Generate random value for bar chart.
-                if(index == 0) {
+                if (index == 0) {
                     dataset.data = Array(2).fill(this.manualValue);
                 }
             });

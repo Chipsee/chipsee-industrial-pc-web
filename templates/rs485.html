@@ -9,23 +9,27 @@
 </head>
 
 <body class="dark-bg sticky-body">
-  {% include "common/navbar.html" %}
+    {% include "common/navbar.html" %}
     <div class="container">
-      <div class="d-flex align-items-center my-3">
-        <form id="rs485_tx" class="flex-grow-1">
-            <input type="text" class="form-control" id="rs485_tx_text" autofocus placeholder="Serial Port TX:" autocomplete="off">
-        </form>
-        <div class="form-check form-switch ms-3 d-flex align-items-center justify-content-between" style="font-size: 2em">
-          <input class="form-check-input my-2" type="checkbox" role="switch" id="rs485-switch" {{ "checked" if closed == False }}>
-          <label class="form-check-label text-white fw-bold fs-5 ms-2" for="rs485-switch">Open/Close</label>
+        <div class="d-flex align-items-center my-3">
+            <form id="rs485_tx" class="flex-grow-1">
+                <input type="text" class="form-control" id="rs485_tx_text" autofocus placeholder="Serial Port TX:"
+                    autocomplete="off">
+            </form>
+            <div class="form-check form-switch ms-3 d-flex align-items-center justify-content-between"
+                style="font-size: 2em">
+                <input class="form-check-input my-2" type="checkbox" role="switch" id="rs485-switch" {{ "checked" if
+                    closed==False }}>
+                <label class="form-check-label text-white fw-bold fs-5 ms-2" for="rs485-switch">Open/Close</label>
+            </div>
         </div>
-      </div>
         <div class="d-flex justify-content-between">
-          <div class="btn-group">
-            <button class="rs485-tx btn btn-primary fw-bold">Click to test Serial TX</button>
-            <button class="rs485-tx btn btn-success fw-bold">Click to send a long text that contains many words through RS485 serial port.</button>
-          </div>
-          <button class="btn btn-danger" id="clear">Clear All</button>
+            <div class="btn-group">
+                <button class="rs485-tx btn btn-primary fw-bold">Click to test Serial TX</button>
+                <button class="rs485-tx btn btn-success fw-bold">Click to send a long text that contains many words
+                    through RS485 serial port.</button>
+            </div>
+            <button class="btn btn-danger" id="clear">Clear All</button>
         </div>
         <div id="log" class="log">
         </div>
@@ -34,83 +38,83 @@
 
 </html>
 <script>
-  class Rs485Switch {
-    constructor() {
-        this.endPoint = "/api/rs485";
-        document.querySelector("#rs485-switch").onchange = (e) => {
-          let checked = e.target.checked;
-          if (checked) {
-            this.setRs485(1);
-          } else {
-            this.setRs485(0);
-          }
+    class Rs485Switch {
+        constructor() {
+            this.endPoint = "/api/rs485";
+            document.querySelector("#rs485-switch").onchange = (e) => {
+                let checked = e.target.checked;
+                if (checked) {
+                    this.setRs485(1);
+                } else {
+                    this.setRs485(0);
+                }
+            }
+        }
+
+        setRs485(value) {
+            fetch(this.endPoint, {
+                method: 'POST', // or 'PUT'
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 'status': value }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data['status'] === 'Success') {
+                        console.log('Success:', data);
+                    } else {
+                        throw (data['msg'])
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
         }
     }
+    let rs485Switch = new Rs485Switch();
+    // Initialize websocket.
+    let rs485WebSocket = io({ transports: ['websocket'] });
 
-    setRs485(value) {
-        fetch(this.endPoint, {
-          method: 'POST', // or 'PUT'
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({'status': value}),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data['status']==='Success') {
-                console.log('Success:', data);
-            } else {
-                throw(data['msg'])
-            }
-          })
-          .catch((error) => {
-            console.error('Error:', error);
-          });
-    }
-  }
-  let rs485Switch = new Rs485Switch();
-  // Initialize websocket.
-  let rs485WebSocket = io({transports: ['websocket']});
-
-  // RS485 Receive through websocket.
-  rs485WebSocket.on('rs485_rx', (msg) => {
-    log('RX <<< ' + msg.data, 'success', 'end');
-  });
-
-  // Send from input field through websocket
-  document.querySelector('#rs485_tx').onsubmit = (event) => {
-    event.preventDefault();
-    const textField = document.querySelector("#rs485_tx_text");
-    log('TX >>> ' + textField.value, 'primary', 'start');
-    rs485WebSocket.emit('rs485_tx', {data: textField.value});
-    textField.value = '';
-  }
-
-  // Send from input button clicks through websocket
-  const btns = document.querySelectorAll(".rs485-tx")
-  for(let btn of btns) {
-    btn.addEventListener('click', (event) => {
-      log('TX >>> ' + btn.textContent, 'primary', 'start');
-      rs485WebSocket.emit('rs485_tx', {data: btn.textContent});
+    // RS485 Receive through websocket.
+    rs485WebSocket.on('rs485_rx', (msg) => {
+        log('RX <<< ' + msg.data, 'success', 'end');
     });
-  }
 
-  const log = (text, style, position) => {
-    let logElem = document.getElementById('log');
-    // Append new messages from Serial port TX/RX.
-    logElem.innerHTML += `
+    // Send from input field through websocket
+    document.querySelector('#rs485_tx').onsubmit = (event) => {
+        event.preventDefault();
+        const textField = document.querySelector("#rs485_tx_text");
+        log('TX >>> ' + textField.value, 'primary', 'start');
+        rs485WebSocket.emit('rs485_tx', { data: textField.value });
+        textField.value = '';
+    }
+
+    // Send from input button clicks through websocket
+    const btns = document.querySelectorAll(".rs485-tx")
+    for (let btn of btns) {
+        btn.addEventListener('click', (event) => {
+            log('TX >>> ' + btn.textContent, 'primary', 'start');
+            rs485WebSocket.emit('rs485_tx', { data: btn.textContent });
+        });
+    }
+
+    const log = (text, style, position) => {
+        let logElem = document.getElementById('log');
+        // Append new messages from Serial port TX/RX.
+        logElem.innerHTML += `
       <div class="row justify-content-${position} px-2 flex-nowrap">
         <div class="alert alert-${style} ms-2 py-2 my-1 col-auto fs-4 w-75">${text}</div><br>
       </div>
     `;
 
-    // Scroll to the messages bottom.
-    logElem.scrollTop = logElem.scrollHeight;
-  };
+        // Scroll to the messages bottom.
+        logElem.scrollTop = logElem.scrollHeight;
+    };
 
-  // Clear messages.
-  document.querySelector("#clear").addEventListener('click', (event) => {
-    let logElem = document.getElementById('log');
-    logElem.innerHTML = "";
-  })
+    // Clear messages.
+    document.querySelector("#clear").addEventListener('click', (event) => {
+        let logElem = document.getElementById('log');
+        logElem.innerHTML = "";
+    })
 </script>

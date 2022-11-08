@@ -1,159 +1,164 @@
 <!doctype html>
 <!-- The  { %  % } marks are Jinja2 markup to run Python code in HTML-like Jinja2 template, when generating HTML in the backend -->
 <html>
+
 <head>
     <title>GPIO | Chipsee Industrial PC Demo</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
+
 <body class="dark-bg sticky-body">
     {% include "common/navbar.html" %}
     <div class="container d-flex flex-column justify-content-evenly" style="min-height: 90vh;">
         <div id="gpio-outs" class="d-flex justify-content-evenly">
             {% for gpio_out in gpio_outs %}
-                <div>
-                    <div class="text-center fw-bold fs-4 text-uppercase text-white mb-2">{{ gpio_out }}</div>
-                    <input type="checkbox" id="{{ gpio_out }}" name="{{ gpio_out }}" class="gpio-out" hidden>
-                    <label for="{{ gpio_out }}"></label>
-                </div>
+            <div>
+                <div class="text-center fw-bold fs-4 text-uppercase text-white mb-2">{{ gpio_out }}</div>
+                <input type="checkbox" id="{{ gpio_out }}" name="{{ gpio_out }}" class="gpio-out" hidden>
+                <label for="{{ gpio_out }}"></label>
+            </div>
             {% endfor %}
 
             {% if not gpio_outs %}
-                <p class="fw-bold fs-4 text-white">
-                    There is no gpio output devices for this device, or they haven't been configured in the configuration file.
-                </p>
+            <p class="fw-bold fs-4 text-white">
+                There is no gpio output devices for this device, or they haven't been configured in the configuration
+                file.
+            </p>
             {% endif %}
         </div>
         <div id="gpio-ins" class="d-flex justify-content-evenly">
             {% for gpio_in in gpio_ins %}
-                <div>
-                    <input type="checkbox" id="{{ gpio_in }}" name="{{ gpio_in }}" class="gpio-in" hidden>
-                    <label for="{{ gpio_in }}"></label>
-                    <div class="text-center fw-bold fs-4 text-uppercase text-white mt-2">{{ gpio_in }}</div>
-                </div>
+            <div>
+                <input type="checkbox" id="{{ gpio_in }}" name="{{ gpio_in }}" class="gpio-in" hidden>
+                <label for="{{ gpio_in }}"></label>
+                <div class="text-center fw-bold fs-4 text-uppercase text-white mt-2">{{ gpio_in }}</div>
+            </div>
             {% endfor %}
 
             {% if not gpio_ins %}
-                <p class="fw-bold fs-4 text-white">
-                    There is no gpio input devices for this device, or they haven't been configured in the configuration file.
-                </p>
+            <p class="fw-bold fs-4 text-white">
+                There is no gpio input devices for this device, or they haven't been configured in the configuration
+                file.
+            </p>
             {% endif %}
         </div>
     </div>
 </body>
+
 </html>
 <script>
-class SetInitialGPIOState {
-    constructor() {
-        // Check and set initial GPIO out pin status (High or Low).
-        let gpioOuts = document.querySelectorAll(".gpio-out");
-        for(let gpioOut of gpioOuts) {
-            this.check_status(gpioOut);
+    class SetInitialGPIOState {
+        constructor() {
+            // Check and set initial GPIO out pin status (High or Low).
+            let gpioOuts = document.querySelectorAll(".gpio-out");
+            for (let gpioOut of gpioOuts) {
+                this.check_status(gpioOut);
+            }
+        }
+
+        check_status(gpioOut) {
+            let api_url = `/api/gpio/${gpioOut.id}/status`;
+            fetch(api_url)
+                .then((response) => response.json())
+                .then((status_data) => {
+                    if (status_data[gpioOut.id] == 1) {
+                        gpioOut.checked = 1;
+                    } else if (status_data[gpioOut.id] == 0) {
+                        gpioOut.checked = 0;
+                    } else {
+                        // Cannot read GPIO output status, disable controlling.
+                        gpioOut.disabled = true;
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
         }
     }
 
-    check_status(gpioOut) {
-        let api_url = `/api/gpio/${gpioOut.id}/status`;
-        fetch(api_url)
-        .then((response) => response.json())
-        .then((status_data) => {
-            if (status_data[gpioOut.id] == 1) {
-                gpioOut.checked = 1;
-            } else if (status_data[gpioOut.id] == 0) {
-                gpioOut.checked = 0;
+    class SetGPIOOutput {
+        constructor() {
+            // When check/uncheck a GPIO output checkbox, invoke JS to start a POST
+            // request to let Python backend adjust the GPIO hardware voltage level.
+            this.endPoint = "/api/gpio/";
+            let gpioOuts = document.querySelectorAll(".gpio-out");
+            for (let gpioOut of gpioOuts) {
+                gpioOut.addEventListener('change', (e) => {
+                    let checked = e.target.checked;
+                    let outputX = e.target.id;
+                    if (checked) {
+                        this.setOutput(outputX, 1);
+                    } else {
+                        this.setOutput(outputX, 0);
+                    }
+                });
+            }
+        }
+
+        // A helper function to perform XHR request to the backend server.
+        setOutput(outputX, value) {
+            fetch(this.endPoint + outputX, {
+                method: 'POST', // or 'PUT'
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 'v_out': value }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data['status'] === 'Success') {
+                        console.log('Success:', data);
+                    } else {
+                        throw (data['msg'])
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+    }
+
+    class PollGPIOInput {
+        constructor() {
+            // Periodically polling the Python backend to obtain current GPIO hardware input voltage status.
+            this.endPoint = "/api/gpio/";
+            let gpioIns = document.querySelectorAll(".gpio-in");
+            for (let gpioIn of gpioIns) {
+                this.poll(gpioIn, 1000);
+            }
+        }
+
+        poll(gpioIn, interval) {
+            // interval: millisecond. The time inteval between each two consecutive polls.
+            setInterval(() => this.check_once(gpioIn), interval);
+        }
+
+        check_once(gpioIn) {
+            let api_url = this.endPoint + gpioIn.id;
+            fetch(api_url)
+                .then((response) => response.json())
+                .then((status_data) => {
+                    this.update_with(status_data, gpioIn)
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+
+        update_with(status_data, gpioIn) {
+            if (status_data[gpioIn.id] == 1) {
+                gpioIn.checked = 1;
+            } else if (status_data[gpioIn.id] == 0) {
+                gpioIn.checked = 0;
             } else {
                 // Cannot read GPIO output status, disable controlling.
-                gpioOut.disabled = true;
+                gpioIn.disabled = true;
             }
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
-    }
-}
-
-class SetGPIOOutput {
-    constructor() {
-        // When check/uncheck a GPIO output checkbox, invoke JS to start a POST
-        // request to let Python backend adjust the GPIO hardware voltage level.
-        this.endPoint = "/api/gpio/";
-        let gpioOuts = document.querySelectorAll(".gpio-out");
-        for (let gpioOut of gpioOuts) {
-            gpioOut.addEventListener('change', (e) => {
-                let checked = e.target.checked;
-                let outputX = e.target.id;
-                if (checked) {
-                    this.setOutput(outputX, 1);
-                } else {
-                    this.setOutput(outputX, 0);
-                }
-            });
         }
     }
 
-    // A helper function to perform XHR request to the backend server.
-    setOutput(outputX, value) {
-        fetch(this.endPoint + outputX, {
-          method: 'POST', // or 'PUT'
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({'v_out': value}),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data['status']==='Success') {
-                console.log('Success:', data);
-            } else {
-                throw(data['msg'])
-            }
-          })
-          .catch((error) => {
-            console.error('Error:', error);
-          });
-    }
-}
-
-class PollGPIOInput {
-    constructor() {
-        // Periodically polling the Python backend to obtain current GPIO hardware input voltage status.
-        this.endPoint = "/api/gpio/";
-        let gpioIns = document.querySelectorAll(".gpio-in");
-        for(let gpioIn of gpioIns) {
-            this.poll(gpioIn, 1000);
-        }
-    }
-
-    poll(gpioIn, interval) {
-        // interval: millisecond. The time inteval between each two consecutive polls.
-        setInterval(() => this.check_once(gpioIn), interval);
-    }
-
-    check_once(gpioIn) {
-        let api_url = this.endPoint + gpioIn.id;
-        fetch(api_url)
-        .then((response) => response.json())
-        .then((status_data) => {
-            this.update_with(status_data, gpioIn)
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
-    }
-
-    update_with(status_data, gpioIn) {
-        if (status_data[gpioIn.id] == 1) {
-            gpioIn.checked = 1;
-        } else if (status_data[gpioIn.id] == 0) {
-            gpioIn.checked = 0;
-        } else {
-            // Cannot read GPIO output status, disable controlling.
-            gpioIn.disabled = true;
-        }
-    }
-}
-
-let pollInputs = new PollGPIOInput();
-let setOutputs = new SetGPIOOutput();
-let initialStatus = new SetInitialGPIOState();
+    let pollInputs = new PollGPIOInput();
+    let setOutputs = new SetGPIOOutput();
+    let initialStatus = new SetInitialGPIOState();
 </script>

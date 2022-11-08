@@ -35,7 +35,7 @@
         </form>
 
         <div class="d-flex justify-content-between align-items-center">
-            <div class=" text-white fw-bold fs-3">Click to test:</div> 
+            <div class=" text-white fw-bold fs-3">Click to test:</div>
             <span class="btn-group">
                 <button class="can_bus_send btn btn-success fw-bold btn-lg">3.1415926</button>
                 <button class="can_bus_send btn btn-danger fw-bold btn-lg">TOO.LONG.CANT.SEND</button>
@@ -45,7 +45,9 @@
                 style="font-size: 2em">
                 <input class="form-check-input my-2" type="checkbox" role="switch" id="canbus-switch" {{ "checked" if
                     closed==False }}>
-                <label class="form-check-label text-white fw-bold fs-5 ms-2" for="canbus-switch">Enable Receiving</label>
+                <label class="form-check-label text-white fw-bold fs-5 ms-2" for="canbus-switch">
+                    Enable Receiving
+                </label>
             </div>
         </div>
         <div id="log" class="can-log"></div>

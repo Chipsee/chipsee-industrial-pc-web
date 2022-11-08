@@ -19,172 +19,190 @@
             </div>
             <h2 class="text-center my-4 fw-bold">Static IP Configuration</h2>
             {% if msg %}
-                <p class="fw-bold alert alert-info d-flex align-items-center">
-                    <button type="button" class="btn-close me-3" data-bs-dismiss="alert" aria-label="Close"></button>
-                    {{ msg }}
-                </p>
+            <p class="fw-bold alert alert-info d-flex align-items-center">
+                <button type="button" class="btn-close me-3" data-bs-dismiss="alert" aria-label="Close"></button>
+                {{ msg }}
+            </p>
             {% endif %}
             {% if form_errors %}
-                <ol class="fw-bold alert alert-danger d-flex align-items-center">
-                    <button type="button" class="btn-close me-3" data-bs-dismiss="alert" aria-label="Close"></button>
-                    <div class="ms-4">
-                        {% for error in form_errors %}
-                            <li>{{ error }}</li>
-                        {% endfor %}
-                    </div>
-                </ol>
+            <ol class="fw-bold alert alert-danger d-flex align-items-center">
+                <button type="button" class="btn-close me-3" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="ms-4">
+                    {% for error in form_errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </div>
+            </ol>
             {% endif %}
             <div>
                 <form id="form" method="post">
                     <div class="mb-4 row">
                         <div class="form-label col-2 col-form-label col-form-label-lg">Interface</div>
                         {% for nic in nics %}
-                            <div class="col col-2">
-                                <input class="btn-check" type="radio" name="nic" id="{{ nic }}" value="{{ nic }}" autocomplete="off" >
-                                <label class="btn btn-outline-danger border-2 border-danger border text-white btn-lg me-3 fw-bold w-100" for="{{ nic }}">{{ nic }}</label>
-                            </div>
+                        <div class="col col-2">
+                            <input class="btn-check" type="radio" name="nic" id="{{ nic }}" value="{{ nic }}"
+                                autocomplete="off">
+                            <label
+                                class="btn btn-outline-danger border-2 border-danger border text-white btn-lg me-3 fw-bold w-100"
+                                for="{{ nic }}">{{ nic }}</label>
+                        </div>
                         {% endfor %}
                         {% if not nics %}
-                            <span class="btn btn-outline-danger d-flex align-items-center me-3 col fw-bold fs-5 text-start">
-                                No NIC found from the board's configuration json file. You can add it from 'config/peripherals/{board ID}.json'
-                            </span>
+                        <span class="btn btn-outline-danger d-flex align-items-center me-3 col fw-bold fs-5 text-start">
+                            No NIC found from the board's configuration json file. You can add it from
+                            'config/peripherals/{board ID}.json'
+                        </span>
                         {% endif %}
                     </div>
                     <div class="mb-4 row">
                         <div class="form-label col-form-label col-form-label-lg col col-2">Version</div>
                         <div class="col col-2">
                             <input class="btn-check" type="radio" name="ip-version" id="ipv4" value="ipv4" checked>
-                            <label class="btn btn-outline-success btn-lg border-3 border-success text-white border w-100 fw-bold" for="ipv4">IPv4</label>
+                            <label class="btn btn-outline-success btn-lg border-3 border-success text-white border w-100 fw-bold"
+                                for="ipv4">IPv4</label>
                         </div>
                         <div class="col col-2">
                             <input class="btn-check" type="radio" name="ip-version" id="ipv6" value="ipv6">
-                            <label class="btn btn-outline-success btn-lg border-3 border-success text-white border w-100 fw-bold" for="ipv6">IPv6</label>
+                            <label class="btn btn-outline-success btn-lg border-3 border-success text-white border w-100 fw-bold"
+                                for="ipv6">IPv6</label>
                         </div>
                     </div>
                     <div class="mb-4 row">
                         <label for="address" class="form-label col-2 col-form-label col-form-label-lg">IP Address</label>
                         <div class="col-10">
-                            <input type="text" id="ip-input" class="form-control form-control-lg text-white bg-dark input" name="address" value="{{ request.form['address'] }}" placeholder="e.g 192.168.0.5/24, 2001:db8::1000/64">
+                            <input type="text" id="ip-input"
+                                class="form-control form-control-lg text-white bg-dark input" name="address"
+                                value="{{ request.form['address'] }}"
+                                placeholder="e.g 192.168.0.5/24, 2001:db8::1000/64">
                         </div>
                     </div>
                     <div class="mb-4 row">
                         <label for="gateway" class="form-label col-2 col-form-label col-form-label-lg">Gateway</label>
                         <div class="col-10">
-                            <input type="text" id="gw-input" class="form-control form-control-lg text-white bg-dark input" name="gateway" value="{{ request.form['gateway'] }}">
+                            <input type="text" id="gw-input"
+                                class="form-control form-control-lg text-white bg-dark input" name="gateway"
+                                value="{{ request.form['gateway'] }}">
                         </div>
                     </div>
                     <div class="mb-4 row">
                         <label for="dns-server" class="form-label col-2 col-form-label col-form-label-lg">DNS Server</label>
                         <div class="col-5">
-                            <input type="text" id="dns-primary-input" class="form-control form-control-lg text-white bg-dark input" name="dns-server" placeholder="Primary DNS" value="{{ request.form['dns-server'] }}">
+                            <input type="text" id="dns-primary-input"
+                                class="form-control form-control-lg text-white bg-dark input" name="dns-server"
+                                placeholder="Primary DNS" value="{{ request.form['dns-server'] }}">
                         </div>
                         <div class="col-5">
-                            <input type="text" id="dns-secondary-input" class="form-control form-control-lg text-white bg-dark input" name="dns-server-secondary" placeholder="Secondary DNS" value="{{ request.form['dns-server-secondary'] }}">
+                            <input type="text" id="dns-secondary-input"
+                                class="form-control form-control-lg text-white bg-dark input"
+                                name="dns-server-secondary" placeholder="Secondary DNS"
+                                value="{{ request.form['dns-server-secondary'] }}">
                         </div>
                     </div>
                     <div class="mb-2 row">
                         <label for="dns-search" class="form-label col-2 col-form-label col-form-label-lg">DNS Search</label>
                         <div class="col-10">
-                            <input type="text" id="dns-search-input" class="form-control form-control-lg text-white bg-dark input" name="dns-search" value="{{ request.form['dns-search'] }}">
+                            <input type="text" id="dns-search-input"
+                                class="form-control form-control-lg text-white bg-dark input" name="dns-search"
+                                value="{{ request.form['dns-search'] }}">
                         </div>
                     </div>
                     <button type="submit" class="btn btn-secondary fs-4 w-100 mt-3 fw-bold" id="submit">Apply</button>
                     <div class="form-text">Network will be down for a few seconds after applying</div>
                 </form>
             </div>
-               
+
         </div>
     </div>
 </body>
 
 </html>
 <script>
-// Avoid double form submission.
-const submitBtn = document.querySelector("#submit");
-const form = document.querySelector("#form");
-form.addEventListener('submit', (event) => {
-    submitBtn.setAttribute("disabled", true);
-    submitBtn.innerText = "Processing...";
-})
+    // Avoid double form submission.
+    const submitBtn = document.querySelector("#submit");
+    const form = document.querySelector("#form");
+    form.addEventListener('submit', (event) => {
+        submitBtn.setAttribute("disabled", true);
+        submitBtn.innerText = "Processing...";
+    })
 
-// Set virtual keyboard
-const Keyboard = window.SimpleKeyboard.default;
-let selectedInput;
-const defaultTheme = "hg-theme-default";
+    // Set virtual keyboard
+    const Keyboard = window.SimpleKeyboard.default;
+    let selectedInput;
+    const defaultTheme = "hg-theme-default";
 
-let keyboard = new Keyboard({
-    theme: defaultTheme,
-    onChange: input => onChange(input),
-    onKeyPress: button => onKeyPress(button)
-});
-
-// Let virtual keyboard work with all input fields
-document.querySelectorAll(".input").forEach(input => {
-    input.addEventListener("focus", onInputFocus);
-    // Optional: Use if you want to track input changes
-    // made without simple-keyboard
-    input.addEventListener("input", onInputChange);
-});
-
-function onInputFocus(event) {
-    selectedInput = `#${event.target.id}`;
-
-    keyboard.setOptions({
-        inputName: event.target.id
+    let keyboard = new Keyboard({
+        theme: defaultTheme,
+        onChange: input => onChange(input),
+        onKeyPress: button => onKeyPress(button)
     });
 
-    showKeyboard();
-}
-
-function onInputChange(event) {
-    keyboard.setInput(event.target.value, event.target.id);
-}
-
-function onChange(input) {
-    document.querySelector(selectedInput || ".input").value = input;
-}
-
-function onKeyPress(button) {
-    /**
-     * Shift functionality
-     */
-    if (button === "{lock}" || button === "{shift}") handleShiftButton();
-}
-
-function handleShiftButton() {
-    let currentLayout = keyboard.options.layoutName;
-    let shiftToggle = currentLayout === "default" ? "shift" : "default";
-
-    keyboard.setOptions({
-    layoutName: shiftToggle
+    // Let virtual keyboard work with all input fields
+    document.querySelectorAll(".input").forEach(input => {
+        input.addEventListener("focus", onInputFocus);
+        // Optional: Use if you want to track input changes
+        // made without simple-keyboard
+        input.addEventListener("input", onInputChange);
     });
-}
 
-document.addEventListener("click", (event) => {
-    if (
-        /**
-         * Hide the keyboard when you're not clicking it or when clicking an input
-         * If you have installed a "click outside" library, please use that instead.
-         */
-        keyboard.options.theme.includes("show-keyboard") &&
-        !event.target.className.includes("input") &&
-        !event.target.className.includes("hg-button") &&
-        !event.target.className.includes("hg-row") &&
-        !event.target.className.includes("simple-keyboard")
-    ) {
-        hideKeyboard();
+    function onInputFocus(event) {
+        selectedInput = `#${event.target.id}`;
+
+        keyboard.setOptions({
+            inputName: event.target.id
+        });
+
+        showKeyboard();
     }
-});
 
-function showKeyboard() {
-    keyboard.setOptions({
-        theme: `${defaultTheme} show-keyboard`
-    });
-}
+    function onInputChange(event) {
+        keyboard.setInput(event.target.value, event.target.id);
+    }
 
-function hideKeyboard() {
-    keyboard.setOptions({
-        theme: defaultTheme
+    function onChange(input) {
+        document.querySelector(selectedInput || ".input").value = input;
+    }
+
+    function onKeyPress(button) {
+        /**
+         * Shift functionality
+         */
+        if (button === "{lock}" || button === "{shift}") handleShiftButton();
+    }
+
+    function handleShiftButton() {
+        let currentLayout = keyboard.options.layoutName;
+        let shiftToggle = currentLayout === "default" ? "shift" : "default";
+
+        keyboard.setOptions({
+            layoutName: shiftToggle
+        });
+    }
+
+    document.addEventListener("click", (event) => {
+        if (
+            /**
+             * Hide the keyboard when you're not clicking it or when clicking an input
+             * If you have installed a "click outside" library, please use that instead.
+             */
+            keyboard.options.theme.includes("show-keyboard") &&
+            !event.target.className.includes("input") &&
+            !event.target.className.includes("hg-button") &&
+            !event.target.className.includes("hg-row") &&
+            !event.target.className.includes("simple-keyboard")
+        ) {
+            hideKeyboard();
+        }
     });
-}
+
+    function showKeyboard() {
+        keyboard.setOptions({
+            theme: `${defaultTheme} show-keyboard`
+        });
+    }
+
+    function hideKeyboard() {
+        keyboard.setOptions({
+            theme: defaultTheme
+        });
+    }
 </script>

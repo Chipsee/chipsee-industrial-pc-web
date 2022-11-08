@@ -16,16 +16,18 @@
             <div class="col" style="height: 70vh;">
                 <div class="border rounded-2 p-3 h-100">
                     {% if msg %}
-                        <p class="fw-bold alert alert-info d-flex align-items-center">
-                            <button type="button" class="btn-close me-3" data-bs-dismiss="alert" aria-label="Close"></button>
-                            {{ msg }}
-                        </p>
+                    <p class="fw-bold alert alert-info d-flex align-items-center">
+                        <button type="button" class="btn-close me-3" data-bs-dismiss="alert"
+                            aria-label="Close"></button>
+                        {{ msg }}
+                    </p>
                     {% endif %}
                     {% if error %}
-                        <p class="fw-bold alert alert-danger d-flex align-items-center">
-                            <button type="button" class="btn-close me-3" data-bs-dismiss="alert" aria-label="Close"></button>
-                                {{ error }}
-                        </p>
+                    <p class="fw-bold alert alert-danger d-flex align-items-center">
+                        <button type="button" class="btn-close me-3" data-bs-dismiss="alert"
+                            aria-label="Close"></button>
+                        {{ error }}
+                    </p>
                     {% endif %}
                     <h3 class="text-center fw-bold mt-5">Upload</h3>
                     <div class="d-flex align-items-center justify-content-center h-75">
@@ -44,7 +46,8 @@
                 <div class="border rounded-2 p-3 h-100">
                     <h3 class="text-center fw-bold mt-5">Download</h3>
                     <div class="d-flex align-items-center justify-content-center h-75">
-                        <a id="download-btn" class="btn btn-lg btn-warning fw-bold w-100" href="{{ url_for('download_file', fname='test_download.txt') }}">
+                        <a id="download-btn" class="btn btn-lg btn-warning fw-bold w-100"
+                            href="{{ url_for('download_file', fname='test_download.txt') }}">
                             Long Press -> Save Link As
                         </a>
                     </div>
@@ -57,7 +60,7 @@
 </html>
 <script>
     // Disable left click on download button. (Right click / long press is not disabled)
-    document.getElementById('download-btn').onclick = function(e) {
+    document.getElementById('download-btn').onclick = function (e) {
         return false;
     };
 </script>

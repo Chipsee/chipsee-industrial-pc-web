@@ -21,7 +21,7 @@
                     </div>
                 </div>
                 <div class="row justify-content-center">
-                  <div class="col-auto buzzer-btn" id="buzzer-btn"></div>
+                    <div class="col-auto buzzer-btn" id="buzzer-btn"></div>
                 </div>
             </div>
         </div>
@@ -31,79 +31,79 @@
 </html>
 
 <script>
-document.oncontextmenu = function(event) {
-    // When pushing buzzer button, a long press will call out browser context menu(light mouse right click), this will forbid it.
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    return false;
-};
-class BuzzerButton {
-    constructor() {
-        this.endPoint = "/api/buzzer";
-        let btn = document.querySelector("#buzzer-btn")
-        btn.addEventListener('touchstart', (e) => {
-          this.setBuzzer(1);
-        });
-        btn.addEventListener('touchend', (e) => {
-          this.setBuzzer(0);
-        })
-    }
+    document.oncontextmenu = function (event) {
+        // When pushing buzzer button, a long press will call out browser context menu(light mouse right click), this will forbid it.
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        return false;
+    };
+    class BuzzerButton {
+        constructor() {
+            this.endPoint = "/api/buzzer";
+            let btn = document.querySelector("#buzzer-btn")
+            btn.addEventListener('touchstart', (e) => {
+                this.setBuzzer(1);
+            });
+            btn.addEventListener('touchend', (e) => {
+                this.setBuzzer(0);
+            })
+        }
 
-    setBuzzer(value) {
-        fetch(this.endPoint, {
-          method: 'POST', // or 'PUT'
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({'buzzer': value}),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data['status']==='Success') {
-                console.log('Success:', data);
-            } else {
-                throw(data['msg'])
-            }
-          })
-          .catch((error) => {
-            console.error('Error:', error);
-          });
-    }
-}
-class BuzzerSwitch {
-    constructor() {
-        this.endPoint = "/api/buzzer";
-        document.querySelector("#buzzer-switch").onchange = (e) => {
-          let checked = e.target.checked;
-          if (checked) {
-            this.setBuzzer(1);
-          } else {
-            this.setBuzzer(0);
-          }
+        setBuzzer(value) {
+            fetch(this.endPoint, {
+                method: 'POST', // or 'PUT'
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 'buzzer': value }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data['status'] === 'Success') {
+                        console.log('Success:', data);
+                    } else {
+                        throw (data['msg'])
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
         }
     }
-
-    setBuzzer(value) {
-        fetch(this.endPoint, {
-          method: 'POST', // or 'PUT'
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({'buzzer': value}),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data['status']==='Success') {
-                console.log('Success:', data);
-            } else {
-                throw(data['msg'])
+    class BuzzerSwitch {
+        constructor() {
+            this.endPoint = "/api/buzzer";
+            document.querySelector("#buzzer-switch").onchange = (e) => {
+                let checked = e.target.checked;
+                if (checked) {
+                    this.setBuzzer(1);
+                } else {
+                    this.setBuzzer(0);
+                }
             }
-          })
-          .catch((error) => {
-            console.error('Error:', error);
-          });
+        }
+
+        setBuzzer(value) {
+            fetch(this.endPoint, {
+                method: 'POST', // or 'PUT'
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 'buzzer': value }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data['status'] === 'Success') {
+                        console.log('Success:', data);
+                    } else {
+                        throw (data['msg'])
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
     }
-}
-let buzzerSwitch = new BuzzerSwitch()
-let buzzerBtn = new BuzzerButton()
+    let buzzerSwitch = new BuzzerSwitch()
+    let buzzerBtn = new BuzzerButton()
 </script>
