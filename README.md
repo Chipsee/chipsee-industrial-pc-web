@@ -5,7 +5,7 @@
 1. Chipsee [AIO-PX30-101 (PN: CS12800PX101A)](https://docs.chipsee.com/PCs/ARM/PX30/AIO/Manuals/Hardware/CS12800PX101A.html) Industrial PC 
 ## Operating System
 
-Debian 10 that comes with Chipsee Industrial PC, with pre-installed hardware peripheral drivers.
+Debian 10/11 that comes with Chipsee Industrial PC, with pre-installed hardware peripheral drivers.
 
 ## Software
 
@@ -113,7 +113,7 @@ in the future, but any experienced programmer should be able to figure it out by
     1. **Screen Panel Brightness**: Brightness can be interacted with a bunch of Linux files in: `/sys/class/backlight/pwm-backlight`
     1. **Serial Port**: Use a Serial library to talk to Linux serial device. Python has `pyserial`, Ruby has a ruby-serialport [gem](https://github.com/hparra/ruby-serialport), JS has node-serialport [library](https://github.com/serialport/node-serialport), C++, Java should have their own solutions. Since Chipsee's Industrial Pi's RS232 serial port is just a Linux serial device, you can use any libraries that can handle Linux serial devices to control it.
     1. **Buzzer**: Control a buzzer with writing to Linux file: `/dev/buzzer`.
-    1. **CAN Bus**: CAN devices are abstracted as Linux network interfaces in the Linux kernel, use `ifconfig` to check them, use `ip link set can0 ***` commands to configure and enable them. Then use a CAN library to send / receive messages through CAN hardware, like `python-can`. We haven't tested other languages, but other programming languages should have their own solutions to control a CAN device.
+    1. **CAN Bus**: (Be sure to add the 120 Ohm resistor before testing) CAN devices are abstracted as Linux network interfaces in the Linux kernel, use `ifconfig` to check them, use `ip link set can0 ***` commands to configure and enable them. Then use a CAN library to send / receive messages through CAN hardware, like `python-can`. We haven't tested other languages, but other programming languages should have their own solutions to control a CAN device.
     1. **Static IP**: Setting static IP involves OS level configuration, in the Pi PC, the official Pi OS from Raspberry Foundation uses `dhcpcd`, and the community is gradually migrating to `NetworkManager`; in the PX30's Debian system, `NetworkManager` is operating the network, which also has a command line tool: `nmcli`. This app demonstrates both methods: it modifies the `dhcpcd.conf` file to set static IP for Pi PC, for PX30, it runs `nmcli` commands to set static IP.
     1. **Uploading Downloading to File System(USB/TF card)**: Uploading file is nothing special but a HTML form with a `<input type="file">`. Downloading is right clicking(equivalent to long pressing on a touch panel) a file link then click `save link as` like you download a file on your own PC with a browser.
     1. **Modbus**: You can use `pymodbus` lib for Python. For C/C++ use the `libmodbus` which is written in C. This code uses `pymodbus-2.5.3`, read the code in `model/modbus_client_sync.py`, or read the official `pymodbus` doc to learn how to let your industrial PC speak modbus language. 
