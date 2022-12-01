@@ -39,7 +39,7 @@ a Flask web server to handle the HTTP requests.
 ## How to Install
 Boot you industrial PC and type the following commands in a command line tool, you may use xterm from within the industrial PC, or SSH into it with PuTTY (Windows), Terminal(MacOS) or your favorite Linux CMD tool:
 ```bash
-git clone https://github.com/printfinn/chipsee-industrial-pc-web.git
+git clone https://github.com/Chipsee/chipsee-industrial-pc-web.git
 cd chipsee-industrial-pc-web
 # Create a Python project virtual environment
 python3 -m venv venv
