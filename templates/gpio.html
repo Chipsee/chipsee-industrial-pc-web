@@ -125,7 +125,7 @@
             this.endPoint = "/api/gpio/";
             let gpioIns = document.querySelectorAll(".gpio-in");
             for (let gpioIn of gpioIns) {
-                this.poll(gpioIn, 1000);
+                this.poll(gpioIn, 100);
             }
         }
 

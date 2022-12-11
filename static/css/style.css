@@ -343,7 +343,7 @@ input.gpio-out[type=checkbox]:checked + label {
     height: 125px;
     width: 125px;
     background-size: 100%;
-    transition: background-image 0.2s ease-in-out;
+    transition: background-image 0.01s ease-in-out;
 }
 
 input.gpio-out[type=checkbox] + label {
@@ -351,7 +351,7 @@ input.gpio-out[type=checkbox] + label {
     height: 125px;
     width: 125px;
     background-size: 100%;
-    transition: background-image 0.2s ease-in-out;
+    transition: background-image 0.01s ease-in-out;
 }
 
 input.gpio-in[type=checkbox]:checked + label {
@@ -359,7 +359,8 @@ input.gpio-in[type=checkbox]:checked + label {
     height: 125px;
     width: 125px;
     background-size: 100%;
-    transition: background-image 0.2s ease-in-out;
+    /* transition: none; */
+    transition: background-image 0.01s ease-in-out;
 }
 
 input.gpio-in[type=checkbox] + label {
@@ -367,7 +368,8 @@ input.gpio-in[type=checkbox] + label {
     height: 125px;
     width: 125px;
     background-size: 100%;
-    transition: background-image 0.2s ease-in-out;
+    /* transition: none; */
+    transition: background-image 0.01s ease-in-out;
 }
 
 /* Diagrams: Doughnut Chart */
