@@ -12,9 +12,9 @@
     {% include "common/navbar.html" %}
     <div class="container">
         <h2 class="text-center my-4 fw-bold">File Upload and Download</h2>
-        <div class="row w-100 gx-2">
-            <div class="col" style="height: 70vh;">
-                <div class="border rounded-2 p-3 h-100">
+        <div class="row w-100 gx-2" style="height: 70vh;">
+            <div class="col">
+                <div class="border rounded-2 p-3 h-100 d-flex flex-column justify-content-evenly">
                     {% if msg %}
                     <p class="fw-bold alert alert-info d-flex align-items-center">
                         <button type="button" class="btn-close me-3" data-bs-dismiss="alert"
@@ -29,24 +29,33 @@
                         {{ error }}
                     </p>
                     {% endif %}
-                    <h3 class="text-center fw-bold mt-5">Upload</h3>
-                    <div class="d-flex align-items-center justify-content-center h-75">
-                        <form method=post enctype=multipart/form-data class=" w-100">
+                    <h3 class="text-center fw-bold">Upload</h3>
+                    <div class="d-flex align-items-center justify-content-center">
+                        <form method=post enctype=multipart/form-data class="w-100">
                             <div class="mb-3">
                                 <label for="formFileLg" class="form-label fw-bold fs-4">Please Select a File</label>
                                 <input class="form-control form-control-lg" id="formFileLg" type="file" name="file">
                             </div>
-                            <input type=submit class="btn btn-lg w-100 btn-warning fw-bold" value=Upload>
-                            <div class="form-text fw-bold text-white">File will be uploaded to storage/ folder.</div>
+                            <input type=submit class="btn btn-lg w-100 btn-success fw-bold" value=Upload>
+                            <div class="form-text fw-bold text-white">File will be uploaded to <i>storage/</i> folder.</div>
                         </form>
                     </div>
                 </div>
             </div>
             <div class="col">
-                <div class="border rounded-2 p-3 h-100">
-                    <h3 class="text-center fw-bold mt-5">Download</h3>
-                    <div class="d-flex align-items-center justify-content-center h-75">
-                        <a id="download-btn" class="btn btn-lg btn-warning fw-bold w-100"
+                <div class="border rounded-2 p-3 h-100 d-flex flex-column justify-content-evenly">
+                    <h3 class="text-center fw-bold">Download</h3>
+                    <caption>
+                        When running in Chromium's kiosk mode, this (browser context menu) is not available.
+                        To download a file to external USB or TF card, you can:
+                        <ol>
+                            <li>Exit browser's kiosk mode and use full screen app mode.</li>
+                            <li>Use a button to trigger your server's programming language's file API function
+                                 to move files to your USB sticks.</li>
+                        </ol> 
+                    </caption>
+                    <div class="d-flex align-items-center justify-content-center">
+                        <a id="download-btn" class="btn btn-lg btn-success fw-bold w-100"
                             href="{{ url_for('download_file', fname='test_download.txt') }}">
                             Long Press -> Save Link As
                         </a>
