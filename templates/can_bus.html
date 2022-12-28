@@ -11,6 +11,18 @@
 <body class="dark-bg sticky-body">
     {% include "common/navbar.html" %}
     <div class="container">
+        {% if not can_up %}
+        <form method="post" class="d-flex align-items-center justify-content-center" style="height: 90vh;">
+            <div>
+                <p class="text-white fw-bold text-center display-5">
+                    Warning: Be sure to connect the 120 Ohm resistor before bringing up the CAN device.
+                </p>
+                <input type="submit" name="bring_up_can_bus_button" value="OK, bring up CAN device"
+                    class="btn btn-success w-100 btn-lg fw-bold my-3">
+            </div>
+        </form>
+        {% endif %}
+        {% if can_up %}
         <form id="can_bus" class="mt-3">
             <div class="row mb-3">
                 <label for="can_bus_arbitration_id"
@@ -51,6 +63,7 @@
             </div>
         </div>
         <div id="log" class="can-log"></div>
+        {% endif %}
     </div>
 </body>
 

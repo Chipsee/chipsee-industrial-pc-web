@@ -5,11 +5,10 @@ from lib.chipsee_board import board
 class CanBus(object):
     def __init__(self):
         self.can_dev_path = board.devices().get("can")
+        self.can_up = False
         if not self.can_dev_path:
-            self.can_up = False
             print("Cannot find CAN settings in board config. CAN bus not initialized.")
             return
-        self.bring_up_can_device()
         self.closed = True
         self.bus = None
             
@@ -21,6 +20,9 @@ class CanBus(object):
                 
     def bring_up_can_device(self):
         """
+        WARNING: Be sure to connect the 120 Ohm resistor before invoking this method, 
+        otherwise this program will freeze. 
+        
         If CAN bus device is not brought up from Linux, eg, with the "ip link up..." command,
         CAN device will not work.
         This method calls the Linux command for you to bring the CAN device up, if you do not

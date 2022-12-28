@@ -219,10 +219,16 @@ def api_modbus_client():
     return { 'status': 'Success', 'data': 'OK' }
 
 # CAN Bus
-@app.route("/can_bus")
+@app.route("/can_bus", methods=['GET', 'POST'])
 def can_bus():
     closed = dev_can_bus.closed
-    return render_template('can_bus.html', closed=closed)
+    if request.method == 'GET':
+        can_up = dev_can_bus.can_up
+        return render_template('can_bus.html', closed=closed, can_up=can_up)
+    if request.method == 'POST':
+        dev_can_bus.bring_up_can_device()
+        can_up = dev_can_bus.can_up
+        return render_template('can_bus.html', closed=closed, can_up=can_up)
 
 @socketio.on('can_send')
 def can_send(data):
