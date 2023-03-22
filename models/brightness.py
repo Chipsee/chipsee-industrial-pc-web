@@ -21,7 +21,7 @@ class Brightness:
             return 0
 
         with open(self.actual_brightness_f, 'r') as f:
-            return f.read()
+            return int(f.read())
 
     def set_brightness(self, brightness):
         if self.device is None:
