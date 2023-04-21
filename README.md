@@ -1,6 +1,15 @@
 # Web GUI Demo (HMI) for Chipsee Industrial PCs
 
+## See Videos of this Demo
+1. [Backlight, Buzzer, GPIO](https://www.youtube.com/watch?v=2RVkroLtL4E)
+1. [Serial Ports, CAN, Modbus](https://www.youtube.com/watch?v=IwLqwAtyyro)
+1. [Static IP, Video & Audio, File Upload & Download](https://www.youtube.com/watch?v=CwCuz0hR4kM)
+1. [Dynamic Charts](https://www.youtube.com/watch?v=p9okcKY90Qk)
+1. [How to Install and Run this Program](https://www.youtube.com/watch?v=sD55G-VFjU0)
+
 ## Supported Hardware
+Those hardware are tested by us, but if you're using another hardware model made by Chipsee, we can help you run this demo on your hardware as well.
+
 1. Chipsee Cortex®-A72 Raspberry Pi® series [EPC/PPC-CM4-70 (PN: CS10600RA4070)](https://docs.chipsee.com/PCs/Pi/A72/Manuals/Hardware/CS10600RA4070.html#epc-ppc-cm4-70) Industrial Pi PC
 1. Chipsee [AIO-PX30-101 (PN: CS12800PX101A)](https://docs.chipsee.com/PCs/ARM/PX30/AIO/Manuals/Hardware/CS12800PX101A.html) Industrial PC 
 ## Operating System
