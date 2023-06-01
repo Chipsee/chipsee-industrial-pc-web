@@ -1,0 +1,27 @@
+{
+  "brightness": "/sys/class/backlight/backlight",
+  "buzzer": "/dev/buzzer",
+  "rs232": "/dev/ttyS0",
+  "rs485": "/dev/ttyS3",
+  "rs232_0": "/dev/ttyS0",
+  "rs232_2": "/dev/ttyFIQ0",
+  "rs485_3": "/dev/ttyS3",
+  "rs485_4": "/dev/ttyS4",
+  "can": "can0",
+  "gpio_out": {
+    "out_1": "/dev/chipsee-gpio1", 
+    "out_2": "/dev/chipsee-gpio2", 
+    "out_3": "/dev/chipsee-gpio3", 
+    "out_4": "/dev/chipsee-gpio4"
+  },
+  "gpio_in": {
+    "in_1": "/dev/chipsee-gpio5", 
+    "in_2": "/dev/chipsee-gpio6", 
+    "in_3": "/dev/chipsee-gpio7", 
+    "in_4": "/dev/chipsee-gpio8"
+  },
+  "nics": {
+    "wlan0": "NetworkManager",
+    "eth0": "NetworkManager"
+  }
+}
