@@ -30,6 +30,9 @@ class ChipseeBoard(object):
         elif "px30" in desc:
             self.id = "CS12800PX101A"
             self.name = "px30"
+        elif "rk3568-eisd-1280720" in desc:
+            self.id = "CS12720-RK3568-050P"
+            self.name = "RK3568-050"
         elif "rk3568-eisd-1280800" in desc:
             self.id = "CS12800-RK3568-101P"
             self.name = "RK3568-101"
